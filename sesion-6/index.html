@@ -21,6 +21,13 @@ a.card:hover{transform:translateY(-3px)}a.card:focus-visible{outline:3px solid v
 a.card h2{font:800 28px "Bricolage Grotesque",system-ui,sans-serif;margin:0}
 a.card span{color:var(--muted)}a.card b{color:var(--cyan-dark);margin-top:auto}a.card:nth-child(2) b{color:var(--magenta-dark)}
 .back{display:inline-block;margin-bottom:18px;font-weight:700;color:var(--cyan-dark);text-decoration:none}.back:hover{text-decoration:underline}
+.docs{margin-top:34px}.docs h2{font:800 26px "Bricolage Grotesque",system-ui,sans-serif;margin:0 0 6px}.docs>p{color:var(--muted);margin:0 0 16px}
+.doclist{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.doc{display:flex;flex-direction:column;gap:8px;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 10px 30px #1b1e3c12;text-decoration:none;color:var(--ink);border-top:6px solid var(--yellow)}
+.doc:nth-child(2){border-top-color:var(--cyan)}.doc:nth-child(3){border-top-color:var(--magenta)}
+.doc b{font:800 19px/1.2 "Bricolage Grotesque",system-ui,sans-serif}.doc span{color:var(--muted);font-size:15px;flex:1}.doc em{font-style:normal;font-weight:700;color:var(--cyan-dark)}
+.doc:hover{transform:translateY(-2px)}.doc:focus-visible{outline:3px solid var(--magenta);outline-offset:3px}
+@media(max-width:760px){.doclist{grid-template-columns:1fr}}
 footer{margin-top:26px;font-size:14px;color:var(--muted)}
 @media(max-width:640px){.cards{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){a.card{transition:none}}
@@ -36,6 +43,15 @@ footer{margin-top:26px;font-size:14px;color:var(--muted)}
     <a class="card" href="teoria-rag.html"><h2>Teoría</h2><span>Qué es RAG y cómo funciona, las herramientas de hoy (Gemini Notebook y Gemini), sus límites, flujos de trabajo, qué automatizar y riesgos.</span><b>Abrir la teoría →</b></a>
     <a class="card" href="laboratorio-rag.html"><h2>Laboratorio</h2><span>Crea un asistente con fuentes, ponlo a prueba con preguntas trampa, dale instrucciones con TAREA y convierte el resultado en una página con Canvas.</span><b>Abrir el laboratorio →</b></a>
   </div>
+  <section class="docs">
+    <h2>Documentos de ejemplo para el ejercicio</h2>
+    <p>Si no tienes documentos propios, descarga uno de estos y súbelo a Gemini Notebook. Todos son ficticios y largos, con "letra pequeña" para poner a prueba al asistente.</p>
+    <div class="doclist">
+      <a class="doc" href="documentos/reglamento-conjunto-los-almendros.pdf" download><b>Reglamento del Conjunto Residencial Los Almendros</b><span>Cuotas de administración, mascotas, parqueaderos, ruido, zonas comunes, multas y asambleas.</span><em>Descargar PDF ↓</em></a>
+      <a class="doc" href="documentos/condiciones-plan-bienestar-total.pdf" download><b>Condiciones del Plan Complementario Bienestar Total</b><span>Planes y tarifas, coberturas, periodos de carencia, exclusiones, copagos y reembolsos.</span><em>Descargar PDF ↓</em></a>
+      <a class="doc" href="documentos/plan-de-negocio-miel-la-esperanza.pdf" download><b>Plan de negocio de Miel La Esperanza</b><span>Ventas mes a mes, costos y márgenes, competencia, metas para 2027 y riesgos del emprendimiento.</span><em>Descargar PDF ↓</em></a>
+    </div>
+  </section>
   <footer>Actividad con datos ficticios · Herramientas con plan gratuito, revisadas el 29 de octubre de 2026.</footer>
 </main>
 </body>

@@ -317,9 +317,9 @@ footer{color:var(--muted);font-size:.82rem;margin-top:30px}
   <section class="sec c" id="ruta" data-title="Ruta de la clase">
     <div class="sec-head"><div class="num">01</div><div><div class="eyebrow">Hoy, de 4:00 a 6:00 p. m. · Todos juntos</div><h2>Ruta de la clase</h2><p class="lead">El martes vieron deep research, artefactos y un agente que analiza cotizaciones. En la sesión 4 conocieron NotebookLM. Hoy unimos todo: un asistente que responde con documentos y un flujo que convierte sus respuestas en un producto.</p></div></div>
     <div class="route">
-      <div class="stop c"><time>4:00–4:10</time><div><b>El problema</b><small>Le preguntamos a Gemini, sin documentos, por las vacaciones de una organización que no conoce.</small></div><div class="where"><a class="chiplink" href="#problema">El problema</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-rag.html">Paso 1 ↗</a></div></div>
+      <div class="stop c"><time>4:00–4:10</time><div><b>El problema</b><small>Le preguntamos a Gemini, sin documentos, por las reglas de un conjunto residencial que no conoce.</small></div><div class="where"><a class="chiplink" href="#problema">El problema</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-rag.html">Paso 1 ↗</a></div></div>
       <div class="stop m"><time>4:10–4:25</time><div><b>Teoría: qué es RAG</b><small>El examen a libro abierto, RAG en vivo y cómo busca por significado.</small></div><div class="where"><a class="chiplink" href="#que-es-rag">Qué es RAG</a><a class="chiplink" href="#como-funciona">Cómo funciona</a></div></div>
-      <div class="stop y"><time>4:25–4:45</time><div><b>Crear el cuaderno y cargar las fuentes</b><small>Tres documentos ficticios de la Organización Altamira en Gemini Notebook.</small></div><div class="where"><a class="chiplink" href="#herramientas">Herramientas</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-rag.html">Paso 2 ↗</a></div></div>
+      <div class="stop y"><time>4:25–4:45</time><div><b>Crear el cuaderno y cargar las fuentes</b><small>Uno de los tres PDF ficticios en Gemini Notebook. La demo usa el reglamento del conjunto.</small></div><div class="where"><a class="chiplink" href="#herramientas">Herramientas</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-rag.html">Paso 2 ↗</a></div></div>
       <div class="stop c"><time>4:45–5:10</time><div><b>Preguntar, verificar citas y dar instrucciones con TAREA</b><small>Banco de 5 preguntas con una trampa. Criterio estrella: trazabilidad.</small></div><div class="where"><a class="chiplink" href="#limites">Lo que falla</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-rag.html">Pasos 3 y 4 ↗</a></div></div>
       <div class="stop m"><time>5:10–5:20</time><div><b>Studio</b><small>Mapa mental, informe o audio, y 10 preguntas frecuentes para personal nuevo.</small></div><div class="where"><a class="chiplink" href="#gemini-notebook">Gemini Notebook</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-rag.html">Paso 5 ↗</a></div></div>
       <div class="stop y"><time>5:20–5:45</time><div><b>Ejercicio extra en Gemini con Canvas</b><small>El mismo cuaderno dentro de Gemini; las preguntas frecuentes se vuelven una página de bienvenida.</small></div><div class="where"><a class="chiplink" href="#flujos">Flujos</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-rag.html">Paso 6 ↗</a></div></div>
@@ -337,8 +337,8 @@ footer{color:var(--muted);font-size:.82rem;margin-top:30px}
     </div>
     <div class="panel" style="margin-top:16px">
       <span class="tag">Prueba de hoy</span>
-      <h3 style="margin:8px 0 6px">“¿Cuántos días de vacaciones tengo en la Organización Altamira y cómo las pido?”</h3>
-      <p class="lead" style="margin:0">Gemini no conoce esa organización, que además es inventada. Va a responder con la ley colombiana en general o con algo genérico, sin el portal, sin los plazos y sin el jefe que aprueba. Suena correcto, pero no responde la pregunta real.</p>
+      <h3 style="margin:8px 0 6px">“¿Cuántas mascotas puedo tener en el Conjunto Residencial Los Almendros y dónde pueden andar sueltas?”</h3>
+      <p class="lead" style="margin:0">Gemini no conoce ese conjunto, que además es inventado. Va a responder algo genérico ("depende del reglamento de cada conjunto") o va a inventar un número. Suena razonable, pero no responde la pregunta real.</p>
     </div>
   </section>
 
@@ -358,7 +358,7 @@ footer{color:var(--muted);font-size:.82rem;margin-top:30px}
     </div>
 
     <h3 style="margin:30px 0 6px">RAG en vivo, con los documentos de hoy</h3>
-    <p class="lead" style="margin:0 0 14px">Elige una pregunta y mira qué fragmentos encuentra, qué recibe la IA y qué responde. Son los tres documentos ficticios del laboratorio.</p>
+    <p class="lead" style="margin:0 0 14px">Elige una pregunta y mira qué fragmentos encuentra, qué recibe la IA y qué responde. Son artículos reales del PDF ficticio del laboratorio: el reglamento del Conjunto Residencial Los Almendros.</p>
     <div class="live" id="live">
       <div class="live-q" role="tablist" aria-label="Preguntas de ejemplo" id="liveQ"></div>
       <div class="meta" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"><button class="btn sm" type="button" id="livePlay">▶ Ver paso a paso</button><div class="live-steps" id="liveSteps" aria-live="polite"><span>1 · Pregunta</span><span>2 · Recuperar</span><span>3 · Aumentar</span><span>4 · Generar</span></div></div>
@@ -434,7 +434,7 @@ footer{color:var(--muted);font-size:.82rem;margin-top:30px}
 
     <div class="toolhead" id="gemini-notebook"><div class="logo" style="background:var(--magenta)">GN</div><div><h3>Gemini Notebook (antes NotebookLM)</h3><p class="lead" style="margin:2px 0 0">Google le cambió el nombre el 16 de julio de 2026. Sigue en <b>notebooklm.google</b> y los enlaces viejos funcionan. Si ves “NotebookLM”, es lo mismo.</p></div></div>
     <div class="grid">
-      <div class="card m"><span class="tag">Base</span><h3>Cuaderno</h3><p>Un espacio por tema, con sus propias fuentes. Ej.: “Mesa de ayuda Altamira”.</p></div>
+      <div class="card m"><span class="tag">Base</span><h3>Cuaderno</h3><p>Un espacio por tema, con sus propias fuentes. Ej.: “Reglamento Los Almendros”.</p></div>
       <div class="card c"><span class="tag c">Fuentes</span><h3>Qué puedes cargar</h3><p>PDF, documentos y presentaciones de Google, páginas web, videos de YouTube y texto copiado. Hasta 50 fuentes por cuaderno en el plan gratuito.</p></div>
       <div class="card y"><span class="tag y">Chat</span><h3>Respuestas con citas</h3><p>Cada respuesta trae números. Al tocar uno, te muestra el párrafo exacto de la fuente.</p></div>
       <div class="card m"><span class="tag">Instrucciones</span><h3>Configurar chat</h3><p>Le das un rol y reglas fijas al asistente: tono, largo, qué hacer si no encuentra la respuesta. Ahí usamos TAREA.</p></div>
@@ -505,7 +505,7 @@ footer{color:var(--muted);font-size:.82rem;margin-top:30px}
 
     <h3 style="margin:28px 0 12px">El flujo que construimos hoy</h3>
     <div class="pipe" style="--n:5">
-      <div class="st c"><span class="k">Documentos</span><b>3 fuentes</b><small>Manual, política de vacaciones y preguntas frecuentes de sistemas.</small><div class="who">Persona<span>elige y actualiza las fuentes</span></div></div>
+      <div class="st c"><span class="k">Documentos</span><b>Tus PDF</b><small>El reglamento, las condiciones del plan o el plan de negocio.</small><div class="who">Persona<span>elige y actualiza las fuentes</span></div></div>
       <div class="st m"><span class="k">Gemini Notebook</span><b>Asistente</b><small>Responde con citas y sigue las instrucciones TAREA.</small><div class="who">IA<span>busca y responde</span></div></div>
       <div class="st y"><span class="k">Producto</span><b>Preguntas frecuentes</b><small>10 preguntas para personal nuevo, con su fuente.</small><div class="who">IA<span>redacta</span></div></div>
       <div class="st g"><span class="k">Gemini Canvas</span><b>Página de bienvenida</b><small>Las preguntas se vuelven una página interactiva.</small><div class="who">IA<span>diseña y programa</span></div></div>
@@ -599,7 +599,7 @@ footer{color:var(--muted);font-size:.82rem;margin-top:30px}
     <div><h2>Ahora, al laboratorio</h2><p>Creamos el cuaderno, cargamos las fuentes, ponemos a prueba al asistente y convertimos sus respuestas en una página con Gemini Canvas.</p></div>
     <a class="btn xlink" data-target="lab" href="laboratorio-rag.html">Ahora, al laboratorio →</a>
   </section>
-  <footer><a href="../index.html">← Inicio del curso</a> · <a href="../sesion-4/teoria-tarea-visual.html">← Sesión 4: Teoría TAREA Visual</a><br>Teoría RAG y flujos · Sesión 6 del curso de IA generativa · Documentos de la Organización Altamira: ficticios, para fines educativos.</footer>
+  <footer><a href="../index.html">← Inicio del curso</a> · <a href="../sesion-4/teoria-tarea-visual.html">← Sesión 4: Teoría TAREA Visual</a><br>Teoría RAG y flujos · Sesión 6 del curso de IA generativa · Los documentos de los casos son ficticios, para fines educativos.</footer>
 </div></main>
 </div>
 <div class="toast" id="toast" role="status"></div>
@@ -628,42 +628,35 @@ pj.addEventListener('click',()=>{pjOn=!pjOn;applyPj(pjOn);try{localStorage.setIt
 
 /* ===== RAG en vivo ===== */
 const DOCS=[
- {id:'M',name:'Manual de bienvenida',frags:[
-  {id:'M1',t:'Horario',x:'Lunes a viernes, de 7:30 a. m. a 5:00 p. m., con una hora de almuerzo entre las 12:00 m. y las 2:00 p. m.'},
-  {id:'M2',t:'Trabajo en casa',x:'Dos días a la semana, acordados con tu jefe y registrados en el portal. Durante el primer mes, todos los días son presenciales.'},
-  {id:'M3',t:'Primera semana',x:'Tendrás un compañero guía. El miércoles hay inducción general de 9:00 a 11:00 a. m. en el Salón principal, piso 2.'},
-  {id:'M4',t:'Trámites',x:'Vacaciones, permisos y certificados laborales se piden en el portal de autogestión.'},
-  {id:'M5',t:'Pausas activas',x:'A las 10:00 a. m. y a las 3:00 p. m., pausa activa de 5 minutos. El último viernes del mes se celebran los cumpleaños.'},
-  {id:'M6',t:'¿A quién acudir?',x:'Trabajo: tu jefe inmediato. Contrato, nómina o beneficios: talentohumano@altamira.example. Equipos y contraseñas: mesa de ayuda.'}]},
- {id:'P',name:'Política de vacaciones y permisos',frags:[
-  {id:'P1',t:'Días de vacaciones',x:'Cada persona tiene derecho a 15 días hábiles de vacaciones por cada año trabajado.'},
-  {id:'P2',t:'Cómo solicitarlas',x:'En el portal de autogestión, con al menos 15 días calendario de anticipación. El jefe responde en máximo 3 días hábiles.'},
-  {id:'P3',t:'Fraccionar y acumular',x:'Se pueden dividir, pero una parte debe ser de al menos 6 días hábiles seguidos. Máximo dos periodos acumulados.'},
-  {id:'P4',t:'Día de cumpleaños',x:'Un día libre remunerado dentro del mismo mes, avisando al jefe con al menos 5 días hábiles de anticipación.'},
-  {id:'P5',t:'Permisos',x:'Cita médica hasta 4 horas; calamidad doméstica hasta 3 días hábiles; diligencias personales, 2 medios días por semestre.'},
-  {id:'P6',t:'Excepciones',x:'Cualquier caso no previsto en esta política lo resuelve Talento Humano.'}]},
- {id:'S',name:'Preguntas frecuentes de sistemas',frags:[
-  {id:'S1',t:'Contacto',x:'Extensión 4521, chat del portal o mesadeayuda@altamira.example. De 7:00 a. m. a 6:00 p. m.; respuesta en máximo 4 horas hábiles.'},
-  {id:'S2',t:'Cambio de contraseña',x:'Cada 90 días, con aviso 7 días antes. Mínimo 12 caracteres.'},
-  {id:'S3',t:'Olvidé mi contraseña',x:'Usa "Olvidé mi contraseña" en el portal. Si no funciona, llama a la extensión 4521. Nunca la compartas.'},
-  {id:'S4',t:'Trabajo desde casa',x:'Conéctate a la VPN institucional antes de abrir las aplicaciones internas.'},
-  {id:'S5',t:'Instalar programas',x:'No se permite. Solicítalos a la mesa de ayuda.'},
-  {id:'S6',t:'Correo sospechoso',x:'No abras enlaces ni adjuntos. Reenvíalo a seguridad@altamira.example y elimínalo.'},
-  {id:'S7',t:'Computador dañado',x:'Repórtalo a la mesa de ayuda. Si tarda más de un día, te prestan un equipo.'}]}];
+ {id:'C',name:'Cap. III · Cuotas de administración',frags:[
+  {id:'C9',t:'Art. 9 · Valor de las cuotas',x:'Cuota mensual 2026: tipo A $285.000, tipo B $368.000 y tipo C $472.000.'},
+  {id:'C10',t:'Art. 10 · Fecha de pago',x:'Se paga dentro de los primeros 10 días calendario de cada mes. Después del día 10 se considera en mora.'},
+  {id:'C11',t:'Art. 11 · Descuento por pronto pago',x:'5 % de descuento si se paga completa a más tardar el día 5. No aplica con saldos pendientes ni durante los 6 meses siguientes a ponerse al día después de una mora.'},
+  {id:'C13',t:'Art. 13 · Mora de tres meses',x:'Con 3 cuotas o más en mora: requerimiento con 10 días hábiles para pagar; si no, cobro jurídico con honorarios del 15 % a cargo del propietario.'}]},
+ {id:'M',name:'Cap. IV · Mascotas',frags:[
+  {id:'M15',t:'Art. 15 · Número permitido',x:'Máximo 2 perros o 2 gatos, o 1 perro y 1 gato. Se permiten peces y aves pequeñas en jaula.'},
+  {id:'M16',t:'Art. 16 · Registro',x:'Toda mascota se registra en la administración dentro de los 15 días siguientes a su llegada, con el carné de vacunas.'},
+  {id:'M18',t:'Art. 18 · Circulación',x:'Siempre con traílla en zonas comunes. Sueltos solo en la zona de mascotas detrás de la torre 4, de 6:00 a. m. a 9:00 p. m.'}]},
+ {id:'V',name:'Caps. VI y VII · Convivencia y zonas comunes',frags:[
+  {id:'V25',t:'Art. 25 · Horario de silencio',x:'Domingo a jueves de 10:00 p. m. a 7:00 a. m.; viernes, sábados y vísperas de festivo de 12:00 a. m. a 8:00 a. m.'},
+  {id:'V28',t:'Art. 28 · Fachada',x:'No se puede cambiar el color de la fachada ni cerrar balcones. Antenas y aires acondicionados solo en los puntos definidos por la administración.'},
+  {id:'V29',t:'Art. 29 · Salón social',x:'Aforo de 60 personas. Se reserva con mínimo 8 días y máximo 2 meses de anticipación, una vez al mes por unidad.'},
+  {id:'V30',t:'Art. 30 · Costo del salón',x:'$150.000 por evento de hasta 6 horas, más un depósito reembolsable de $300.000. Termina a la 1:00 a. m. viernes y sábados.'},
+  {id:'V54',t:'Art. 54 · Situaciones no previstas',x:'Lo que no prevé el reglamento lo resuelve el consejo de administración.'}]}];
 const FR=Object.fromEntries(DOCS.flatMap(d=>d.frags.map(f=>[f.id,{...f,doc:d.name}])));
 const LQ=[
- {label:'Vacaciones',q:'¿Cuántos días de vacaciones tengo y cómo las pido?',hits:['P1','P2'],near:[],
-  ans:'Tienes 15 días hábiles por cada año trabajado [1]. Se piden en el portal de autogestión con al menos 15 días calendario de anticipación, y tu jefe responde en máximo 3 días hábiles [2].',
-  note:['Encontró los dos fragmentos de la política que responden la pregunta.','Cada dato tiene su cita: se puede comprobar en segundos.']},
- {label:'Contraseña',q:'Olvidé mi contraseña y estoy trabajando desde casa. ¿Qué hago?',hits:['S3','S4','S1'],near:[],
-  ans:'Usa la opción "Olvidé mi contraseña" en el portal de autogestión; si no funciona, llama a la extensión 4521 [1]. Para trabajar desde casa, conéctate primero a la VPN institucional [2]. La mesa de ayuda atiende de 7:00 a. m. a 6:00 p. m. [3].',
-  note:['La pregunta no dice "VPN", pero al hablar de trabajar desde casa trajo ese fragmento: busca por significado.']},
- {label:'Soy nuevo',q:'Entré hace dos semanas. ¿Puedo trabajar desde casa este viernes?',hits:['M2'],near:['S4'],
-  ans:'Todavía no: durante el primer mes todos los días son presenciales [1]. Después podrás trabajar desde casa dos días a la semana, acordados con tu jefe.',
-  note:['Trajo también el fragmento de la VPN (punteado) porque habla de trabajo en casa, pero no era necesario para responder.']},
- {label:'Licencia de paternidad',q:'¿Cuántos días de licencia de paternidad me dan?',hits:[],near:['P6'],no:true,
-  ans:'No está en los documentos. Lo más cercano es que los casos no previstos los resuelve Talento Humano [1], así que conviene preguntarles directamente.',
-  note:['Ningún fragmento responde la pregunta. Un buen asistente lo dice en lugar de inventar.','Si respondiera con un número de días, lo estaría sacando de su memoria, no de las fuentes.']}];
+ {label:'Administración',q:'¿Cuánto paga de administración un apartamento tipo B y hasta qué día sin mora?',hits:['C9','C10'],near:[],
+  ans:'Un apartamento tipo B paga $368.000 al mes [1]. Se paga dentro de los primeros 10 días del mes; después del día 10 queda en mora [2].',
+  note:['Encontró los dos artículos que responden la pregunta, en el mismo capítulo.','Cada dato tiene su cita: se puede comprobar en segundos.']},
+ {label:'Mascotas',q:'Tengo un perro y quiero adoptar un gato. ¿Puedo? ¿Dónde puede correr suelto el perro?',hits:['M15','M18'],near:['M16'],
+  ans:'Sí: se permite máximo un perro y un gato por apartamento [1]. El perro solo puede estar suelto en la zona de mascotas detrás de la torre 4, de 6:00 a. m. a 9:00 p. m. [2]. Al gato hay que registrarlo en la administración dentro de 15 días [3].',
+  note:['La pregunta dice "correr suelto", no "circulación": aun así encontró el artículo 18, porque busca por significado.','Trajo también el registro (punteado): no se preguntó, pero es útil.']},
+ {label:'Fiesta en el salón',q:'Quiero celebrar el cumpleaños de mi mamá el sábado en el salón social. ¿Qué necesito?',hits:['V29','V30'],near:['V25'],
+  ans:'Debes reservarlo en la administración con mínimo 8 días de anticipación; caben 60 personas [1]. Cuesta $150.000 más un depósito reembolsable de $300.000, y el sábado la fiesta termina a la 1:00 a. m. [2]. En los apartamentos, el silencio empieza a las 12:00 a. m. [3].',
+  note:['Cruzó dos artículos (reserva y costo) y trajo un tercero relacionado (silencio).','Si hoy es jueves y la fiesta es el sábado, ¡ya no alcanza a reservar! Una buena pregunta de seguimiento.']},
+ {label:'Paneles solares',q:'¿Puedo instalar paneles solares en mi balcón?',hits:[],near:['V28','V54'],no:true,
+  ans:'Eso no está en el reglamento. Lo más cercano son las reglas de fachada, que limitan lo que se instala afuera [1], y que lo no previsto lo resuelve el consejo de administración [2]. Consúltalo con ellos antes de instalar.',
+  note:['Ningún artículo responde la pregunta. Un buen asistente lo dice en lugar de inventar.','Si respondiera un "sí" o un "no" rotundo, lo estaría sacando de su memoria, no del reglamento.']}];
 let li=0,lstate=4,ltimer=null;
 function liveRender(){
  const q=LQ[li];
@@ -685,16 +678,16 @@ liveRender();
 
 /* ===== Sin RAG / Con RAG ===== */
 const VS=[
- {label:'Vacaciones',q:'¿Cuántos días de vacaciones tengo en la Organización Altamira y cómo las pido?',
-  weak:'En Colombia, la ley establece 15 días hábiles de vacaciones remuneradas por cada año trabajado. Por lo general se solicitan al jefe inmediato o al área de recursos humanos con anticipación, según las políticas de cada empresa.',
-  wt:['Genérica: habla de la ley, no de Altamira','No conoce el portal ni los plazos','Sin fuente para verificar'],
-  strong:'Tienes 15 días hábiles por cada año trabajado [1]. Se piden en el portal de autogestión con al menos 15 días calendario de anticipación; tu jefe responde en máximo 3 días hábiles [2].',
-  st:['Datos propios de la organización','Cada dato con su cita','Se verifica en segundos']},
- {label:'Licencia de paternidad',q:'¿Cuántos días de licencia de paternidad me dan en la Organización Altamira?',
-  weak:'Según la ley colombiana, la licencia de paternidad es de dos semanas remuneradas. Debes informar a tu empleador para gestionarla.',
-  wt:['Viene de su memoria, no de las fuentes','Puede ser cierto en general, pero no es lo que dice Altamira','Lo afirma con seguridad y sin cita'],
-  strong:'No está en los documentos. La política indica que los casos no previstos los resuelve Talento Humano [1]; puedes escribirles a talentohumano@altamira.example [2].',
-  st:['Reconoce el límite','Remite a quien sabe','Cero inventos']}];
+ {label:'Administración',q:'¿Cuánto pago de administración en el Conjunto Residencial Los Almendros?',
+  weak:'La cuota de administración depende del tamaño del apartamento y de lo que apruebe la asamblea. En Bogotá suele estar entre $200.000 y $500.000 al mes.',
+  wt:['Genérica: no conoce el conjunto','Da un rango que no sirve para pagar','Sin fuente para verificar'],
+  strong:'Depende del tipo de apartamento: tipo A $285.000, tipo B $368.000 y tipo C $472.000 al mes en 2026 [1]. Si pagas a más tardar el día 5, tienes un 5 % de descuento [2].',
+  st:['Datos propios del conjunto','Cada dato con su cita','Se verifica en segundos']},
+ {label:'Paneles solares',q:'¿Puedo instalar paneles solares en mi balcón en Los Almendros?',
+  weak:'Sí. En Colombia se promueven las energías renovables, así que puedes instalarlos; solo avísale a la administración.',
+  wt:['Viene de su memoria, no del reglamento','Afirma con seguridad algo que el documento no dice','Podría terminar en una multa por fachada'],
+  strong:'El reglamento no habla de paneles solares. Lo más cercano: no se permiten cambios de fachada y las antenas solo van en puntos definidos [1]; lo no previsto lo resuelve el consejo de administración [2].',
+  st:['Reconoce el límite','Remite a quien decide','Cero inventos']}];
 let vi=0;
 function vsRender(){const v=VS[vi];$('#vsTabs').innerHTML=VS.map((x,i)=>`<button class="tab" role="tab" type="button" aria-selected="${i===vi}" data-vs="${i}">${esc(x.label)}</button>`).join('');
  $('#vsQ').textContent=v.q;$('#vsWeak').textContent=v.weak;$('#vsStrong').innerHTML=esc(v.strong).replace(/\[(\d)\]/g,'<span class="cite">$1</span>');

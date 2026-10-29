@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Teoría RAG y flujos</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+/* Layout: imprenta CMYK, igual que la guía visual — índice blanco fijo, lectura en columna sobre papel con trama de semitono */
+:root{
+  --bg:#f4f7fc;--paper:#ffffff;--ink:#1b1e3c;--muted:#4d5272;--line:#dfe3f0;
+  --cyan:#0098d4;--cyan-dark:#0072a8;--cyan-soft:#e3f5fd;
+  --magenta:#e0307a;--magenta-dark:#b81f5f;--magenta-soft:#fde8f1;
+  --yellow:#ffc531;--yellow-soft:#fff6d9;--green:#12a37a;--green-soft:#e2f6ef;
+  --red:#d6453d;--red-soft:#fde9e7;
+  --display:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Consolas,monospace;
+  --radius:16px;--shadow:0 8px 28px #1b1e3c10;
+  color-scheme:light;font-size:17.5px;
+}
+html.projector{font-size:22px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:20px}
+body{margin:0;color:var(--ink);font:1rem/1.6 var(--body);
+  background:radial-gradient(circle,#1b1e3c17 1px,transparent 1.4px) 0 0/18px 18px,var(--bg)}
+a{color:var(--cyan-dark)}
+:focus-visible{outline:3px solid var(--magenta);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+p{margin:0}
+.shell{display:grid;grid-template-columns:290px minmax(0,1fr);max-width:1440px;margin:0 auto;min-height:100vh}
+/* Índice */
+.side{position:sticky;top:0;height:100vh;overflow:auto;background:var(--paper);border-right:1px solid var(--line);padding:26px 18px;display:flex;flex-direction:column;gap:18px}
+.brand{display:flex;gap:12px;align-items:center}
+.dots{position:relative;width:44px;height:44px;flex-shrink:0}
+.dots i{position:absolute;width:26px;height:26px;border-radius:50%;mix-blend-mode:multiply}
+.dots i:nth-child(1){background:var(--cyan);left:0;top:0}.dots i:nth-child(2){background:var(--magenta);right:0;top:0}.dots i:nth-child(3){background:var(--yellow);left:9px;bottom:0}
+.brand strong{font-family:var(--display);font-size:1.15rem;display:block}
+.brand small{color:var(--muted);font-size:.78rem}
+.toc{display:grid;gap:2px}
+.toc a{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--muted);padding:7px 10px;border-radius:10px;font-size:.88rem;font-weight:700}
+.toc a span{font-family:var(--display);font-size:.78rem;width:26px;height:26px;display:grid;place-items:center;border-radius:8px;background:var(--bg);color:var(--ink);flex-shrink:0}
+.toc a:hover{background:var(--cyan-soft);color:var(--ink)}
+.toc a[aria-current="true"]{background:var(--yellow-soft);color:var(--ink)}
+.toc a[aria-current="true"] span{background:var(--yellow)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:2px solid var(--cyan-dark);background:var(--cyan-dark);color:#fff;font:700 .95rem/1 var(--body);padding:12px 18px;border-radius:12px;text-decoration:none;cursor:pointer}
+.btn:hover{background:#005c88;border-color:#005c88}
+.btn.ghost{background:var(--paper);color:var(--cyan-dark)}
+.btn.ghost:hover{background:var(--cyan-soft)}
+.btn.sm{padding:8px 12px;font-size:.82rem;border-radius:10px}
+.switch{display:flex;align-items:center;gap:10px;font-size:.85rem;font-weight:700;color:var(--muted);cursor:pointer;border:0;background:none;padding:4px 0}
+.switch .track{width:42px;height:24px;border-radius:20px;background:var(--line);position:relative;transition:background .2s;flex-shrink:0}
+.switch .track:after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0003;transition:left .2s}
+.switch[aria-pressed="true"] .track{background:var(--magenta)}
+.switch[aria-pressed="true"] .track:after{left:21px}
+/* Barra móvil */
+.mbar{display:none}
+/* Contenido */
+.main{min-width:0;padding-block:34px 90px;padding-left:max(44px,env(safe-area-inset-left,0px));padding-right:max(44px,env(safe-area-inset-right,0px))}
+.wrap{max-width:980px}
+.hero{background:var(--paper);border:1px solid var(--line);border-radius:26px;padding:40px;display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:30px;align-items:center;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero .kicker{color:var(--magenta-dark);font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:.78rem}
+.hero h1{font-size:clamp(2rem,4.2vw,3.3rem);font-weight:800;letter-spacing:-.02em;margin:12px 0 14px}
+.hero p{color:var(--muted);font-size:1.08rem;max-width:60ch}
+.hero .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.cmyk{position:relative;width:230px;max-width:100%;aspect-ratio:1}
+.cmyk i{position:absolute;width:62%;aspect-ratio:1;border-radius:50%;mix-blend-mode:multiply;animation:breathe 7s ease-in-out infinite}
+.cmyk i:nth-child(1){background:var(--cyan);left:0;top:4%}
+.cmyk i:nth-child(2){background:var(--magenta);right:0;top:4%;animation-delay:-2.3s}
+.cmyk i:nth-child(3){background:var(--yellow);left:19%;bottom:0;animation-delay:-4.6s}
+@keyframes breathe{50%{transform:scale(1.06) translate(2%,-2%)}}
+mark{background:linear-gradient(transparent 52%,var(--yellow) 52%,var(--yellow) 92%,transparent 92%);color:inherit;padding:0 .1em}
+.sec{margin-top:64px;scroll-margin-top:20px}
+.sec-head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:start;margin-bottom:22px}
+.num{font-family:var(--display);font-weight:800;font-size:2.6rem;line-height:1;color:var(--accent,var(--cyan))}
+.eyebrow{font-size:.74rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--magenta-dark)}
+.sec h2{font-size:clamp(1.6rem,2.6vw,2.15rem);font-weight:800;letter-spacing:-.015em;margin-top:4px}
+.lead{color:var(--muted);max-width:68ch;margin-top:8px}
+.c{--accent:var(--cyan);--soft:var(--cyan-soft)}.m{--accent:var(--magenta);--soft:var(--magenta-soft)}.y{--accent:#e0a400;--soft:var(--yellow-soft)}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr))}
+.card{background:var(--paper);border:1px solid var(--line);border-top:5px solid var(--accent,var(--cyan));border-radius:var(--radius);padding:18px 18px 20px;display:flex;flex-direction:column;gap:8px}
+.card h3{font-size:1.1rem}
+.card p{color:var(--muted);font-size:.95rem}
+.card .ex{font-size:.86rem;background:var(--soft,var(--cyan-soft));color:var(--ink);padding:8px 10px;border-radius:9px}
+.tag{display:inline-flex;align-items:center;font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:30px;background:var(--magenta-soft);color:var(--magenta-dark);width:fit-content;white-space:nowrap}
+.tag.c{background:var(--cyan-soft);color:var(--cyan-dark)}.tag.y{background:var(--yellow-soft);color:#7a5600}.tag.g{background:var(--green-soft);color:#0b6e52}
+.note{background:var(--yellow-soft);border:1px solid #f3dc97;border-radius:12px;padding:12px 16px;font-size:.92rem;margin-top:16px}
+.stack{display:grid;gap:14px}
+/* Ruta */
+.route{display:grid;gap:10px}
+.stop{display:grid;grid-template-columns:120px minmax(0,1fr) auto;gap:16px;align-items:center;background:var(--paper);border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:14px;padding:14px 18px}
+.stop time{font-family:var(--display);font-weight:800;font-size:1.05rem;font-variant-numeric:tabular-nums}
+.stop b{display:block}.stop small{color:var(--muted);font-size:.88rem}
+.stop .where{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.chiplink{font-size:.78rem;font-weight:700;padding:5px 10px;border-radius:30px;text-decoration:none;background:var(--cyan-soft);color:var(--cyan-dark);white-space:nowrap}
+.chiplink.lab{background:var(--magenta-soft);color:var(--magenta-dark)}
+/* Difusión */
+.diff{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:24px;align-items:center}
+.diff canvas{width:100%;max-width:100%;aspect-ratio:8/5;display:block;border-radius:14px;image-rendering:pixelated;border:1px solid var(--line);background:#000}
+.diff input[type=range]{width:100%;accent-color:var(--magenta);margin:10px 0}
+.steplabel{font-family:var(--display);font-weight:600;font-size:1.05rem}
+/* Tablas */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--paper)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:.92rem}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--ink);color:#fff;font-weight:700;font-size:.82rem;letter-spacing:.02em}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:700}
+/* TAREA */
+.letters{display:grid;gap:12px}
+.letter{display:grid;grid-template-columns:64px minmax(0,1fr) minmax(0,1fr);gap:16px;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;align-items:start}
+.letter .L{font-family:var(--display);font-weight:800;font-size:2.4rem;line-height:1;width:64px;height:64px;display:grid;place-items:center;border-radius:14px;background:var(--soft);color:var(--accent)}
+.letter h3{font-size:1.05rem;margin-bottom:4px}
+.letter p{font-size:.92rem;color:var(--muted)}
+.letter .say{font-size:.88rem;background:var(--bg);border-radius:10px;padding:10px 12px}
+.letter .say b{display:block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--magenta-dark);margin-bottom:2px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tab{border:2px solid var(--line);background:var(--paper);border-radius:30px;padding:8px 14px;font:700 .88rem var(--body);color:var(--ink);cursor:pointer}
+.tab[aria-selected="true"]{border-color:var(--ink);background:var(--ink);color:#fff}
+.compare{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:14px}
+.pbox{border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.pbox.weak{background:var(--red-soft);border:1px solid #f4c4bf}
+.pbox.strong{background:var(--green-soft);border:1px solid #b5e4d3}
+.pbox h3{font-size:1rem;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.pbox pre{margin:0;white-space:pre-wrap;word-break:break-word;font:.86rem/1.6 var(--mono);background:#ffffffc0;border-radius:10px;padding:12px}
+.why{display:flex;gap:6px;flex-wrap:wrap}
+/* Editar */
+.turns{display:grid;gap:12px;counter-reset:t}
+.turn{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:start}
+.turn .who{font-family:var(--display);font-weight:800;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#fff}
+.bubble{background:var(--paper);border:1px solid var(--line);border-radius:4px 14px 14px 14px;padding:12px 16px}
+.bubble .res{margin-top:8px;font-size:.88rem;color:var(--muted)}
+.rules{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.rule{background:var(--ink);color:#fff;border-radius:14px;padding:16px}
+.rule b{font-family:var(--display);font-size:1.15rem;display:block;color:var(--yellow)}
+.rule span{font-size:.9rem;color:#dfe3f0}
+/* Semáforo */
+.traffic{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px;align-items:start}
+.q{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.q:last-child{border-bottom:0}
+.q p{font-size:.95rem}
+.yn{display:flex;gap:6px}
+.yn button{border:2px solid var(--line);background:var(--paper);border-radius:10px;padding:7px 14px;font:700 .85rem var(--body);cursor:pointer;color:var(--ink)}
+.yn button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.light{border-radius:18px;padding:22px;position:sticky;top:20px;border:2px solid var(--line);background:var(--paper)}
+.lamps{display:flex;gap:10px;margin-bottom:14px}
+.lamps i{width:34px;height:34px;border-radius:50%;background:var(--line)}
+.light[data-v="verde"] .lamps i:nth-child(3){background:var(--green);box-shadow:0 0 18px var(--green)}
+.light[data-v="amarillo"] .lamps i:nth-child(2){background:var(--yellow);box-shadow:0 0 18px var(--yellow)}
+.light[data-v="rojo"] .lamps i:nth-child(1){background:var(--red);box-shadow:0 0 18px var(--red)}
+.light h3{font-size:1.5rem}
+.light ul{padding-left:18px;margin:10px 0 0;font-size:.9rem;color:var(--muted)}
+.vrce{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px;margin-top:18px}
+.vrce div{border-radius:12px;padding:14px;background:var(--soft);border:1px solid var(--line)}
+.vrce b{font-family:var(--display);font-size:1.1rem;display:block;color:var(--accent)}
+.vrce span{font-size:.88rem}
+/* Glosario y fuentes */
+.gloss{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));gap:12px;margin:0}
+.gloss div{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px}
+.gloss dt{font-family:var(--display);font-weight:800;font-size:1.05rem}
+.gloss dd{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.sources{columns:2 300px;column-gap:28px;padding-left:20px;font-size:.88rem}
+.sources li{margin:0 0 8px;break-inside:avoid;overflow-wrap:anywhere}
+.finale{margin-top:70px;background:var(--ink);color:#fff;border-radius:26px;padding:42px;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;position:relative;overflow:hidden}
+.finale h2{font-size:clamp(1.8rem,3.4vw,2.6rem);font-weight:800;max-width:18ch}
+.finale p{color:#c9cee6;margin-top:8px;max-width:50ch}
+.finale .btn{background:var(--yellow);border-color:var(--yellow);color:var(--ink);font-size:1.1rem;padding:16px 24px}
+.finale .btn:hover{background:#ffd660;border-color:#ffd660}
+footer{color:var(--muted);font-size:.82rem;margin-top:30px}
+.toast{position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:30}
+.toast.show{opacity:1}
+@media (max-width:1020px){
+  .shell{grid-template-columns:1fr}
+  .side{display:none}
+  .mbar{display:flex;position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--paper);border-bottom:1px solid var(--line);gap:8px;align-items:center;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:25;background:var(--paper)}
+  .mbar nav{display:flex;gap:6px;overflow-x:auto;flex:1;min-width:0;scrollbar-width:none}
+  .mbar nav a{white-space:nowrap;text-decoration:none;font-size:.8rem;font-weight:700;color:var(--muted);padding:7px 10px;border-radius:9px;background:var(--bg)}
+  .mbar nav a[aria-current="true"]{background:var(--yellow);color:var(--ink)}
+  .mbar .btn{flex-shrink:0}
+  .main{padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+  html{scroll-padding-top:70px}.sec{scroll-margin-top:70px}
+}
+@media (max-width:760px){
+  .main{padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .hero{grid-template-columns:1fr;padding:26px}
+  .cmyk{width:140px;order:-1}
+  .stop{grid-template-columns:1fr}.stop .where{justify-content:flex-start}
+  .diff,.compare,.traffic{grid-template-columns:1fr}
+  .letter{grid-template-columns:52px minmax(0,1fr)}
+  .letter .L{width:52px;height:52px;font-size:1.9rem}
+  .letter .say{grid-column:1/-1}
+  .q{grid-template-columns:1fr}
+  .light{position:static}
+  .num{font-size:2rem}
+  .finale{padding:28px}
+  .mbar .btn span{display:none}
+}
+/* ===== RAG y flujos ===== */
+.g{--accent:var(--green);--soft:var(--green-soft)}
+/* Pipeline genérico */
+.pipe{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:0;align-items:stretch}
+.pipe .st{position:relative;background:var(--paper);border:1px solid var(--line);border-top:6px solid var(--accent,var(--cyan));border-radius:14px;padding:16px 16px 18px;margin-right:22px;display:flex;flex-direction:column;gap:6px;transition:transform .25s,box-shadow .25s,background .25s}
+.pipe .st:last-child{margin-right:0}
+.pipe .st:not(:last-child):after{content:"→";position:absolute;right:-21px;top:50%;transform:translateY(-50%);font:800 1.3rem var(--display);color:var(--muted)}
+.pipe .st b{font-family:var(--display);font-size:1.05rem}
+.pipe .st small{color:var(--muted);font-size:.86rem;line-height:1.45}
+.pipe .st .k{font:800 .72rem var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--accent,var(--cyan))}
+.pipe .st.on{background:var(--soft,var(--cyan-soft));transform:translateY(-3px);box-shadow:0 10px 24px #1b1e3c1c}
+.pipe .st .who{font-size:.8rem;border-top:1px dashed var(--line);padding-top:8px;margin-top:auto;color:var(--ink)}
+.pipe .st .who span{display:block;color:var(--muted)}
+/* Examen a libro abierto */
+.books{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
+.book{border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:8px}
+.book.closed{background:var(--red-soft);border:1px solid #f4c4bf}
+.book.open{background:var(--green-soft);border:1px solid #b5e4d3}
+.book .big{font-family:var(--display);font-weight:800;font-size:1.3rem}
+.book .ico{font-size:2rem;line-height:1}
+/* RAG en vivo */
+.live{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow)}
+.live-q{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.live-steps{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 16px}
+.live-steps span{font:700 .78rem var(--body);padding:6px 11px;border-radius:30px;background:var(--bg);color:var(--muted);border:2px solid transparent}
+.live-steps span.on{background:var(--ink);color:#fff}
+.live-steps span.done{border-color:var(--ink);color:var(--ink);background:var(--paper)}
+.live-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px;align-items:start}
+.docs{display:grid;gap:12px}
+.doc{border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.doc h4{margin:0;font:800 .82rem var(--body);letter-spacing:.06em;text-transform:uppercase;padding:9px 12px;background:var(--bg);color:var(--ink);display:flex;justify-content:space-between;gap:8px}
+.doc h4 em{font-style:normal;color:var(--muted);font-weight:700;letter-spacing:0;text-transform:none}
+.frags{display:flex;flex-wrap:wrap;gap:6px;padding:10px}
+.frag{font-size:.8rem;line-height:1.35;padding:6px 9px;border-radius:9px;background:var(--bg);color:var(--muted);border:2px solid transparent;transition:all .3s;max-width:100%}
+.frag b{color:var(--ink);font-weight:700}
+.frag.hit{background:var(--yellow);color:var(--ink);border-color:var(--ink);transform:scale(1.03)}
+.frag.near{border:2px dashed var(--magenta);color:var(--ink);background:var(--magenta-soft)}
+.frag sup{font:800 .7rem var(--body);background:var(--ink);color:#fff;border-radius:6px;padding:1px 5px;margin-left:4px}
+.out{display:grid;gap:12px}
+.box{border-radius:14px;padding:14px 16px;border:1px solid var(--line);background:var(--bg);transition:opacity .3s}
+.box.dim{opacity:.35}
+.box h4{margin:0 0 6px;font:800 .74rem var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--magenta-dark)}
+.box pre{margin:0;white-space:pre-wrap;word-break:break-word;font:.8rem/1.55 var(--mono)}
+.box.ans{background:var(--green-soft);border-color:#b5e4d3}
+.box.ans.no{background:var(--yellow-soft);border-color:#f3dc97}
+.box.ans p{font-size:.98rem}
+.cite{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 5px;border-radius:7px;background:var(--ink);color:#fff;font:800 .72rem var(--body);vertical-align:2px;margin:0 2px}
+.box ul{margin:8px 0 0;padding-left:18px;font-size:.84rem;color:var(--muted)}
+/* Sin / con RAG */
+.vs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.vs .pbox p{font-size:.95rem}
+.vs .issues{display:flex;gap:6px;flex-wrap:wrap}
+.chatq{background:var(--ink);color:#fff;border-radius:14px 14px 4px 14px;padding:12px 16px;margin:0 0 14px auto;max-width:560px;font-size:.98rem}
+/* Mapa de significado */
+.semmap{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px;align-items:center}
+.semmap svg{width:100%;height:auto;display:block;background:var(--paper);border:1px solid var(--line);border-radius:16px}
+.semmap text{font-family:var(--body);font-size:13px;fill:var(--ink)}
+.semmap .lbl{font-weight:700}
+/* Tabla comparativa */
+.t-yes{color:#0b6e52;font-weight:700}.t-no{color:var(--red);font-weight:700}.t-mid{color:#7a5600;font-weight:700}
+/* Herramientas */
+.toolhead{display:flex;align-items:center;gap:14px;margin:26px 0 12px;flex-wrap:wrap}
+.toolhead h3{font-size:1.45rem}
+.toolhead .logo{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font:800 1.2rem var(--display);color:#fff;flex-shrink:0}
+.when{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.when .card{border-top-width:8px}
+.when ul{margin:4px 0 0;padding-left:18px;color:var(--muted);font-size:.93rem}
+.others{background:var(--ink);color:#fff;border-radius:16px;padding:20px 22px;margin-top:16px}
+.others h3{color:var(--yellow);font-size:1.1rem;margin-bottom:6px}
+.others p{color:#dfe3f0;font-size:.93rem}
+.others .grid{margin-top:12px}
+.others .grid div{background:#ffffff14;border-radius:12px;padding:12px}
+.others .grid b{display:block;color:#fff}.others .grid span{font-size:.86rem;color:#c9cee6}
+/* Niveles */
+.levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.lvl{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;position:relative}
+.lvl .bar{height:10px;border-radius:10px;background:var(--line);overflow:hidden}
+.lvl .bar i{display:block;height:100%;background:var(--accent);width:var(--w)}
+.lvl h3{font-size:1.25rem}
+.lvl dl{margin:0;display:grid;gap:6px;font-size:.9rem}
+.lvl dt{font:800 .72rem var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--magenta-dark)}
+.lvl dd{margin:0;color:var(--ink)}
+@media (max-width:1020px){.pipe{grid-template-columns:1fr}.pipe .st{margin:0 0 22px}.pipe .st:last-child{margin-bottom:0}.pipe .st:not(:last-child):after{content:"↓";right:auto;left:50%;top:auto;bottom:-24px;transform:translateX(-50%)}}
+@media (max-width:760px){.live-grid,.vs,.semmap,.when,.levels{grid-template-columns:1fr}.live{padding:16px}}
+@media (prefers-reduced-motion:reduce){.frag,.pipe .st,.box{transition:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.cmyk i{animation:none}}
+</style>
+</head>
+<body>
+
+<header class="mbar">
+  <nav id="mnav" aria-label="Secciones"></nav>
+  <a class="btn sm xlink" data-target="lab" href="laboratorio-rag.html">Laboratorio<span> →</span></a>
+</header>
+<div class="shell">
+<aside class="side">
+  <div class="brand"><div class="dots" aria-hidden="true"><i></i><i></i><i></i></div><div><strong>Teoría RAG y flujos</strong><small>Flujos y automatización</small></div></div>
+  <a class="btn xlink" data-target="lab" href="laboratorio-rag.html">Ir al Laboratorio →</a>
+  <button class="switch" type="button" id="projector" aria-pressed="false"><span class="track"></span>Modo proyector</button>
+  <nav class="toc" id="toc" aria-label="Índice"></nav>
+  <a class="chiplink" href="../index.html" style="margin-top:auto;text-align:center">← Inicio del curso</a>
+</aside>
+
+<main class="main"><div class="wrap">
+  <section class="hero" aria-labelledby="t-hero">
+    <div>
+      <div class="kicker">Flujos de trabajo y automatización</div>
+      <h1 id="t-hero">Que la IA responda <mark>con tus documentos</mark>, cite de dónde lo sacó y se vuelva parte de un flujo.</h1>
+      <p>La guía de conceptos de este tema: qué es RAG, cómo funciona, las herramientas que usamos (Gemini Notebook y Gemini) y cómo decidir qué automatizar. La práctica está en el Laboratorio RAG.</p>
+      <div class="actions"><a class="btn xlink" data-target="lab" href="laboratorio-rag.html">Ir al Laboratorio →</a><a class="btn ghost" href="#que-es-rag">Ver RAG en vivo</a></div>
+    </div>
+    <div class="cmyk" aria-hidden="true"><i></i><i></i><i></i></div>
+  </section>
+
+  <!-- 1 -->
+  <section class="sec c" id="ruta" data-title="Ruta de la clase">
+    <div class="sec-head"><div class="num">01</div><div><div class="eyebrow">Hoy, de 4:00 a 6:00 p. m. · Todos juntos</div><h2>Ruta de la clase</h2><p class="lead">Antes vimos deep research, artefactos y un agente que analiza cotizaciones, y conocimos NotebookLM para crear pódcasts. Ahora unimos todo: un asistente que responde con documentos y un flujo que convierte sus respuestas en un producto.</p></div></div>
+    <div class="route">
+      <div class="stop c"><time>4:00–4:10</time><div><b>El problema</b><small>Le preguntamos a Gemini, sin documentos, por las reglas de un conjunto residencial que no conoce.</small></div><div class="where"><a class="chiplink" href="#problema">El problema</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-rag.html">Paso 1 ↗</a></div></div>
+      <div class="stop m"><time>4:10–4:25</time><div><b>Teoría: qué es RAG</b><small>El examen a libro abierto, RAG en vivo y cómo busca por significado.</small></div><div class="where"><a class="chiplink" href="#que-es-rag">Qué es RAG</a><a class="chiplink" href="#como-funciona">Cómo funciona</a></div></div>
+      <div class="stop y"><time>4:25–4:45</time><div><b>Crear el cuaderno y cargar las fuentes</b><small>Uno de los tres PDF ficticios en Gemini Notebook. La demo usa el reglamento del conjunto.</small></div><div class="where"><a class="chiplink" href="#herramientas">Herramientas</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-rag.html">Paso 2 ↗</a></div></div>
+      <div class="stop c"><time>4:45–5:10</time><div><b>Preguntar, verificar citas y dar instrucciones con TAREA</b><small>Banco de 5 preguntas con una trampa. Criterio estrella: trazabilidad.</small></div><div class="where"><a class="chiplink" href="#limites">Lo que falla</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-rag.html">Pasos 3 y 4 ↗</a></div></div>
+      <div class="stop m"><time>5:10–5:20</time><div><b>Studio</b><small>Mapa mental, informe o audio, y 10 preguntas frecuentes para personal nuevo.</small></div><div class="where"><a class="chiplink" href="#gemini-notebook">Gemini Notebook</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-rag.html">Paso 5 ↗</a></div></div>
+      <div class="stop y"><time>5:20–5:45</time><div><b>Ejercicio extra en Gemini con Canvas</b><small>El mismo cuaderno dentro de Gemini; las preguntas frecuentes se vuelven una página de bienvenida.</small></div><div class="where"><a class="chiplink" href="#flujos">Flujos</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-rag.html">Paso 6 ↗</a></div></div>
+      <div class="stop c"><time>5:45–6:00</time><div><b>Del asistente al flujo, y cierre</b><small>Dibujamos el flujo completo y decidimos qué automatizar y dónde revisa una persona.</small></div><div class="where"><a class="chiplink" href="#que-automatizar">Qué automatizar</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-rag.html">Paso 7 ↗</a></div></div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="sec m" id="problema" data-title="El problema">
+    <div class="sec-head"><div class="num">02</div><div><div class="eyebrow">Por qué hace falta</div><h2>La IA sola responde de memoria</h2><p class="lead">Un modelo como Gemini aprendió de millones de textos públicos hasta cierta fecha. Cuando le preguntas algo, <mark>responde con lo que recuerda</mark>. Si no lo sabe, a veces completa con algo que suena bien. A eso se le llama <b>alucinación</b>.</p></div></div>
+    <div class="grid">
+      <div class="card m"><span class="tag">No conoce</span><h3>Tu organización</h3><p>Sus políticas, sus horarios, sus formatos, su gente.</p></div>
+      <div class="card c"><span class="tag c">No conoce</span><h3>Tus documentos privados</h3><p>Lo que nunca se publicó en internet no está en su memoria.</p></div>
+      <div class="card y"><span class="tag y">No conoce</span><h3>Lo más reciente</h3><p>Lo que cambió después de su entrenamiento, como una política actualizada el mes pasado.</p></div>
+    </div>
+    <div class="panel" style="margin-top:16px">
+      <span class="tag">Prueba de hoy</span>
+      <h3 style="margin:8px 0 6px">“¿Cuántas mascotas puedo tener en el Conjunto Residencial Los Almendros y dónde pueden andar sueltas?”</h3>
+      <p class="lead" style="margin:0">Gemini no conoce ese conjunto, que además es inventado. Va a responder algo genérico ("depende del reglamento de cada conjunto") o va a inventar un número. Suena razonable, pero no responde la pregunta real.</p>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="sec y" id="que-es-rag" data-title="Qué es RAG">
+    <div class="sec-head"><div class="num">03</div><div><div class="eyebrow">Generación aumentada por recuperación</div><h2>¿Qué es RAG?</h2><p class="lead">RAG viene del inglés <i>Retrieval-Augmented Generation</i>. Antes de responder, la IA <mark>busca en tus documentos</mark> los pedazos que sirven, los pone junto a tu pregunta y responde con base en ellos, diciendo de dónde salió cada cosa.</p></div></div>
+    <div class="books">
+      <div class="book closed"><div class="ico" aria-hidden="true">📕</div><div class="big">Examen a libro cerrado</div><p>La IA sola. Responde con lo que recuerda. Si no lo sabe, puede improvisar con seguridad.</p></div>
+      <div class="book open"><div class="ico" aria-hidden="true">📖</div><div class="big">Examen a libro abierto</div><p>La IA con RAG. Primero busca en el libro (tus documentos), subraya lo que sirve y responde citando la página.</p></div>
+    </div>
+
+    <h3 style="margin:28px 0 12px">Los tres momentos</h3>
+    <div class="pipe" id="rag3" style="--n:3">
+      <div class="st c"><span class="k">1 · Recuperar</span><b>Buscar</b><small>Encuentra en tus documentos los fragmentos que tienen que ver con la pregunta.</small></div>
+      <div class="st m"><span class="k">2 · Aumentar</span><b>Armar el contexto</b><small>Pega esos fragmentos junto a tu pregunta: “responde usando solo esto”.</small></div>
+      <div class="st y"><span class="k">3 · Generar</span><b>Responder citando</b><small>Escribe la respuesta con sus palabras y marca de qué fragmento salió cada dato.</small></div>
+    </div>
+
+    <h3 style="margin:30px 0 6px">RAG en vivo, con los documentos de hoy</h3>
+    <p class="lead" style="margin:0 0 14px">Elige una pregunta y mira qué fragmentos encuentra, qué recibe la IA y qué responde. Son artículos reales del PDF ficticio del laboratorio: el reglamento del Conjunto Residencial Los Almendros.</p>
+    <div class="live" id="live">
+      <div class="live-q" role="tablist" aria-label="Preguntas de ejemplo" id="liveQ"></div>
+      <div class="meta" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"><button class="btn sm" type="button" id="livePlay">▶ Ver paso a paso</button><div class="live-steps" id="liveSteps" aria-live="polite"><span>1 · Pregunta</span><span>2 · Recuperar</span><span>3 · Aumentar</span><span>4 · Generar</span></div></div>
+      <div class="live-grid">
+        <div class="docs" id="liveDocs"></div>
+        <div class="out">
+          <div class="box" id="boxPrompt"><h4>Lo que recibe la IA (prompt aumentado)</h4><pre id="livePrompt"></pre></div>
+          <div class="box ans" id="boxAns"><h4>Respuesta</h4><p id="liveAns"></p><ul id="liveNote"></ul></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin:30px 0 12px">La misma pregunta, sin RAG y con RAG</h3>
+    <div class="tabs" role="tablist" id="vsTabs"></div>
+    <div class="chatq" id="vsQ"></div>
+    <div class="vs">
+      <div class="pbox weak"><h3>Sin RAG <span class="tag">De memoria</span></h3><p id="vsWeak"></p><div class="issues" id="vsWeakTags"></div></div>
+      <div class="pbox strong"><h3>Con RAG <span class="tag g">Con fuentes</span></h3><p id="vsStrong"></p><div class="issues" id="vsStrongTags"></div></div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="sec c" id="como-funciona" data-title="Cómo funciona">
+    <div class="sec-head"><div class="num">04</div><div><div class="eyebrow">Por dentro, en simple</div><h2>Cómo funciona</h2><p class="lead">No hace falta saber programar para entenderlo. Son cuatro ideas.</p></div></div>
+    <div class="pipe" style="--n:4">
+      <div class="st c"><span class="k">Idea 1</span><b>Se parte en fragmentos</b><small>Cada documento se corta en pedazos de unos pocos párrafos, como las fichas de un fichero.</small></div>
+      <div class="st m"><span class="k">Idea 2</span><b>Se ordena por significado</b><small>Cada fragmento recibe unas “coordenadas” según de qué habla. Temas parecidos quedan cerca.</small></div>
+      <div class="st y"><span class="k">Idea 3</span><b>Se busca por significado</b><small>Tu pregunta también recibe coordenadas, y se traen los fragmentos más cercanos, aunque usen otras palabras.</small></div>
+      <div class="st g"><span class="k">Idea 4</span><b>Se responde citando</b><small>La IA recibe solo esos fragmentos y responde con ellos. Las citas te llevan al texto original.</small></div>
+    </div>
+
+    <h3 style="margin:28px 0 12px">El mapa de significado</h3>
+    <div class="semmap">
+      <svg viewBox="0 0 520 340" role="img" aria-labelledby="semT semD"><title id="semT">Mapa de significado</title><desc id="semD">Las palabras sobre descanso quedan juntas, las de sistemas en otra zona y las de horarios en otra. La pregunta "¿cuándo puedo descansar?" cae cerca del grupo de descanso.</desc>
+        <defs><pattern id="gridp" width="26" height="26" patternUnits="userSpaceOnUse"><path d="M26 0H0V26" fill="none" stroke="#dfe3f0" stroke-width="1"/></pattern></defs>
+        <rect x="0" y="0" width="520" height="340" fill="url(#gridp)"/>
+        <ellipse cx="140" cy="110" rx="120" ry="80" fill="#fff6d9" stroke="#ffc531" stroke-width="2"/>
+        <ellipse cx="390" cy="230" rx="110" ry="80" fill="#e3f5fd" stroke="#0098d4" stroke-width="2"/>
+        <ellipse cx="380" cy="70" rx="95" ry="48" fill="#fde8f1" stroke="#e0307a" stroke-width="2"/>
+        <text class="lbl" x="45" y="45" fill="#7a5600">Descanso y permisos</text>
+        <text class="lbl" x="318" y="320" fill="#0072a8">Sistemas</text>
+        <text class="lbl" x="330" y="35" fill="#b81f5f">Horarios</text>
+        <g fill="#1b1e3c"><circle cx="110" cy="95" r="6"/><circle cx="170" cy="80" r="6"/><circle cx="95" cy="140" r="6"/><circle cx="190" cy="130" r="6"/><circle cx="150" cy="160" r="6"/>
+          <circle cx="350" cy="210" r="6"/><circle cx="430" cy="200" r="6"/><circle cx="380" cy="260" r="6"/><circle cx="455" cy="255" r="6"/>
+          <circle cx="345" cy="70" r="6"/><circle cx="420" cy="80" r="6"/></g>
+        <text x="80" y="88">vacaciones</text><text x="150" y="72">días libres</text><text x="55" y="160">permiso</text><text x="170" y="122">descanso</text><text x="105" y="180">cumpleaños</text>
+        <text x="300" y="200">contraseña</text><text x="418" y="190">VPN</text><text x="345" y="282">correo raro</text><text x="430" y="275">computador</text>
+        <text x="300" y="60">horario</text><text x="400" y="100">almuerzo</text>
+        <circle cx="200" cy="230" r="9" fill="#e0307a"/><circle cx="200" cy="230" r="70" fill="none" stroke="#e0307a" stroke-width="2" stroke-dasharray="6 6"/>
+        <text class="lbl" x="214" y="253">“¿cuándo puedo descansar?”</text>
+        <path d="M195 222 L160 168" stroke="#e0307a" stroke-width="2" fill="none"/>
+      </svg>
+      <div class="stack">
+        <p>La pregunta “¿cuándo puedo descansar?” no contiene la palabra <b>vacaciones</b>. Aun así, cae cerca del grupo de descanso y permisos, porque la búsqueda se hace <mark>por significado, no por palabras exactas</mark>.</p>
+        <p class="note" style="margin:0">Por eso RAG funciona mejor que el buscador clásico de un PDF (Ctrl+F), que solo encuentra la palabra exacta.</p>
+      </div>
+    </div>
+
+    <h3 style="margin:28px 0 12px">Tres maneras de darle información a la IA</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>Manera</th><th>Cómo es</th><th>¿Conoce tus documentos?</th><th>¿Cita?</th><th>Cuándo sirve</th></tr></thead>
+      <tbody>
+        <tr><td>Memoria del modelo</td><td>Preguntas sin adjuntar nada</td><td class="t-no">No</td><td class="t-no">No</td><td>Conocimiento general, ideas, redacción</td></tr>
+        <tr><td>Pegar el documento en el chat</td><td>Adjuntas o pegas el texto en la conversación (su “ventana de contexto”)</td><td class="t-yes">Sí, en ese chat</td><td class="t-mid">A veces</td><td>Un documento corto, una sola vez</td></tr>
+        <tr><td>RAG (cuaderno con fuentes)</td><td>Cargas fuentes una vez y la IA busca en ellas en cada pregunta</td><td class="t-yes">Sí, siempre</td><td class="t-yes">Sí, con enlace al párrafo</td><td>Muchos documentos, preguntas repetidas, varias personas</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- 5 -->
+  <section class="sec m" id="herramientas" data-title="Herramientas">
+    <div class="sec-head"><div class="num">05</div><div><div class="eyebrow">Gratis, con cuenta personal de Google</div><h2>Las herramientas de hoy</h2><p class="lead">Usamos dos herramientas de Google que ahora están conectadas: <mark>Gemini Notebook</mark> para responder con documentos y <mark>Gemini</mark> para crear y transformar.</p></div></div>
+
+    <div class="toolhead" id="gemini-notebook"><div class="logo" style="background:var(--magenta)">GN</div><div><h3>Gemini Notebook (antes NotebookLM)</h3><p class="lead" style="margin:2px 0 0">Google le cambió el nombre el 16 de julio de 2026. Sigue en <b>notebooklm.google</b> y los enlaces viejos funcionan. Si ves “NotebookLM”, es lo mismo.</p></div></div>
+    <div class="grid">
+      <div class="card m"><span class="tag">Base</span><h3>Cuaderno</h3><p>Un espacio por tema, con sus propias fuentes. Ej.: “Reglamento Los Almendros”.</p></div>
+      <div class="card c"><span class="tag c">Fuentes</span><h3>Qué puedes cargar</h3><p>PDF, documentos y presentaciones de Google, páginas web, videos de YouTube y texto copiado. Hasta 50 fuentes por cuaderno en el plan gratuito.</p></div>
+      <div class="card y"><span class="tag y">Chat</span><h3>Respuestas con citas</h3><p>Cada respuesta trae números. Al tocar uno, te muestra el párrafo exacto de la fuente.</p></div>
+      <div class="card m"><span class="tag">Instrucciones</span><h3>Configurar chat</h3><p>Le das un rol y reglas fijas al asistente: tono, largo, qué hacer si no encuentra la respuesta. Ahí usamos TAREA.</p></div>
+      <div class="card c"><span class="tag c">Studio</span><h3>Un documento, muchos formatos</h3><p>Resumen de audio (pódcast), resumen de video, mapa mental, informes e infografía.</p></div>
+      <div class="card y"><span class="tag y">Compartir</span><h3>Que otros lo usen</h3><p>Puedes compartir el cuaderno para que otras personas le pregunten al asistente.</p></div>
+    </div>
+
+    <div class="toolhead"><div class="logo" style="background:var(--cyan-dark)">G</div><div><h3>Gemini (app gratuita)</h3><p class="lead" style="margin:2px 0 0">En <b>gemini.google.com</b>. Ya lo conocen; estas son las funciones que usamos o mencionamos hoy.</p></div></div>
+    <div class="grid">
+      <div class="card c"><span class="tag c">Chat</span><h3>Conversar</h3><p>Preguntar, redactar, resumir, transformar textos. Responde de memoria si no le das fuentes.</p></div>
+      <div class="card m"><span class="tag">Archivos</span><h3>Adjuntar documentos</h3><p>Puedes subir un archivo a un chat y preguntar sobre él. Sirve para algo puntual, en esa conversación.</p></div>
+      <div class="card y"><span class="tag y">Gems</span><h3>Asistentes reutilizables</h3><p>Guardas instrucciones (y archivos de conocimiento) para no repetirlas cada vez. Un Gem es un asistente con nombre propio.</p></div>
+      <div class="card c"><span class="tag c">Canvas</span><h3>Crear en un lienzo</h3><p>Páginas web, infografías, quizzes y pequeñas apps a partir de una descripción. Disponible para todos; se activa con el botón “Canvas” bajo la barra de mensajes.</p></div>
+      <div class="card m"><span class="tag">Deep Research</span><h3>Investigación profunda</h3><p>Busca en muchas páginas web y arma un informe con fuentes. Ya lo vimos en el curso. Cupo limitado en el plan gratuito.</p></div>
+      <div class="card y"><span class="tag y">Notebooks</span><h3>Los cuadernos, dentro de Gemini</h3><p>En el panel lateral aparece la sección “Notebooks”: son los mismos cuadernos de Gemini Notebook. Gratis desde abril de 2026.</p></div>
+    </div>
+
+    <h3 style="margin:28px 0 12px">¿Cuándo uso cuál?</h3>
+    <div class="when">
+      <div class="card m"><h3>Gemini Notebook</h3><p>Cuando la respuesta tiene que salir de <b>mis documentos</b> y necesito comprobarla.</p><ul><li>Preguntas sobre manuales, políticas o contratos</li><li>Estudiar o resumir varios documentos</li><li>Un asistente que otros consultan</li></ul></div>
+      <div class="card c"><h3>Gemini</h3><p>Cuando quiero <b>crear, conversar o transformar</b> algo.</p><ul><li>Redactar, reescribir, traducir</li><li>Convertir un texto en página web o infografía (Canvas)</li><li>Investigar en internet (Deep Research)</li></ul></div>
+    </div>
+    <p class="note">Hoy las conectamos: lo que produce el cuaderno (preguntas frecuentes con fuentes) es la entrada de Gemini Canvas. Eso ya es un flujo.</p>
+
+    <div class="others">
+      <h3>Otras herramientas con la misma idea</h3>
+      <p>RAG no es exclusivo de Google. Varias herramientas permiten cargar documentos de referencia para que la IA responda con ellos. Las funciones y cupos gratuitos cambian, así que revisa cada una antes de usarla.</p>
+      <div class="grid">
+        <div><b>Proyectos de ChatGPT</b><span>Carpetas con archivos e instrucciones propias.</span></div>
+        <div><b>Proyectos de Claude</b><span>Conocimiento del proyecto e instrucciones que se reutilizan.</span></div>
+        <div><b>Cuadernos de Copilot</b><span>Espacios de Microsoft con archivos y notas como contexto.</span></div>
+      </div>
+    </div>
+
+    <h3 style="margin:28px 0 12px">Cupos del plan gratuito (octubre de 2026)</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>Herramienta</th><th>Qué incluye gratis</th><th>Ojo</th></tr></thead>
+      <tbody>
+        <tr><td>Gemini Notebook</td><td>Hasta 100 cuadernos, 50 fuentes por cuaderno, unas 50 preguntas al día, 3 resúmenes de audio y 3 de video al día</td><td>Algunas cifras vienen de comparadores; Google ajusta los cupos</td></tr>
+        <tr><td>Gemini</td><td>Chat, archivos, Gems, Canvas, sección Notebooks y Deep Research con cupo limitado</td><td>Usa tu cuenta personal: las cuentas corporativas pueden tener funciones bloqueadas</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- 6 -->
+  <section class="sec y" id="limites" data-title="Lo que falla">
+    <div class="sec-head"><div class="num">06</div><div><div class="eyebrow">Que tenga citas no significa que sea cierto</div><h2>Lo que falla y cómo detectarlo</h2><p class="lead">RAG reduce mucho los inventos, pero no los elimina. Estas son las fallas típicas y la prueba rápida para cada una.</p></div></div>
+    <div class="grid two">
+      <div class="card y"><span class="tag y">Fuente mala</span><h3>Si el documento está mal, la respuesta también</h3><p>RAG confía en lo que le diste. Una política desactualizada produce respuestas desactualizadas, y con cita.</p><div class="ex"><b>Prueba:</b> revisa la fecha y versión de cada fuente.</div></div>
+      <div class="card m"><span class="tag">No encuentra</span><h3>Trae el fragmento equivocado</h3><p>Si la pregunta es vaga o usa palabras muy distintas, puede traer un pedazo que no era.</p><div class="ex"><b>Prueba:</b> toca la cita y lee el párrafo original.</div></div>
+      <div class="card c"><span class="tag c">Mezcla</span><h3>Completa con su memoria</h3><p>A veces añade un dato que no está en las fuentes, como una cifra de la ley.</p><div class="ex"><b>Prueba:</b> la pregunta trampa. Si responde algo que no está, lo inventó o lo trajo de memoria.</div></div>
+      <div class="card y"><span class="tag y">Cruzar</span><h3>Le cuesta unir documentos</h3><p>Cuando la respuesta necesita dos fuentes a la vez, puede quedarse con una sola.</p><div class="ex"><b>Prueba:</b> la pregunta cruzada (trabajo en casa + cumpleaños).</div></div>
+      <div class="card m"><span class="tag">Ambigua</span><h3>Adivina en vez de preguntar</h3><p>“¿A quién le pido permiso?” tiene varias respuestas según el caso.</p><div class="ex"><b>Prueba:</b> un buen asistente separa los casos o pide aclarar.</div></div>
+      <div class="card c"><span class="tag c">Autoridad</span><h3>“Lo dice con cita, entonces es cierto”</h3><p>Las citas dan sensación de seguridad. El riesgo es dejar de revisar.</p><div class="ex"><b>Prueba:</b> verifica siempre al menos un dato contra el original.</div></div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="sec c" id="flujos" data-title="Flujos">
+    <div class="sec-head"><div class="num">07</div><div><div class="eyebrow">De una respuesta a un proceso</div><h2>Flujos de trabajo con IA</h2><p class="lead">Un flujo es una cadena de pasos que se repite. La IA hace algunos pasos, y una persona revisa en los puntos que importan. Todo flujo tiene cinco partes.</p></div></div>
+    <div class="pipe" style="--n:5">
+      <div class="st c"><span class="k">1</span><b>Disparador</b><small>Qué lo pone en marcha.</small><div class="who">Ej.: entra una persona nueva</div></div>
+      <div class="st m"><span class="k">2</span><b>Entradas</b><small>La información con la que trabaja.</small><div class="who">Ej.: manual, políticas, preguntas frecuentes</div></div>
+      <div class="st y"><span class="k">3</span><b>IA</b><small>Lo que hace la herramienta.</small><div class="who">Ej.: responde y redacta con citas</div></div>
+      <div class="st g"><span class="k">4</span><b>Control humano</b><small>Dónde revisa una persona.</small><div class="who">Ej.: Talento Humano valida los datos</div></div>
+      <div class="st c"><span class="k">5</span><b>Salida</b><small>Lo que se entrega.</small><div class="who">Ej.: página de bienvenida publicada</div></div>
+    </div>
+
+    <h3 style="margin:28px 0 12px">El flujo que construimos hoy</h3>
+    <div class="pipe" style="--n:5">
+      <div class="st c"><span class="k">Documentos</span><b>Tus PDF</b><small>El reglamento, las condiciones del plan o el plan de negocio.</small><div class="who">Persona<span>elige y actualiza las fuentes</span></div></div>
+      <div class="st m"><span class="k">Gemini Notebook</span><b>Asistente</b><small>Responde con citas y sigue las instrucciones TAREA.</small><div class="who">IA<span>busca y responde</span></div></div>
+      <div class="st y"><span class="k">Producto</span><b>Preguntas frecuentes</b><small>10 preguntas para personal nuevo, con su fuente.</small><div class="who">IA<span>redacta</span></div></div>
+      <div class="st g"><span class="k">Gemini Canvas</span><b>Página de bienvenida</b><small>Las preguntas se vuelven una página interactiva.</small><div class="who">IA<span>diseña y programa</span></div></div>
+      <div class="st c"><span class="k">Revisión</span><b>Publicar o compartir</b><small>Se verifican 3 datos contra las fuentes antes de publicar.</small><div class="who">Persona<span>verifica y decide</span></div></div>
+    </div>
+
+    <h3 style="margin:28px 0 12px">El agente de cotizaciones, visto como flujo</h3>
+    <div class="pipe" style="--n:4">
+      <div class="st m"><span class="k">Disparador</span><b>Llegan cotizaciones</b><small>Tres proveedores envían sus propuestas.</small></div>
+      <div class="st y"><span class="k">IA</span><b>El agente las analiza</b><small>Extrae precios, plazos y garantías, y las compara.</small></div>
+      <div class="st g"><span class="k">Control humano</span><b>Alguien valida</b><small>Revisa la comparación y los requisitos obligatorios.</small></div>
+      <div class="st c"><span class="k">Salida</span><b>Decisión</b><small>Una matriz y una recomendación que firma una persona.</small></div>
+    </div>
+    <div class="grid" style="margin-top:16px">
+      <div class="card y"><h3>En la vida diaria</h3><p>Fotos de recibos → la IA arma la tabla de gastos del mes → tú revisas → presupuesto familiar.</p></div>
+      <div class="card m"><h3>En un emprendimiento</h3><p>Catálogo y precios → asistente que responde a clientes → el dueño aprueba los pedidos.</p></div>
+      <div class="card c"><h3>En la oficina</h3><p>Actas de reunión → la IA extrae tareas y responsables → el líder confirma → se envían.</p></div>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="sec m" id="que-automatizar" data-title="Qué automatizar">
+    <div class="sec-head"><div class="num">08</div><div><div class="eyebrow">Capacidad estratégica</div><h2>¿Qué conviene automatizar?</h2><p class="lead">No todo lo que se puede automatizar se debe automatizar. Responde sobre una tarea tuya. Ya hay un ejemplo cargado: responder las preguntas frecuentes del personal nuevo.</p></div></div>
+    <div class="traffic">
+      <div class="panel" id="aqs"></div>
+      <div class="light" id="alight" data-v="amarillo" aria-live="polite"><div class="lamps" aria-hidden="true"><i></i><i></i><i></i></div><h3 id="alightTitle">Amarillo</h3><p id="alightText"></p><ul id="alightWhy"></ul></div>
+    </div>
+    <div class="vrce">
+      <div class="c"><b>Repetitiva</b><span>Pasa muchas veces y siempre de forma parecida.</span></div>
+      <div class="m"><b>Reglas claras</b><span>Hay documentos o criterios que dicen cómo se hace.</span></div>
+      <div class="y"><b>Verificable</b><span>Es fácil comprobar si el resultado está bien.</span></div>
+      <div class="c"><b>Bajo riesgo</b><span>Un error se puede corregir sin daño grave.</span></div>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="sec y" id="niveles" data-title="Niveles">
+    <div class="sec-head"><div class="num">09</div><div><div class="eyebrow">Quién decide y quién ejecuta</div><h2>De asistente a agente</h2><p class="lead">La diferencia entre un asistente y un agente es cuánto hace la IA por su cuenta. A más autonomía, más importante la revisión humana.</p></div></div>
+    <div class="levels">
+      <div class="lvl c"><div class="bar"><i style="--w:33%"></i></div><h3>Asistente</h3><dl><div><dt>La IA</dt><dd>Responde cuando le preguntas.</dd></div><div><dt>La persona</dt><dd>Decide y hace todo lo demás.</dd></div><div><dt>Ejemplo</dt><dd>El cuaderno de la mesa de ayuda que hacemos hoy.</dd></div></dl></div>
+      <div class="lvl m"><div class="bar"><i style="--w:66%"></i></div><h3>Copiloto</h3><dl><div><dt>La IA</dt><dd>Propone borradores y siguientes pasos.</dd></div><div><dt>La persona</dt><dd>Revisa, corrige y aprueba.</dd></div><div><dt>Ejemplo</dt><dd>Gemini Canvas armando la página de bienvenida.</dd></div></dl></div>
+      <div class="lvl y"><div class="bar"><i style="--w:100%"></i></div><h3>Agente</h3><dl><div><dt>La IA</dt><dd>Ejecuta varios pasos sola, con herramientas.</dd></div><div><dt>La persona</dt><dd>Define el objetivo, los límites y los puntos de control.</dd></div><div><dt>Ejemplo</dt><dd>Un agente que analiza cotizaciones.</dd></div></dl></div>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="sec c" id="riesgos" data-title="Riesgos">
+    <div class="sec-head"><div class="num">10</div><div><div class="eyebrow">Antes de usarlo de verdad</div><h2>Riesgos y cuidados</h2><p class="lead">En clase todo es ficticio. Para llevarlo al trabajo, hay reglas.</p></div></div>
+    <div class="grid two">
+      <div class="card m"><span class="tag">Datos</span><h3>Nada confidencial en cuentas personales</h3><p>La Ley 1581 de 2012 protege los datos personales en Colombia. No subas a herramientas gratuitas documentos internos, nombres, cédulas ni información de pacientes o clientes.</p><div class="ex"><b>Qué hacer:</b> para documentos reales, usa solo las herramientas que la organización aprobó.</div></div>
+      <div class="card c"><span class="tag c">Versiones</span><h3>Fuentes vivas, fuentes viejas</h3><p>Si la política cambia y nadie actualiza el cuaderno, el asistente seguirá respondiendo con la versión vieja.</p><div class="ex"><b>Qué hacer:</b> asigna un responsable de las fuentes y anota la fecha.</div></div>
+      <div class="card y"><span class="tag y">Autoridad</span><h3>Exceso de confianza</h3><p>Una respuesta bien escrita y con citas convence. Eso no la hace correcta.</p><div class="ex"><b>Qué hacer:</b> verifica un dato al azar cada vez.</div></div>
+      <div class="card m"><span class="tag">Responsabilidad</span><h3>¿Quién responde por el error?</h3><p>Siempre una persona. La IA no firma ni responde ante nadie.</p><div class="ex"><b>Qué hacer:</b> define en cada flujo quién revisa y aprueba.</div></div>
+    </div>
+  </section>
+
+  <!-- 11 -->
+  <section class="sec m" id="glosario" data-title="Glosario">
+    <div class="sec-head"><div class="num">11</div><div><div class="eyebrow">Para repasar</div><h2>Glosario</h2></div></div>
+    <dl class="gloss">
+      <div><dt>RAG</dt><dd>Generación aumentada por recuperación: la IA busca en tus documentos antes de responder.</dd></div>
+      <div><dt>Fuente</dt><dd>Un documento, página o video que cargas para que la IA responda con él.</dd></div>
+      <div><dt>Fragmento</dt><dd>Un pedazo de un documento. La IA busca y usa fragmentos, no el documento entero.</dd></div>
+      <div><dt>Búsqueda semántica</dt><dd>Buscar por significado y no por palabras exactas.</dd></div>
+      <div><dt>Cita</dt><dd>El número que te lleva al párrafo de la fuente que respalda la respuesta.</dd></div>
+      <div><dt>Alucinación</dt><dd>Cuando la IA afirma algo falso o inventado con seguridad.</dd></div>
+      <div><dt>Ventana de contexto</dt><dd>Todo lo que la IA puede “tener a la vista” en una conversación.</dd></div>
+      <div><dt>Flujo de trabajo</dt><dd>Una cadena de pasos que se repite, con partes hechas por la IA y partes por personas.</dd></div>
+      <div><dt>Disparador</dt><dd>El evento que pone en marcha un flujo.</dd></div>
+      <div><dt>Agente</dt><dd>Una IA que ejecuta varios pasos por su cuenta para lograr un objetivo.</dd></div>
+      <div><dt>Punto de control humano</dt><dd>El momento del flujo en que una persona revisa y aprueba.</dd></div>
+      <div><dt>Canvas</dt><dd>El lienzo de Gemini para crear páginas, infografías y apps a partir de una descripción.</dd></div>
+    </dl>
+  </section>
+
+  <!-- 12 -->
+  <section class="sec y" id="fuentes" data-title="Fuentes">
+    <div class="sec-head"><div class="num">12</div><div><div class="eyebrow">Para verificar</div><h2>Fuentes</h2><p class="lead">Las funciones y los cupos gratuitos cambian con frecuencia. Información revisada en octubre de 2026.</p></div></div>
+    <ol class="sources">
+      <li><a href="https://waariaso.github.io/TAREA/" target="_blank" rel="noopener">Laboratorio TAREA (guía de prompting del curso)</a></li>
+      <li><a href="https://workspaceupdates.googleblog.com/2026/07/notebooklm-now-gemini-notebook.html" target="_blank" rel="noopener">Google Workspace Updates: NotebookLM ahora es Gemini Notebook (16 de julio de 2026)</a></li>
+      <li><a href="https://techcrunch.com/2026/07/16/google-continues-its-renaming-streak-by-turning-notebooklm-to-gemini-notebook/" target="_blank" rel="noopener">TechCrunch: Google renombra NotebookLM como Gemini Notebook</a></li>
+      <li><a href="https://9to5google.com/2026/04/17/gemini-notebooks-free/" target="_blank" rel="noopener">9to5Google: los cuadernos llegan gratis a la app Gemini (abril de 2026)</a></li>
+      <li><a href="https://gemini.google/overview/canvas/?hl=en" target="_blank" rel="noopener">Google: Canvas en Gemini</a></li>
+      <li><a href="https://felloai.com/is-notebooklm-free/" target="_blank" rel="noopener">Límites gratuitos de NotebookLM (Fello AI)</a></li>
+      <li><a href="https://arxiv.org/abs/2005.11401" target="_blank" rel="noopener">Lewis et al. (2020). Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</a></li>
+    </ol>
+  </section>
+
+  <section class="finale">
+    <div><h2>Ahora, al laboratorio</h2><p>Creamos el cuaderno, cargamos las fuentes, ponemos a prueba al asistente y convertimos sus respuestas en una página con Gemini Canvas.</p></div>
+    <a class="btn xlink" data-target="lab" href="laboratorio-rag.html">Ahora, al laboratorio →</a>
+  </section>
+  <footer><a href="../index.html">← Inicio del curso</a> · <a href="../contenido-visual/teoria-tarea-visual.html">← Contenido visual y audiovisual: teoría</a><br>Teoría RAG y flujos · Curso de IA generativa · Los documentos de los casos son ficticios, para fines educativos.</footer>
+</div></main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2400)}
+/* Enlaces al laboratorio cuando la página está embebida */
+const LAB_URL='https://claude.ai/artifact/NDTzmjJPF7sroStoDhtLDP';
+let embedded=true;try{embedded=window.self!==window.top}catch(e){}
+if(embedded&&LAB_URL)$$('.xlink[data-target=lab]').forEach(a=>{a.href=LAB_URL;a.target='_blank';a.rel='noopener'});
+/* Índice y sección activa */
+const secs=$$('.sec');
+$('#toc').innerHTML=secs.map((s,i)=>`<a href="#${s.id}" data-id="${s.id}"><span>${String(i+1).padStart(2,'0')}</span>${esc(s.dataset.title)}</a>`).join('');
+$('#mnav').innerHTML=secs.map(s=>`<a href="#${s.id}" data-id="${s.id}">${esc(s.dataset.title)}</a>`).join('');
+function setActive(id){$$('[data-id]').forEach(a=>a.setAttribute('aria-current',String(a.dataset.id===id)));const m=$(`#mnav a[data-id="${id}"]`);if(m&&window.innerWidth<=1020){const nav=$('#mnav');nav.scrollTo({left:m.offsetLeft-16,behavior:reduce?'auto':'smooth'})}}
+if('IntersectionObserver' in window){const vis=new Map();const io=new IntersectionObserver(es=>{es.forEach(e=>vis.set(e.target.id,e.isIntersecting?e.boundingClientRect.top:null));const cur=[...vis].filter(([,v])=>v!==null).sort((a,b)=>Math.abs(a[1])-Math.abs(b[1]))[0];if(cur)setActive(cur[0])},{rootMargin:'-15% 0px -60% 0px'});secs.forEach(s=>io.observe(s))}
+setActive('ruta');
+/* Modo proyector (compartido con la guía visual) */
+const pj=$('#projector');function applyPj(on){document.documentElement.classList.toggle('projector',on);pj.setAttribute('aria-pressed',String(on))}
+let pjOn=false;try{pjOn=localStorage.getItem('teoria-proyector')==='1'}catch(e){}applyPj(pjOn);
+pj.addEventListener('click',()=>{pjOn=!pjOn;applyPj(pjOn);try{localStorage.setItem('teoria-proyector',pjOn?'1':'0')}catch(e){}toast(pjOn?'Modo proyector activado':'Modo proyector desactivado')});
+
+/* ===== RAG en vivo ===== */
+const DOCS=[
+ {id:'C',name:'Cap. III · Cuotas de administración',frags:[
+  {id:'C9',t:'Art. 9 · Valor de las cuotas',x:'Cuota mensual 2026: tipo A $285.000, tipo B $368.000 y tipo C $472.000.'},
+  {id:'C10',t:'Art. 10 · Fecha de pago',x:'Se paga dentro de los primeros 10 días calendario de cada mes. Después del día 10 se considera en mora.'},
+  {id:'C11',t:'Art. 11 · Descuento por pronto pago',x:'5 % de descuento si se paga completa a más tardar el día 5. No aplica con saldos pendientes ni durante los 6 meses siguientes a ponerse al día después de una mora.'},
+  {id:'C13',t:'Art. 13 · Mora de tres meses',x:'Con 3 cuotas o más en mora: requerimiento con 10 días hábiles para pagar; si no, cobro jurídico con honorarios del 15 % a cargo del propietario.'}]},
+ {id:'M',name:'Cap. IV · Mascotas',frags:[
+  {id:'M15',t:'Art. 15 · Número permitido',x:'Máximo 2 perros o 2 gatos, o 1 perro y 1 gato. Se permiten peces y aves pequeñas en jaula.'},
+  {id:'M16',t:'Art. 16 · Registro',x:'Toda mascota se registra en la administración dentro de los 15 días siguientes a su llegada, con el carné de vacunas.'},
+  {id:'M18',t:'Art. 18 · Circulación',x:'Siempre con traílla en zonas comunes. Sueltos solo en la zona de mascotas detrás de la torre 4, de 6:00 a. m. a 9:00 p. m.'}]},
+ {id:'V',name:'Caps. VI y VII · Convivencia y zonas comunes',frags:[
+  {id:'V25',t:'Art. 25 · Horario de silencio',x:'Domingo a jueves de 10:00 p. m. a 7:00 a. m.; viernes, sábados y vísperas de festivo de 12:00 a. m. a 8:00 a. m.'},
+  {id:'V28',t:'Art. 28 · Fachada',x:'No se puede cambiar el color de la fachada ni cerrar balcones. Antenas y aires acondicionados solo en los puntos definidos por la administración.'},
+  {id:'V29',t:'Art. 29 · Salón social',x:'Aforo de 60 personas. Se reserva con mínimo 8 días y máximo 2 meses de anticipación, una vez al mes por unidad.'},
+  {id:'V30',t:'Art. 30 · Costo del salón',x:'$150.000 por evento de hasta 6 horas, más un depósito reembolsable de $300.000. Termina a la 1:00 a. m. viernes y sábados.'},
+  {id:'V54',t:'Art. 54 · Situaciones no previstas',x:'Lo que no prevé el reglamento lo resuelve el consejo de administración.'}]}];
+const FR=Object.fromEntries(DOCS.flatMap(d=>d.frags.map(f=>[f.id,{...f,doc:d.name}])));
+const LQ=[
+ {label:'Administración',q:'¿Cuánto paga de administración un apartamento tipo B y hasta qué día sin mora?',hits:['C9','C10'],near:[],
+  ans:'Un apartamento tipo B paga $368.000 al mes [1]. Se paga dentro de los primeros 10 días del mes; después del día 10 queda en mora [2].',
+  note:['Encontró los dos artículos que responden la pregunta, en el mismo capítulo.','Cada dato tiene su cita: se puede comprobar en segundos.']},
+ {label:'Mascotas',q:'Tengo un perro y quiero adoptar un gato. ¿Puedo? ¿Dónde puede correr suelto el perro?',hits:['M15','M18'],near:['M16'],
+  ans:'Sí: se permite máximo un perro y un gato por apartamento [1]. El perro solo puede estar suelto en la zona de mascotas detrás de la torre 4, de 6:00 a. m. a 9:00 p. m. [2]. Al gato hay que registrarlo en la administración dentro de 15 días [3].',
+  note:['La pregunta dice "correr suelto", no "circulación": aun así encontró el artículo 18, porque busca por significado.','Trajo también el registro (punteado): no se preguntó, pero es útil.']},
+ {label:'Fiesta en el salón',q:'Quiero celebrar el cumpleaños de mi mamá el sábado en el salón social. ¿Qué necesito?',hits:['V29','V30'],near:['V25'],
+  ans:'Debes reservarlo en la administración con mínimo 8 días de anticipación; caben 60 personas [1]. Cuesta $150.000 más un depósito reembolsable de $300.000, y el sábado la fiesta termina a la 1:00 a. m. [2]. En los apartamentos, el silencio empieza a las 12:00 a. m. [3].',
+  note:['Cruzó dos artículos (reserva y costo) y trajo un tercero relacionado (silencio).','Si hoy es jueves y la fiesta es el sábado, ¡ya no alcanza a reservar! Una buena pregunta de seguimiento.']},
+ {label:'Paneles solares',q:'¿Puedo instalar paneles solares en mi balcón?',hits:[],near:['V28','V54'],no:true,
+  ans:'Eso no está en el reglamento. Lo más cercano son las reglas de fachada, que limitan lo que se instala afuera [1], y que lo no previsto lo resuelve el consejo de administración [2]. Consúltalo con ellos antes de instalar.',
+  note:['Ningún artículo responde la pregunta. Un buen asistente lo dice en lugar de inventar.','Si respondiera un "sí" o un "no" rotundo, lo estaría sacando de su memoria, no del reglamento.']}];
+let li=0,lstate=4,ltimer=null;
+function liveRender(){
+ const q=LQ[li];
+ $('#liveQ').innerHTML=LQ.map((x,i)=>`<button class="tab" role="tab" type="button" aria-selected="${i===li}" data-lq="${i}">${esc(x.label)}</button>`).join('');
+ const used=[...q.hits,...q.near];const num=id=>used.indexOf(id)+1;
+ $('#liveDocs').innerHTML=DOCS.map(d=>`<div class="doc"><h4>${esc(d.name)}<em>${d.frags.length} fragmentos</em></h4><div class="frags">${d.frags.map(f=>{let cls='frag';if(lstate>=2&&q.hits.includes(f.id))cls+=' hit';else if(lstate>=2&&q.near.includes(f.id))cls+=' near';const sup=(lstate>=2&&used.includes(f.id))?`<sup>${num(f.id)}</sup>`:'';return `<span class="${cls}" title="${esc(f.x)}"><b>${esc(f.t)}</b>${sup}</span>`}).join('')}</div></div>`).join('');
+ const ctx=used.length?used.map(id=>`[${num(id)}] ${FR[id].doc} · ${FR[id].t}: "${FR[id].x}"`).join('\n'):'(No se encontraron fragmentos relacionados)';
+ $('#livePrompt').textContent=`Responde usando SOLO estos fragmentos. Si la respuesta no está, di "No está en los documentos". Cita cada dato con su número.\n\n${ctx}\n\nPregunta: ${q.q}`;
+ $('#boxPrompt').classList.toggle('dim',lstate<3);
+ $('#boxAns').classList.toggle('dim',lstate<4);$('#boxAns').classList.toggle('no',!!q.no);
+ $('#liveAns').innerHTML=lstate<4?'…':esc(q.ans).replace(/\[(\d)\]/g,'<span class="cite">$1</span>');
+ $('#liveNote').innerHTML=lstate<4?'':q.note.map(n=>`<li>${esc(n)}</li>`).join('');
+ $$('#liveSteps span').forEach((s,i)=>{s.classList.toggle('on',i+1===lstate&&!!ltimer);s.classList.toggle('done',i+1<=lstate&&!ltimer)});
+ $$('#rag3 .st').forEach((s,i)=>s.classList.toggle('on',!!ltimer&&lstate===i+2));
+}
+$('#liveQ').addEventListener('click',e=>{const b=e.target.closest('[data-lq]');if(!b)return;clearInterval(ltimer);ltimer=null;li=+b.dataset.lq;lstate=4;liveRender()});
+$('#livePlay').addEventListener('click',()=>{clearInterval(ltimer);if(reduce){lstate=4;ltimer=null;liveRender();return}lstate=1;ltimer=setInterval(()=>{lstate++;if(lstate>=4){clearInterval(ltimer);ltimer=null;lstate=4}liveRender()},1500);liveRender()});
+liveRender();
+
+/* ===== Sin RAG / Con RAG ===== */
+const VS=[
+ {label:'Administración',q:'¿Cuánto pago de administración en el Conjunto Residencial Los Almendros?',
+  weak:'La cuota de administración depende del tamaño del apartamento y de lo que apruebe la asamblea. En Bogotá suele estar entre $200.000 y $500.000 al mes.',
+  wt:['Genérica: no conoce el conjunto','Da un rango que no sirve para pagar','Sin fuente para verificar'],
+  strong:'Depende del tipo de apartamento: tipo A $285.000, tipo B $368.000 y tipo C $472.000 al mes en 2026 [1]. Si pagas a más tardar el día 5, tienes un 5 % de descuento [2].',
+  st:['Datos propios del conjunto','Cada dato con su cita','Se verifica en segundos']},
+ {label:'Paneles solares',q:'¿Puedo instalar paneles solares en mi balcón en Los Almendros?',
+  weak:'Sí. En Colombia se promueven las energías renovables, así que puedes instalarlos; solo avísale a la administración.',
+  wt:['Viene de su memoria, no del reglamento','Afirma con seguridad algo que el documento no dice','Podría terminar en una multa por fachada'],
+  strong:'El reglamento no habla de paneles solares. Lo más cercano: no se permiten cambios de fachada y las antenas solo van en puntos definidos [1]; lo no previsto lo resuelve el consejo de administración [2].',
+  st:['Reconoce el límite','Remite a quien decide','Cero inventos']}];
+let vi=0;
+function vsRender(){const v=VS[vi];$('#vsTabs').innerHTML=VS.map((x,i)=>`<button class="tab" role="tab" type="button" aria-selected="${i===vi}" data-vs="${i}">${esc(x.label)}</button>`).join('');
+ $('#vsQ').textContent=v.q;$('#vsWeak').textContent=v.weak;$('#vsStrong').innerHTML=esc(v.strong).replace(/\[(\d)\]/g,'<span class="cite">$1</span>');
+ $('#vsWeakTags').innerHTML=v.wt.map(t=>`<span class="tag">✗ ${esc(t)}</span>`).join('');$('#vsStrongTags').innerHTML=v.st.map(t=>`<span class="tag g">✓ ${esc(t)}</span>`).join('')}
+$('#vsTabs').addEventListener('click',e=>{const b=e.target.closest('[data-vs]');if(!b)return;vi=+b.dataset.vs;vsRender()});vsRender();
+
+/* ===== ¿Qué automatizar? ===== */
+const AQ=[
+ {id:'rep',t:'¿La tarea se repite muchas veces (cada semana o más)?'},
+ {id:'rules',t:'¿Hay documentos o reglas claras que digan cómo se hace?'},
+ {id:'verif',t:'¿Es fácil comprobar si el resultado quedó bien?'},
+ {id:'grave',t:'¿Un error podría causar un daño serio o difícil de reversar (dinero, salud, reputación)?'},
+ {id:'datos',t:'¿Necesita datos personales o confidenciales?'}];
+const aans={rep:'si',rules:'si',verif:'si',grave:'no',datos:'no'};
+function aRender(){$('#aqs').innerHTML=AQ.map(q=>`<div class="q"><p>${esc(q.t)}</p><div class="yn" role="group" aria-label="${esc(q.t)}"><button type="button" data-aq="${q.id}" data-v="si" aria-pressed="${aans[q.id]==='si'}">Sí</button><button type="button" data-aq="${q.id}" data-v="no" aria-pressed="${aans[q.id]==='no'}">No</button></div></div>`).join('');aEval()}
+function aEval(){const why=[];let v='verde';
+ if(aans.grave==='si'&&aans.verif==='no'){v='rojo';why.push('Un error sería grave y además difícil de detectar: mejor que lo haga una persona, con la IA solo como apoyo.')}
+ if(aans.datos==='si'&&aans.grave==='si'){v='rojo';why.push('Datos sensibles y alto riesgo: no lo automatices con herramientas gratuitas ni sin aprobación de la organización.')}
+ if(v!=='rojo'){
+  if(aans.datos==='si'){v='amarillo';why.push('Usa solo herramientas aprobadas por la organización y nunca cuentas personales.')}
+  if(aans.grave==='si'){v='amarillo';why.push('Pon un punto de control humano obligatorio antes de la salida.')}
+  if(aans.verif==='no'){v='amarillo';why.push('Define cómo vas a comprobar el resultado (por ejemplo, revisar 3 datos contra la fuente).')}
+  if(aans.rules==='no'){v='amarillo';why.push('Primero escribe las reglas o el documento de referencia: la IA no puede seguir lo que no está escrito.')}
+  if(aans.rep==='no'){v='amarillo';why.push('Si pasa pocas veces, quizá no vale la pena montar un flujo: úsala como asistente puntual.')}}
+ if(v==='verde')why.push('Repetitiva, con reglas claras, fácil de verificar y de bajo riesgo. Aun así, alguien debe mantener las fuentes al día.');
+ const L=$('#alight');L.dataset.v=v;$('#alightTitle').textContent={verde:'Verde: automatiza',amarillo:'Amarillo: automatiza con cuidado',rojo:'Rojo: mejor no'}[v];
+ $('#alightText').textContent={verde:'Buena candidata para un flujo con IA.',amarillo:'Se puede automatizar en parte, resolviendo primero lo que se indica.',rojo:'No la automatices así. Deja la decisión en manos de una persona.'}[v];
+ $('#alightWhy').innerHTML=why.map(w=>`<li>${esc(w)}</li>`).join('')}
+$('#aqs').addEventListener('click',e=>{const b=e.target.closest('[data-aq]');if(!b)return;aans[b.dataset.aq]=b.dataset.v;aRender()});aRender();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Laboratorio RAG</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#ffffff">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+/* Concepto: imprenta CMYK y semitono. Tema claro a propósito: papel blanco, tinta azul-negra, acentos cian, magenta y amarillo */
+:root{
+  --bg:#f4f7fc;--paper:#ffffff;--ink:#1b1e3c;--muted:#4d5272;--line:#dfe3f0;
+  --cyan:#0098d4;--cyan-dark:#0072a8;--cyan-soft:#e3f5fd;
+  --magenta:#e0307a;--magenta-dark:#b81f5f;--magenta-soft:#fde8f1;
+  --yellow:#ffc531;--yellow-soft:#fff6d9;--green:#12a37a;--green-soft:#e2f6ef;
+  --pre:#f6f8fd;--shadow:0 10px 30px #1b1e3c12;--radius:18px;
+  --display:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --font:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Consolas,monospace;color-scheme:light}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background-color:var(--bg);background-image:radial-gradient(#d3dbef 1.1px,transparent 1.3px);background-size:20px 20px;color:var(--ink);font:17px/1.6 var(--font)}
+button,input,textarea,select{font:inherit;color:inherit}button{cursor:pointer}a{color:var(--cyan-dark)}
+:focus-visible{outline:3px solid var(--magenta);outline-offset:2px}
+h1,h2,h3,.brand strong{font-family:var(--display)}
+.shell{max-width:1380px;margin:auto;display:grid;grid-template-columns:272px minmax(0,1fr);min-height:100vh}
+.sidebar{background:var(--paper);border-right:1px solid var(--line);color:var(--ink);padding:28px 18px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:20px;overflow-y:auto}
+.brand{display:flex;align-items:center;gap:12px;padding:2px 8px}
+.brandmark{height:46px;width:46px;border-radius:14px;display:grid;place-items:center;font:800 22px var(--display);color:var(--ink);position:relative;background:var(--yellow)}
+.brandmark:before,.brandmark:after{content:'';position:absolute;width:15px;height:15px;border-radius:50%;mix-blend-mode:multiply}
+.brandmark:before{background:var(--cyan);right:-5px;top:-5px}.brandmark:after{background:var(--magenta);right:4px;top:-8px}
+.brand strong{display:block;font-size:19px;letter-spacing:-.2px}.brand small{color:var(--muted);font-size:12px}
+.side-title{color:var(--magenta-dark);padding-left:12px;margin-bottom:10px}
+.nav{display:grid;gap:4px}
+.nav button{border:0;text-align:left;color:var(--ink);background:transparent;border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:11px;font-weight:700;font-size:14px}
+.nav button:hover{background:var(--bg)}
+.nav .num{display:grid;place-items:center;width:29px;height:29px;border-radius:9px;flex-shrink:0;font-weight:800;border:2px solid var(--c,var(--cyan));color:var(--cd,var(--cyan-dark));background:var(--paper)}
+.nav button:nth-child(3n+2){--c:var(--magenta);--cd:var(--magenta-dark)}.nav button:nth-child(3n+3){--c:var(--yellow);--cd:#8a6200}
+.nav button.active{background:var(--ink);color:#fff}.nav button.active .num{background:var(--c,var(--cyan));border-color:var(--c,var(--cyan));color:var(--ink)}
+.side-link{display:flex;align-items:center;justify-content:space-between;gap:8px;text-decoration:none;font-weight:800;color:var(--ink);background:var(--cyan-soft);border:2px solid var(--cyan);border-radius:12px;padding:11px 14px}
+.side-link:hover{background:var(--cyan);color:#fff}
+.sidetip{margin-top:auto;background:var(--yellow-soft);border:1px solid #f3dc94;padding:14px;border-radius:14px;font-size:13px;color:var(--muted)}.sidetip b{display:block;color:var(--ink);margin-bottom:4px}
+.main{padding:30px 44px 80px;min-width:0}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.eyebrow{font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:1.4px;color:var(--magenta-dark)}
+.status{border:1px solid var(--line);padding:7px 12px;background:var(--paper);border-radius:100px;color:var(--muted);font-size:13px;font-weight:700}
+.hero{background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow);color:var(--ink);padding:34px 38px;border-radius:26px;position:relative;overflow:hidden;margin-bottom:22px;display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:28px;align-items:center}
+.hero .kicker{display:flex;gap:8px;flex-wrap:wrap}
+.hero .kicker span{font-size:12.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:30px}
+.hero .kicker span:nth-child(1){background:var(--cyan-soft);color:var(--cyan-dark)}.hero .kicker span:nth-child(2){background:var(--magenta-soft);color:var(--magenta-dark)}.hero .kicker span:nth-child(3){background:var(--yellow-soft);color:#7a5600}.hero .kicker span:nth-child(4){background:var(--green-soft);color:#0b6e52}
+.hero h1{font-size:clamp(28px,3.1vw,42px);letter-spacing:-1px;line-height:1.1;margin:14px 0 12px;text-wrap:balance;font-weight:800}
+.hl{background:linear-gradient(transparent 58%,var(--yellow) 58%,var(--yellow) 92%,transparent 92%);padding:0 2px}
+.hero p{color:var(--muted);max-width:690px;margin:0}
+.hero-art{position:relative;max-width:100%;aspect-ratio:1}
+.hero-art:before,.hero-art:after{content:'';position:absolute;border-radius:50%;mix-blend-mode:multiply;width:62%;aspect-ratio:1}
+.hero-art:before{background:var(--cyan);left:-6%;top:-4%}.hero-art:after{background:var(--magenta);right:-6%;top:6%}
+.hero-art .dot{position:absolute;border-radius:50%;background:var(--yellow);mix-blend-mode:multiply;width:62%;aspect-ratio:1;left:18%;bottom:-6%}
+.hero-art canvas{position:absolute;inset:20%;width:60%;height:60%;display:block;image-rendering:pixelated;border-radius:14px;border:4px solid #fff;box-shadow:0 8px 24px #1b1e3c33;z-index:1}
+.page{display:none;animation:rise .18s ease}.page.active{display:block}
+@keyframes rise{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.page{animation:none}html{scroll-behavior:auto}}
+h2{font-size:28px;line-height:1.2;margin:6px 0 10px;letter-spacing:-.6px;text-wrap:balance;font-weight:800}h3{font-size:18px;margin:0 0 8px;font-weight:700}
+.lead{max-width:800px;color:var(--muted);margin-top:0}.section-heading{margin:22px 0 18px}
+.theory-link{display:inline-flex;align-items:center;gap:6px;margin-top:4px;font-size:14px;font-weight:800;color:var(--magenta-dark);text-decoration:none;border-bottom:2px solid var(--magenta-soft)}
+.theory-link:hover{border-color:var(--magenta)}
+.panel,.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.panel{padding:24px;margin:17px 0}.card{padding:20px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid.auto{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.learn{border-top:6px solid var(--cyan);padding:20px}.learn b{color:var(--cyan-dark);font-family:var(--display);font-size:18px}.learn p{margin:8px 0 0}
+.learn:nth-child(2){border-top-color:var(--magenta)}.learn:nth-child(2) b{color:var(--magenta-dark)}
+.learn:nth-child(3){border-top-color:var(--yellow)}.learn:nth-child(3) b{color:#7a5600}
+.chip{display:inline-flex;align-items:center;background:var(--cyan-soft);color:var(--cyan-dark);padding:4px 10px;border-radius:30px;font-size:12.5px;font-weight:800}
+.chip.warm{background:var(--yellow-soft);color:#6e4d00}
+.subtle{color:var(--muted);font-size:15px}
+.meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.button{display:inline-flex;justify-content:center;align-items:center;gap:7px;border:2px solid var(--line);background:var(--paper);border-radius:12px;padding:10px 16px;color:var(--ink);font-weight:800;font-size:15px;text-decoration:none;transition:.15s}
+.button:hover{border-color:var(--cyan);background:var(--cyan-soft)}
+.button.primary{background:var(--cyan-dark);color:#fff;border-color:var(--cyan-dark)}.button.primary:hover{background:var(--ink);border-color:var(--ink)}
+.button.small{padding:7px 11px;font-size:13px}.button:disabled{opacity:.45;cursor:not-allowed}
+.platform{display:flex;gap:12px;flex-direction:column;justify-content:space-between;border-top:6px solid var(--cyan)}
+.platform:nth-child(3n+2){border-top-color:var(--magenta)}.platform:nth-child(3n+3){border-top-color:var(--yellow)}
+.platform h3{margin:10px 0 2px;font-size:19px}.platform .use{font-size:15px;color:var(--muted);margin:0}
+.limit{font-size:14px;background:var(--bg);color:var(--ink);border-radius:10px;padding:7px 10px;font-weight:700}
+.case-card{display:flex;flex-direction:column;gap:10px;border-top:6px solid var(--cyan)}.case-card:nth-child(3n+2){border-top-color:var(--magenta)}.case-card:nth-child(3n+3){border-top-color:var(--yellow)}
+.case-card h3{font-size:18px}.case-card .summary{flex:1;color:var(--muted);font-size:15px}
+.case-card.selected{outline:3px solid var(--cyan-dark);background:var(--cyan-soft)}
+.case-lock{background:var(--cyan-soft);border:2px solid var(--cyan);padding:14px 17px;border-radius:14px;margin:17px 0;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.case-lock strong{color:var(--ink)}.case-lock small{display:block;color:var(--muted)}
+.table-wrap{overflow-x:auto}
+.dataset{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+.dataset td,.dataset th{padding:10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+.dataset th{background:var(--ink);color:#fff}.dataset td:first-child{font-weight:700;width:34%}
+.quote{padding:12px 15px;background:var(--yellow-soft);border-left:4px solid var(--yellow);border-radius:8px;margin:7px 0;font-size:15px}
+.question-list{padding-left:21px;margin:8px 0}.question-list li{margin:8px 0}
+.field{margin:17px 0}.field label{font-weight:700;display:block;margin-bottom:5px}
+.field .hint{font-size:14px;color:var(--muted);margin:0 0 8px}
+.field textarea,.field input,.field select{display:block;width:100%;padding:12px 13px;border:2px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);outline:none;resize:vertical}
+.field textarea:focus,.field input:focus,.field select:focus{border-color:var(--cyan);box-shadow:0 0 0 4px var(--cyan-soft)}
+.field textarea{min-height:96px}
+.tarea-letter{display:inline-grid;place-items:center;width:34px;height:34px;background:var(--cyan);color:#fff;border-radius:10px;margin-right:10px;font:800 18px var(--display)}
+#tareaForm .field:nth-of-type(2) .tarea-letter{background:var(--magenta)}#tareaForm .field:nth-of-type(3) .tarea-letter{background:var(--yellow);color:var(--ink)}#tareaForm .field:nth-of-type(4) .tarea-letter{background:var(--green)}#tareaForm .field:nth-of-type(5) .tarea-letter{background:var(--ink)}
+.helpers{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.helpers button{border:1.5px dashed #b9c2dc;background:var(--paper);border-radius:30px;padding:4px 11px;font-size:13px;color:var(--ink);font-weight:700}
+.helpers button:hover{border-style:solid;border-color:var(--magenta);background:var(--magenta-soft)}
+.divider{border:0;border-top:1px solid var(--line);margin:23px 0}
+.note{background:var(--yellow-soft);border:2px solid var(--yellow);padding:13px 16px;border-radius:14px;color:var(--ink);font-size:15px}
+.preview{white-space:pre-wrap;word-break:break-word;font-family:var(--mono);font-size:13.5px;line-height:1.7;background:var(--pre);border:1px solid var(--line);padding:21px;border-radius:14px;max-height:500px;overflow:auto}
+.assessment{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start;padding:18px 0;border-bottom:1px solid var(--line)}.assessment:last-child{border-bottom:0}
+.options{display:flex;flex-wrap:wrap;gap:7px}
+.choice{border:2px solid var(--line);padding:8px 12px;border-radius:10px;background:var(--paper);font-size:13px;font-weight:800}
+.choice[data-value="Cumple"][aria-pressed=true]{color:#fff;background:var(--green);border-color:var(--green)}
+.choice[data-value="Parcial"][aria-pressed=true]{color:var(--ink);background:var(--yellow);border-color:var(--yellow)}
+.choice[data-value="No cumple"][aria-pressed=true]{color:#fff;background:var(--magenta);border-color:var(--magenta)}
+.assessment textarea{min-height:76px}
+.step-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:26px;padding-top:20px;border-top:1px solid var(--line)}
+.progress-track{height:8px;border-radius:10px;background:var(--line);overflow:hidden}.progress-track span{height:100%;display:block;background:linear-gradient(90deg,var(--cyan),var(--magenta),var(--yellow));width:0;transition:width .2s}
+.mobile-nav{display:none}
+footer{font-size:13px;color:var(--muted);padding-top:28px}
+.toast{position:fixed;right:calc(22px + env(safe-area-inset-right,0px));bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:10;color:#fff;background:var(--ink);padding:12px 20px;border-radius:12px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.2s}.toast.show{opacity:1}
+.print-only,.print-page{display:none}
+.diffusion{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:22px;align-items:center}
+.diffusion canvas{width:100%;max-width:100%;aspect-ratio:8/5;border-radius:14px;border:4px solid var(--paper);box-shadow:0 0 0 2px var(--cyan);image-rendering:pixelated;display:block;background:#000}
+.diffusion input[type=range]{width:100%;accent-color:var(--magenta)}
+.analogies{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:6px}
+.analogy{border:1px solid var(--line);border-left:5px solid var(--cyan);border-radius:12px;padding:14px;background:var(--paper)}
+.analogy:nth-child(2){border-left-color:var(--magenta)}.analogy:nth-child(3){border-left-color:var(--yellow)}.analogy:nth-child(4){border-left-color:var(--green)}
+.analogy b{display:block;font-size:15px}.analogy span{font-size:14px;color:var(--muted)}
+.limits{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.limits .chip{background:var(--magenta-soft);color:var(--magenta-dark)}
+.dropzone{border:2.5px dashed #b9c2dc;border-radius:16px;padding:20px;text-align:center;color:var(--muted);background:var(--paper)}
+.dropzone.drag{border-color:var(--magenta);background:var(--magenta-soft)}
+.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;margin-top:14px}
+.shot{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg)}
+.shot img{display:block;width:100%;max-height:420px;object-fit:contain;background:var(--pre)}
+.shot figcaption{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 12px;font-size:13px;font-weight:800;color:var(--ink)}
+.counter{font-size:13px;color:var(--muted);margin-top:6px}.counter.over{color:var(--magenta-dark);font-weight:800}
+.confirm{border:2px solid var(--magenta);background:var(--magenta-soft);color:var(--ink);border-radius:14px;padding:14px 16px;margin:16px 0}
+@media(max-width:1050px){.main{padding:25px}.shell{grid-template-columns:220px 1fr}.grid.three{grid-template-columns:repeat(2,minmax(0,1fr))}.assessment{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.hero-art{display:none}}
+@media(max-width:700px){
+  .shell{display:block}.sidebar{display:none}
+  .mobile-nav{display:flex;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line);padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));gap:6px;overflow-x:auto}
+  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+  .mobile-nav button,.mobile-nav a{border:2px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;padding:7px 11px;white-space:nowrap;font-size:13px;font-weight:700;text-decoration:none}
+  .mobile-nav button.active{background:var(--ink);border-color:var(--ink);color:#fff}
+  .mobile-nav a{background:var(--cyan-soft);border-color:var(--cyan)}
+  .main{padding-block:19px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .hero{padding:24px}.grid,.grid.three{grid-template-columns:1fr}.panel{padding:18px}.topbar{margin-bottom:14px}
+  .case-lock{align-items:flex-start;flex-direction:column}.diffusion{grid-template-columns:1fr}
+}
+@page{size:A4;margin:14mm 14mm 16mm}
+@media print{
+  html,body{background:#fff!important;background-image:none!important}
+  body{color:#1b1e3c;font:10.5pt/1.5 "Atkinson Hyperlegible",Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .shell,.mobile-nav,.toast{display:none!important}.print-only{display:block!important}
+  .rp{max-width:none}
+  .rp-head{border-radius:4mm;overflow:hidden;border:1px solid #dfe3f0;margin-bottom:6mm}
+  .rp-band{display:flex;height:3mm}.rp-band i{flex:1}.rp-band i:nth-child(1){background:#0098d4}.rp-band i:nth-child(2){background:#e0307a}.rp-band i:nth-child(3){background:#ffc531}
+  .rp-headin{padding:6mm 7mm 5mm}
+  .rp-kicker{font-size:8.5pt;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#b81f5f}
+  .rp h1{font:800 20pt/1.15 "Bricolage Grotesque",Arial,sans-serif;margin:1.5mm 0 3mm;color:#1b1e3c}
+  .rp-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm;font-size:9.5pt}
+  .rp-meta div{background:#f4f7fc;border-radius:2.5mm;padding:2.5mm 3mm}.rp-meta b{display:block;font-size:7.5pt;text-transform:uppercase;letter-spacing:.8px;color:#4d5272}
+  .rp-stats{display:flex;gap:2.5mm;flex-wrap:wrap;margin-top:3.5mm}
+  .rp-stat{border:1px solid #dfe3f0;border-radius:20mm;padding:1mm 3.5mm;font-size:8.5pt;font-weight:700}
+  .rp-sec{margin:0 0 6mm}
+  .rp h2{display:flex;align-items:center;gap:3mm;font:800 13.5pt "Bricolage Grotesque",Arial,sans-serif;margin:0 0 3mm;padding-bottom:1.5mm;border-bottom:1.5px solid #dfe3f0;break-after:avoid;color:#1b1e3c}
+  .rp h2 .n{display:inline-grid;place-items:center;width:7mm;height:7mm;border-radius:2mm;background:#0098d4;color:#fff;font-size:10.5pt}
+  .rp-sec:nth-of-type(3n+2) h2 .n{background:#e0307a}.rp-sec:nth-of-type(3n+3) h2 .n{background:#ffc531;color:#1b1e3c}
+  .rp-box{border:1px solid #dfe3f0;border-radius:2.5mm;padding:3mm 4mm;margin:0 0 2.5mm;break-inside:avoid}
+  .rp-label{font-size:7.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#4d5272;margin-bottom:1mm}
+  .rp-text{white-space:pre-wrap;overflow-wrap:anywhere}
+  .rp-empty{color:#8a8fa8;font-style:italic}
+  .rp-quote{background:#fff6d9;border-left:1.2mm solid #ffc531;border-radius:1.5mm;padding:2.5mm 3.5mm;margin:0 0 2.5mm;font-weight:700;break-inside:avoid}
+  .rp-q{border:1px solid #dfe3f0;border-left:1.6mm solid #0098d4;border-radius:2.5mm;padding:3mm 4mm;margin:0 0 3mm;break-inside:avoid}
+  .rp-q.cruzada{border-left-color:#e0307a}.rp-q.ambigua{border-left-color:#ffc531}.rp-q.trampa{border-left-color:#1b1e3c}
+  .rp-qhead{display:flex;justify-content:space-between;align-items:center;gap:3mm;margin-bottom:1.5mm}
+  .rp-qhead span{font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#4d5272}
+  .rp-qtext{font-weight:700;margin-bottom:2mm}
+  .rp-exp{margin-top:2mm;font-size:9pt;color:#4d5272;background:#f4f7fc;border-radius:1.5mm;padding:2mm 3mm}
+  .pill{display:inline-block;border-radius:20mm;padding:.6mm 3mm;font-size:8pt;font-weight:700;white-space:nowrap;background:#eef0f6;color:#4d5272}
+  .pill.ok{background:#12a37a;color:#fff}.pill.mid{background:#ffc531;color:#1b1e3c}.pill.bad{background:#e0307a;color:#fff}
+  .rp table{width:100%;border-collapse:collapse;font-size:9.5pt;break-inside:auto}
+  .rp th{background:#1b1e3c;color:#fff;text-align:left;padding:2mm 2.5mm;font-size:8.5pt}
+  .rp td{border-bottom:1px solid #dfe3f0;padding:2mm 2.5mm;vertical-align:top}
+  .rp tr{break-inside:avoid}
+  .rp .star td:first-child{font-weight:800}
+  .rp-tarea td:first-child{width:9mm}
+  .rp-letter{display:inline-grid;place-items:center;width:6.5mm;height:6.5mm;border-radius:1.5mm;background:#0098d4;color:#fff;font-weight:800}
+  .rp-tarea tr:nth-child(2) .rp-letter{background:#e0307a}.rp-tarea tr:nth-child(3) .rp-letter{background:#ffc531;color:#1b1e3c}.rp-tarea tr:nth-child(4) .rp-letter{background:#12a37a}.rp-tarea tr:nth-child(5) .rp-letter{background:#1b1e3c}
+  .rp-checks{list-style:none;padding:0;margin:0}.rp-checks li{display:flex;gap:2.5mm;align-items:flex-start;margin:0 0 1.5mm}
+  .rp-checks .ck{flex:none;display:inline-grid;place-items:center;width:4.5mm;height:4.5mm;border-radius:1mm;border:1.2px solid #b9c2dc;font-size:8pt;font-weight:800}
+  .rp-checks .ck.on{background:#12a37a;border-color:#12a37a;color:#fff}
+  .rp-img{border:1px solid #dfe3f0;border-radius:2.5mm;padding:2mm;margin:0 0 3mm;break-inside:avoid;text-align:center}
+  .rp-img img{max-width:100%;max-height:120mm;display:inline-block}
+  .rp-two{display:grid;grid-template-columns:1fr 1fr;gap:3mm}
+  .rp-foot{margin-top:6mm;padding-top:2mm;border-top:1px solid #dfe3f0;font-size:8pt;color:#4d5272}
+}
+/* Piezas propias del laboratorio RAG */
+.hero-doc{position:absolute;inset:18% 22%;background:#fff;border-radius:12px;box-shadow:0 8px 24px #1b1e3c33;z-index:1;padding:14% 12%;display:flex;flex-direction:column;gap:9%}
+.hero-doc i{display:block;height:7%;min-height:6px;border-radius:4px;background:#dfe3f0}
+.hero-doc i.hit{background:var(--yellow)}.hero-doc i.short{width:60%}
+.hero-doc .cite{position:absolute;right:-12px;bottom:-12px;background:var(--cyan-dark);color:#fff;font:800 14px var(--display);padding:5px 9px;border-radius:10px}
+.howto li{font-size:16.5px}
+.cite-demo{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--cyan-soft);color:var(--cyan-dark);font-size:12px;font-weight:800;vertical-align:middle}
+.copyblock{margin:14px 0}.copy-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+.copytext{font-family:var(--font);font-size:16px;white-space:pre-wrap;max-height:300px}
+.srcgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin:17px 0}
+.srccard{display:flex;flex-direction:column;gap:10px;border-top:6px solid var(--cyan);min-width:0}
+.srccard:nth-child(2){border-top-color:var(--magenta)}.srccard:nth-child(3){border-top-color:var(--yellow)}
+.srccard h3{font-size:17px;margin:0}
+.srctext{font-family:var(--font);font-size:14px;line-height:1.55;max-height:220px;padding:14px}
+.qcard{background:var(--paper);border:1px solid var(--line);border-left:7px solid var(--cyan);border-radius:16px;padding:18px 20px;margin:14px 0;box-shadow:var(--shadow)}
+.qcard.cruzada{border-left-color:var(--magenta)}.qcard.ambigua{border-left-color:var(--yellow)}.qcard.trampa{border-left-color:var(--ink)}
+.qnum{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--ink);color:#fff;font:800 15px var(--display)}
+.qtype{font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:1px;padding:4px 10px;border-radius:30px;background:var(--cyan-soft);color:var(--cyan-dark)}
+.qcard.cruzada .qtype{background:var(--magenta-soft);color:var(--magenta-dark)}.qcard.ambigua .qtype{background:var(--yellow-soft);color:#6e4d00}.qcard.trampa .qtype{background:var(--ink);color:#fff}
+.qtext{font:700 19px/1.4 var(--display);margin:12px 0 4px}
+details.expected{margin-top:12px;border-top:1px dashed var(--line);padding-top:10px}
+details.expected summary{cursor:pointer;font-weight:800;color:var(--cyan-dark)}
+details.expected p{background:var(--green-soft);border-radius:10px;padding:10px 12px;margin:8px 0 0}
+.assessment.star{background:var(--yellow-soft);border-radius:14px;padding:18px 14px;border-bottom:0;margin:6px 0}
+.early{background:var(--magenta-soft);border:2px dashed var(--magenta);border-radius:14px;padding:14px 16px;margin:18px 0;font-size:15.5px}
+.early b{color:var(--magenta-dark);margin-right:4px}
+.checklist{display:grid;gap:2px}
+.checklist label{display:flex;gap:10px;align-items:flex-start;padding:8px 6px;border-radius:10px;cursor:pointer;font-weight:700}
+.checklist label:hover{background:var(--bg)}
+.checklist input{width:22px;height:22px;accent-color:var(--green);flex-shrink:0;margin-top:2px}
+.flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin:18px 0}
+.stage{position:relative;background:var(--paper);border:1px solid var(--line);border-top:6px solid var(--cyan);border-radius:16px;padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px;min-width:0}
+.stage:nth-child(2){border-top-color:var(--magenta)}.stage:nth-child(3){border-top-color:var(--yellow)}.stage:nth-child(4){border-top-color:var(--green);background:var(--green-soft)}.stage:nth-child(5){border-top-color:var(--ink)}
+.stage:not(:last-child)::after{content:'→';position:absolute;right:-14px;top:42%;font:800 20px var(--display);color:var(--muted);z-index:1}
+.stage h3{margin:0;font-size:17px}.stage .subtle{margin:0;font-size:14px}
+.snum{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--ink);color:#fff;font-weight:800;font-size:13px}
+.who{font-size:13.5px;border-radius:9px;padding:7px 9px}
+.who.ia{background:var(--cyan-soft)}.who.person{background:var(--yellow-soft)}
+.footlinks{gap:16px;margin-bottom:8px}.footlinks a{font-weight:800}
+@media(max-width:1050px){.srcgrid{grid-template-columns:1fr}.flow{grid-template-columns:1fr 1fr}.stage::after{display:none}}
+@media(max-width:700px){.flow{grid-template-columns:1fr}.qtext{font-size:17px}}
+.casecard.chosen{outline:3px solid var(--cyan-dark);background:var(--cyan-soft)}.chip.demo{background:var(--magenta-soft);color:var(--magenta-dark)}
+</style>
+</head>
+<body>
+<div class="mobile-nav" id="mobileNav"></div>
+<div class="shell">
+<aside class="sidebar">
+  <div class="brand"><div class="brandmark">R</div><div><strong>Laboratorio RAG</strong><small>De tus documentos a un flujo</small></div></div>
+  <div><div class="eyebrow side-title">Paso a paso, todos juntos</div><nav class="nav" id="sideNav"></nav></div>
+  <a class="side-link xlink" data-target="teoria" href="teoria-rag.html"><span>Teoría de la clase</span><span aria-hidden="true">↗</span></a>
+  <div class="sidetip"><b>Tu trabajo se guarda en este navegador</b>Nada se envía a un servidor. Al terminar, copia o exporta tu resumen.</div>
+</aside>
+<main class="main">
+  <div class="topbar"><span class="eyebrow">Flujos de trabajo y automatización</span><span class="meta"><a class="button small xlink" data-target="teoria" href="teoria-rag.html">Ver la teoría ↗</a><span class="status" id="headerStatus">Paso 0 de 7</span></span></div>
+  <div class="hero">
+    <div>
+      <div class="kicker"><span>Fuentes</span><span>Preguntar</span><span>Verificar</span><span>Encadenar</span></div>
+      <h1>Tus documentos, un asistente que <span class="hl">responde citando</span> y un flujo que <span class="hl">tú revisas</span>.</h1>
+      <p>Avanzamos todos juntos, paso a paso. Primero en Gemini Notebook (antes NotebookLM) y después en Gemini. Si te pierdes, levanta la mano o pregúntale al compañero de al lado.</p>
+    </div>
+    <div class="hero-art" aria-hidden="true"><span class="dot"></span>
+      <div class="hero-doc"><i></i><i></i><i class="hit"></i><i></i><i class="short"></i><span class="cite">[1]</span></div>
+    </div>
+  </div>
+
+  <div id="homeIntro" class="panel">
+    <div class="eyebrow">Antes de comenzar</div>
+    <h2>Resultados de aprendizaje</h2>
+    <div class="grid three">
+      <div class="card learn"><b>Comprender</b><p>Explicar con tus palabras qué es RAG: una IA que primero busca en tus documentos y luego responde citando.</p></div>
+      <div class="card learn"><b>Verificar</b><p>Poner a prueba un asistente con preguntas fáciles, cruzadas, ambiguas y trampa, revisando cada cita.</p></div>
+      <div class="card learn"><b>Encadenar</b><p>Convertir lo que produce el asistente en un producto con Gemini Canvas, con revisión humana antes de publicar.</p></div>
+    </div>
+    <p class="subtle">Tres casos ficticios para elegir, cada uno en un PDF largo con "letra pequeña": el reglamento de un conjunto residencial, las condiciones de un plan complementario de salud y el plan de negocio de un emprendimiento. El profesor hace la demo con el reglamento del conjunto.</p>
+  </div>
+
+  <section class="page active" data-step="0">
+    <div class="section-heading"><div class="eyebrow">Paso 0 · Preparación</div><h2>Abre las dos herramientas de hoy</h2><p class="lead">Usaremos dos herramientas gratuitas de Google con tu cuenta personal. Ábrelas en pestañas nuevas y deja esta guía abierta.</p><a class="theory-link xlink" data-target="teoria" data-hash="herramientas" href="teoria-rag.html#herramientas">¿Qué hace cada herramienta? Ver en la teoría ↗</a></div>
+    <div class="grid">
+      <div class="card platform"><div><div class="meta"><span class="chip">Primera parte</span><span class="chip warm">Responde con tus documentos</span></div><h3>Gemini Notebook</h3><p class="use">Antes se llamaba <b>NotebookLM</b>. Si ves ese nombre, es la misma herramienta. Aquí cargamos los documentos y le hacemos preguntas.</p></div><div class="limit">Gratis: 50 fuentes por cuaderno · 3 resúmenes de audio al día</div><a class="button primary" href="https://notebooklm.google.com" target="_blank" rel="noopener noreferrer">Abrir Gemini Notebook ↗</a></div>
+      <div class="card platform"><div><div class="meta"><span class="chip">Segunda parte</span><span class="chip warm">Crea y transforma</span></div><h3>Gemini</h3><p class="use">El asistente de Google. Ahí encontraremos el mismo cuaderno y usaremos <b>Canvas</b> para crear una página web.</p></div><div class="limit">Gratis: Canvas y cuadernos disponibles en el plan gratuito</div><a class="button primary" href="https://gemini.google.com/app?hl=es" target="_blank" rel="noopener noreferrer">Abrir Gemini ↗</a></div>
+    </div>
+    <div class="panel">
+      <h3>Antes de avanzar, revisa</h3>
+      <div class="checklist" id="check0"></div>
+    </div>
+    <div class="note">Usa tu cuenta <b>personal</b> de Google: las cuentas del trabajo a veces tienen estas funciones bloqueadas. No subas documentos reales de tu trabajo ni datos personales. Hoy solo usamos los documentos ficticios de esta guía.</div>
+  </section>
+
+  <section class="page" data-step="1">
+    <div class="section-heading"><div class="eyebrow">Paso 1 · El problema</div><h2>Pregúntale a Gemini algo que no puede saber</h2><p class="lead">Antes de usar documentos, veamos qué hace la IA cuando responde solo con su memoria.</p><a class="theory-link xlink" data-target="teoria" data-hash="problema" href="teoria-rag.html#problema">Por qué pasa esto ↗</a></div>
+    <div class="panel">
+      <h3>Cómo hacerlo</h3>
+      <ol class="question-list howto">
+        <li>Ve a la pestaña de <b>Gemini</b> y abre un chat nuevo (botón <b>Nuevo chat</b>, arriba a la izquierda).</li>
+        <li>Copia la pregunta de abajo, pégala en la barra de mensajes y envíala.</li>
+        <li>Lee la respuesta y anota lo que dijo.</li>
+      </ol>
+      <div id="cb_hook"></div>
+      <div class="field"><label for="f_hookAnswer">¿Qué respondió Gemini?</label><textarea id="f_hookAnswer" data-field="hookAnswer" placeholder="Ej.: Dijo que en Colombia son 15 días hábiles, pero no habló de la Organización Altamira..."></textarea></div>
+      <div class="field"><label for="f_hookWhy">¿Por qué esa respuesta no nos sirve?</label><p class="hint">Pista: ¿conoce Gemini las reglas internas de esta organización? ¿De dónde sacó lo que dijo?</p><textarea id="f_hookWhy" data-field="hookWhy" placeholder="No sirve porque..."></textarea></div>
+    </div>
+    <div class="early"><b>¿Terminaste antes?</b> Pregúntale a Gemini: <i>“¿De dónde sacaste esa información? ¿Tienes el documento?”</i> Fíjate si reconoce que no la conoce o si sigue inventando.</div>
+  </section>
+
+  <section class="page" data-step="2">
+    <div class="section-heading"><div class="eyebrow">Paso 2 · Cargar las fuentes</div><h2>Crea el cuaderno y dale los documentos</h2><p class="lead">Ahora sí le damos a la IA “el libro” para su examen a libro abierto. Elige uno de los tres casos y descarga su PDF.</p><a class="theory-link xlink" data-target="teoria" data-hash="que-es-rag" href="teoria-rag.html#que-es-rag">Qué es RAG ↗</a></div>
+    <div class="panel">
+      <h3>Cómo hacerlo</h3>
+      <ol class="question-list howto">
+        <li>Abajo, elige tu caso con <b>Elegir este caso</b> (si no sabes cuál, usa el del profesor: el reglamento del conjunto) y toca <b>Descargar PDF</b>.</li>
+        <li>Ve a la pestaña de <b>Gemini Notebook</b> y toca <b>Crear cuaderno</b> (o <b>+ Nuevo</b>).</li>
+        <li>En la ventana para agregar fuentes, elige <b>Subir archivos</b> (o arrastra el PDF) y selecciona el PDF que descargaste. Suele quedar en la carpeta <b>Descargas</b>.</li>
+        <li>Espera unos segundos a que aparezca en la columna izquierda.</li>
+        <li>Cambia el nombre del cuaderno (arriba, donde dice <i>Untitled notebook</i> o <i>Cuaderno sin título</i>) por <b class="nbname">Reglamento Los Almendros</b>.</li>
+      </ol>
+      <p class="subtle">Al cambiar de caso, la página ajusta sola las preguntas de prueba, las instrucciones TAREA y los prompts de los pasos siguientes.</p>
+    </div>
+    <div class="srcgrid" id="sources"></div>
+    <div class="panel"><h3>Revisa que quedó bien cargado</h3><div class="checklist" id="check2"></div></div>
+    <div class="early"><b>¿Terminaste antes?</b> Haz clic sobre el nombre de una fuente en la columna izquierda: Gemini Notebook te muestra una guía con su resumen y temas clave. Compara ese resumen con el documento original.</div>
+  </section>
+
+  <section class="page" data-step="3">
+    <div class="section-heading"><div class="eyebrow">Paso 3 · Preguntar y verificar</div><h2>Pon a prueba al asistente con cinco preguntas</h2><p class="lead">Cada pregunta prueba algo distinto. Lo más importante hoy: <b>hacer clic en los números de cita</b> para comprobar de dónde sale cada respuesta.</p><a class="theory-link xlink" data-target="teoria" data-hash="limites" href="teoria-rag.html#limites">Qué puede fallar ↗</a></div>
+    <div class="panel">
+      <h3>Cómo hacerlo</h3>
+      <ol class="question-list howto">
+        <li>En el centro del cuaderno está el <b>chat</b>. Copia cada pregunta de abajo, pégala ahí y envíala.</li>
+        <li>En la respuesta aparecen números pequeños, como <span class="cite-demo">1</span>. <b>Pasa el mouse o toca el número</b>: verás el fragmento exacto del documento que usó.</li>
+        <li>Anota la respuesta y marca si cumple.</li>
+      </ol>
+    </div>
+    <div id="questions"></div>
+    <div class="panel"><h3>Matriz de validación del curso</h3><div class="subtle">Una calificación sin justificación no es una validación. Hoy el criterio estrella es la <b>Trazabilidad</b>.</div><div id="assessment"></div></div>
+    <div class="early"><b>¿Terminaste antes?</b> Inventa tu propia pregunta trampa (algo que suene al tema del documento pero que no esté escrito en él) y mira si el asistente cae.</div>
+  </section>
+
+  <section class="page" data-step="4">
+    <div class="section-heading"><div class="eyebrow">Paso 4 · Instrucciones con TAREA</div><h2>Dale al asistente sus reglas de trabajo</h2><p class="lead">Con el marco TAREA le decimos al cuaderno cómo debe comportarse <b>siempre</b>: qué rol tiene, cómo responde y qué hacer cuando algo no está en los documentos.</p><a class="theory-link xlink" data-target="teoria" data-hash="como-funciona" href="teoria-rag.html#como-funciona">Cómo usa el asistente tus instrucciones ↗</a></div>
+    <div class="panel">
+      <h3>Cómo hacerlo</h3>
+      <ol class="question-list howto">
+        <li>En el chat del cuaderno, busca el ícono de <b>ajustes</b> o la opción <b>Configurar chat</b> (arriba a la derecha del chat).</li>
+        <li>Elige <b>Personalizado</b> y pega el prompt consolidado de abajo. Guarda.</li>
+        <li>Plan B: si no encuentras la opción, pega el prompt como primer mensaje del chat.</li>
+        <li>Repite la <b>pregunta trampa</b> y compara con la respuesta del paso 3.</li>
+      </ol>
+      <p class="subtle">Ya está prellenado con una propuesta. Puedes cambiar cualquier componente.</p>
+    </div>
+    <div class="panel" id="tareaForm"></div>
+    <div class="panel">
+      <div class="meta" style="justify-content:space-between"><h3>Prompt consolidado</h3><button class="button primary" type="button" data-copy="tarea">Copiar prompt</button></div>
+      <div class="preview" id="tareaPreview"></div>
+      <hr class="divider">
+      <div id="cb_trap"></div>
+      <div class="field"><label for="f_trapAfter">¿Cambió la respuesta a la pregunta trampa?</label><textarea id="f_trapAfter" data-field="trapAfter" placeholder="Antes respondió... Ahora responde..."></textarea></div>
+    </div>
+    <div class="early"><b>¿Terminaste antes?</b> Cambia el <b>Rol</b> por “asistente que le explica a una persona de 75 años que nunca ha usado computador” y repite la pregunta 3. ¿Cómo cambia el lenguaje?</div>
+  </section>
+
+  <section class="page" data-step="5">
+    <div class="section-heading"><div class="eyebrow">Paso 5 · Studio</div><h2>Un documento, muchos formatos</h2><p class="lead">Gemini Notebook puede transformar las fuentes en otros productos. Vamos a crear uno y a preparar el material para el siguiente paso.</p><a class="theory-link xlink" data-target="teoria" data-hash="gemini-notebook" href="teoria-rag.html#gemini-notebook">Qué ofrece Studio ↗</a></div>
+    <div class="panel">
+      <h3>Cómo hacerlo</h3>
+      <ol class="question-list howto">
+        <li>A la derecha está el panel <b>Studio</b>. Elige <b>Mapa mental</b> (rápido) o <b>Informe</b>. Si quieres, prueba <b>Resumen de audio</b>, aunque tarda unos minutos y hay 3 al día.</li>
+        <li>Luego vuelve al chat, copia el pedido de abajo y envíalo.</li>
+        <li>Cuando responda, toca <b>Guardar en nota</b> (debajo de la respuesta) y copia el texto en el recuadro de abajo. Lo usaremos en Gemini.</li>
+      </ol>
+      <div class="field"><label for="f_studio">¿Qué producto generaste en Studio y qué te pareció?</label><textarea id="f_studio" data-field="studio" placeholder="Generé un mapa mental. Me sirvió para..."></textarea></div>
+      <div id="cb_faq"></div>
+      <div class="field"><label for="f_faq">Pega aquí las preguntas frecuentes que generó</label><textarea id="f_faq" data-field="faq" rows="8" placeholder="1. ¿Cuál es el horario? ..."></textarea></div>
+    </div>
+    <div class="early"><b>¿Terminaste antes?</b> En <b>Resumen de audio</b>, toca <b>Personalizar</b> y escribe: “Dirígete a una persona en su primer día, en español de Colombia, en menos de 5 minutos.” Escucha el inicio.</div>
+  </section>
+
+  <section class="page" data-step="6">
+    <div class="section-heading"><div class="eyebrow">Paso 6 · Ejercicio extra en Gemini</div><h2>Del asistente a un producto: una página con Canvas</h2><p class="lead">Lo que produjo el cuaderno se convierte en materia prima. Con Canvas, Gemini crea una página web interactiva de bienvenida. Después, una persona la revisa.</p><a class="theory-link xlink" data-target="teoria" data-hash="flujos" href="teoria-rag.html#flujos">Qué es encadenar herramientas ↗</a></div>
+    <div class="panel">
+      <h3>Cómo hacerlo</h3>
+      <ol class="question-list howto">
+        <li>Ve a la pestaña de <b>Gemini</b>. Abre el menú lateral (☰) y busca la sección <b>Notebooks</b>: ahí aparece <b class="nbname">Reglamento Los Almendros</b>. Ábrelo y empieza un chat dentro de él.</li>
+        <li>Plan B: si no aparece, abre un <b>chat nuevo</b> y pega primero las preguntas frecuentes (botón <b>Copiar mis preguntas frecuentes</b>).</li>
+        <li>Debajo de la barra de mensajes toca <b>Canvas</b> (a veces está dentro de <b>Herramientas</b>).</li>
+        <li>Copia el prompt de abajo, pégalo y envíalo. Cuando termine, toca <b>Vista previa</b>.</li>
+        <li>Pide la edición dirigida y luego haz la revisión humana.</li>
+      </ol>
+      <div class="meta"><button class="button" type="button" data-copy="faq">Copiar mis preguntas frecuentes</button></div>
+      <div class="field"><label for="f_canvasPrompt">Prompt TAREA para Canvas</label><p class="hint">Prellenado; puedes ajustarlo.</p><textarea id="f_canvasPrompt" data-field="canvasPrompt" rows="11"></textarea></div>
+      <div class="meta"><button class="button primary" type="button" data-copy="canvas">Copiar prompt para Canvas</button><button class="button" type="button" data-reset="canvasPrompt">Restaurar el prompt original</button></div>
+      <hr class="divider">
+      <div id="cb_edit"></div>
+    </div>
+    <div class="panel">
+      <h3>Revisión humana antes de publicar</h3>
+      <p class="subtle">La página puede verse muy bien y aun así tener un dato equivocado. Compara contra las fuentes:</p>
+      <div class="checklist" id="check6"></div>
+      <div class="dropzone" id="drop1" style="margin-top:14px"><b>Sube un pantallazo de tu página</b><br><span class="subtle">Arrastra, elige el archivo o pégalo con Ctrl+V</span><div class="meta" style="justify-content:center;margin-top:10px"><label class="button small" for="file1">Elegir archivo</label><input id="file1" type="file" accept="image/*" hidden></div></div>
+      <div class="shots" id="shots1"></div>
+      <div class="field"><label for="f_canvasNotes">¿Qué encontraste en la revisión?</label><textarea id="f_canvasNotes" data-field="canvasNotes" placeholder="La extensión estaba bien, pero inventó un enlace a..."></textarea></div>
+    </div>
+    <div class="early"><b>¿Terminaste antes?</b> Pídele a Canvas: “Agrega al final un quiz de 5 preguntas para que la persona nueva compruebe lo que aprendió.” O toca <b>Compartir</b> para obtener un enlace de tu página.</div>
+  </section>
+
+  <section class="page" data-step="7">
+    <div class="section-heading"><div class="eyebrow">Paso 7 · Del asistente al flujo</div><h2>Lo que hicimos hoy es un flujo de trabajo</h2><p class="lead">Cada etapa tiene una parte que hace la IA y otra que no se le debe delegar. Así se ve completo:</p><a class="theory-link xlink" data-target="teoria" data-hash="que-automatizar" href="teoria-rag.html#que-automatizar">Qué conviene automatizar ↗</a></div>
+    <div class="flow" id="flow"></div>
+    <div class="panel">
+      <h3>Reflexión</h3>
+      <div class="field"><label for="f_name">Tu nombre (opcional)</label><input id="f_name" data-field="name" placeholder="Para el resumen"></div>
+      <div class="field"><label for="f_r1">¿Qué parte de este flujo automatizarías en tu trabajo o en tu vida?</label><textarea id="f_r1" data-field="r1" placeholder="Automatizaría..."></textarea></div>
+      <div class="field"><label for="f_r2">¿En qué punto debe revisar una persona sí o sí? ¿Por qué?</label><textarea id="f_r2" data-field="r2" placeholder="Siempre debe revisar..."></textarea></div>
+      <div class="field"><label for="f_r3">¿Qué otros documentos tuyos funcionarían con un asistente así?</label><p class="hint">Recuerda: solo documentos que puedas compartir. Nada confidencial en cuentas personales.</p><textarea id="f_r3" data-field="r3" placeholder="Por ejemplo: el reglamento del conjunto, el manual de la lavadora, las reglas del club..."></textarea></div>
+    </div>
+    <div class="panel">
+      <h3>Resumen de tu recorrido</h3>
+      <div id="finalRecap"></div>
+      <hr class="divider">
+      <div class="meta">
+        <button class="button primary" type="button" id="copySummary">Copiar resumen completo</button>
+        <button class="button" type="button" id="exportPdf" hidden>Exportar a PDF</button>
+        <button class="button" type="button" id="exportJson" hidden>Guardar respaldo (.json)</button>
+        <label class="button" for="importJSON" id="importLabel" hidden>Restaurar respaldo</label><input id="importJSON" type="file" accept="application/json" hidden>
+        <button class="button" type="button" id="resetAll">Empezar de nuevo</button>
+      </div>
+      <div id="resetConfirm"></div>
+      <p class="subtle" id="exportHint">El resumen copiado se puede pegar en un correo, un documento o el chat del curso.</p>
+    </div>
+  </section>
+
+  <div class="step-footer"><button class="button" id="prevBtn" type="button">← Anterior</button><div style="min-width:110px;flex:1;max-width:350px"><div class="progress-track"><span id="progressBar"></span></div><div class="subtle" id="progressText" style="text-align:center;font-size:12px;margin-top:5px"></div></div><button class="button primary" id="nextBtn" type="button">Siguiente →</button></div>
+  <footer><div class="meta footlinks"><a href="../index.html">← Inicio del curso</a><a href="../contenido-visual/laboratorio-tarea-visual.html">← Contenido visual y audiovisual: laboratorio</a><a class="xlink" data-target="teoria" href="teoria-rag.html">Teoría de este tema ↗</a></div><p>Laboratorio RAG · Todos los casos son ficticios · Funciones gratuitas revisadas en octubre de 2026; los nombres de botones pueden cambiar.</p></footer>
+</main>
+</div>
+<div class="toast" id="toast" role="status"></div><div id="printRoot" class="print-only"></div>
+
+<script>
+const SOURCES=[{"file": "manual-de-bienvenida.txt", "title": "Manual de bienvenida", "text": "MANUAL DE BIENVENIDA · ORGANIZACIÓN ALTAMIRA (documento ficticio para fines educativos)\nVersión 3 · Actualizado en septiembre de 2026 · Responsable: Talento Humano\n\n1. Horario\nNuestro horario es de lunes a viernes, de 7:30 a. m. a 5:00 p. m., con una hora de almuerzo que puedes tomar entre las 12:00 m. y las 2:00 p. m.\n\n2. Trabajo en casa\nPuedes trabajar desde casa dos días a la semana. Los días se acuerdan con tu jefe inmediato y deben quedar registrados en el portal de autogestión. Durante el primer mes, todos los días son presenciales.\n\n3. Primera semana\nTendrás un compañero guía que te mostrará las instalaciones, te presentará al equipo y te ayudará a configurar tus herramientas. El miércoles de tu primera semana hay una inducción general de 9:00 a 11:00 a. m. en el Salón principal, piso 2.\n\n4. Trámites\nLas solicitudes de vacaciones, permisos y certificados laborales se hacen en el portal de autogestión. Los detalles están en la Política de vacaciones y permisos.\n\n5. Pausas activas y bienestar\nCada día, a las 10:00 a. m. y a las 3:00 p. m., hacemos una pausa activa de 5 minutos (campaña \"Muévete 5\"). El último viernes de cada mes celebramos los cumpleaños del mes.\n\n6. ¿A quién acudir?\nPara dudas sobre tu trabajo, tu primer contacto es tu jefe inmediato. Para dudas sobre contrato, nómina o beneficios, escribe a Talento Humano: talentohumano@altamira.example. Para fallas con el computador, el correo o las contraseñas, contacta a la mesa de ayuda (ver Preguntas frecuentes de sistemas).", "words": 256}, {"file": "politica-de-vacaciones-y-permisos.txt", "title": "Política de vacaciones y permisos", "text": "POLÍTICA DE VACACIONES Y PERMISOS · ORGANIZACIÓN ALTAMIRA (documento ficticio para fines educativos)\nVersión 2 · Vigente desde enero de 2026 · Responsable: Talento Humano\n\n1. Días de vacaciones\nCada persona tiene derecho a 15 días hábiles de vacaciones por cada año trabajado.\n\n2. Cómo solicitarlas\nSe solicitan en el portal de autogestión con al menos 15 días calendario de anticipación. El jefe inmediato las aprueba o rechaza en un máximo de 3 días hábiles. Si no responde en ese plazo, la solicitud pasa automáticamente a Talento Humano.\n\n3. Fraccionar y acumular\nLas vacaciones se pueden dividir en partes, pero una de ellas debe ser de al menos 6 días hábiles seguidos. Se pueden acumular como máximo dos periodos.\n\n4. Día de cumpleaños\nTienes un día libre remunerado por tu cumpleaños. Debes tomarlo dentro del mismo mes de tu cumpleaños y avisar a tu jefe con al menos 5 días hábiles de anticipación. No se puede acumular ni unir a las vacaciones.\n\n5. Permisos\n- Cita médica u odontológica: hasta 4 horas, con soporte de la cita.\n- Calamidad doméstica: hasta 3 días hábiles, con aviso a tu jefe el mismo día.\n- Diligencias personales: hasta 2 permisos de medio día por semestre, solicitados con 2 días hábiles de anticipación.\nTodos los permisos se registran en el portal de autogestión.\n\n6. Excepciones\nCualquier caso no previsto en esta política lo resuelve Talento Humano.", "words": 233}, {"file": "preguntas-frecuentes-de-sistemas.txt", "title": "Preguntas frecuentes de sistemas", "text": "PREGUNTAS FRECUENTES DE SISTEMAS · MESA DE AYUDA · ORGANIZACIÓN ALTAMIRA (documento ficticio para fines educativos)\nActualizado en octubre de 2026\n\n¿Cómo contacto a la mesa de ayuda?\nPor la extensión 4521, por el chat del portal de autogestión o al correo mesadeayuda@altamira.example. Atendemos de lunes a viernes, de 7:00 a. m. a 6:00 p. m. Respondemos en máximo 4 horas hábiles.\n\n¿Cada cuánto cambio mi contraseña?\nCada 90 días. El sistema te avisa 7 días antes. La contraseña debe tener al menos 12 caracteres.\n\nOlvidé mi contraseña, ¿qué hago?\nUsa la opción \"Olvidé mi contraseña\" en el portal de autogestión. Si no funciona, llama a la extensión 4521. Nunca compartas tu contraseña por correo ni por chat.\n\n¿Cómo me conecto cuando trabajo desde casa?\nDebes conectarte a la VPN institucional antes de abrir las aplicaciones internas. La guía de instalación está en el portal de autogestión, sección \"Trabajo en casa\".\n\n¿Puedo instalar programas en mi computador?\nNo. Solicita cualquier programa a la mesa de ayuda; lo revisan y lo instalan si está aprobado.\n\nRecibí un correo sospechoso, ¿qué hago?\nNo abras enlaces ni archivos adjuntos. Reenvíalo como adjunto a seguridad@altamira.example y elimínalo.\n\nMi computador se dañó, ¿qué hago?\nReporta el daño a la mesa de ayuda. Si la reparación toma más de un día, te prestan un equipo de reemplazo.", "words": 221}];
+const THEORY_URL='https://claude.ai/artifact/GAM2HzXpdt3kE3qnYWRf4M';
+const steps=['Preparación','El problema','Cargar fuentes','Preguntar y verificar','Instrucciones TAREA','Studio','Extra en Gemini','Del asistente al flujo'];
+const LAST=steps.length-1;
+let HOOK='¿Cuántos días de vacaciones tengo en la Organización Altamira y cómo las pido?';
+let QUESTIONS=[
+ {id:'q1',type:'Fácil',cls:'facil',text:'¿Cuántos días de vacaciones tengo al año y con cuánta anticipación debo pedirlas?',test:'Que encuentre un dato que está escrito tal cual.',expected:'15 días hábiles por año, solicitadas con al menos 15 días calendario de anticipación en el portal de autogestión. Fuente: Política de vacaciones y permisos (puntos 1 y 2).'},
+ {id:'q2',type:'Fácil',cls:'facil',text:'¿Cada cuánto debo cambiar mi contraseña y cuántos caracteres debe tener?',test:'Que use el documento correcto (sistemas, no Talento Humano).',expected:'Cada 90 días (el sistema avisa 7 días antes) y con mínimo 12 caracteres. Fuente: Preguntas frecuentes de sistemas.'},
+ {id:'q3',type:'Cruzada',cls:'cruzada',text:'Entré hace dos semanas. ¿Puedo trabajar desde casa este viernes y tomarme el lunes por mi cumpleaños, que es la otra semana?',test:'Que combine dos documentos distintos.',expected:'Trabajo en casa: no, el primer mes es presencial (Manual de bienvenida). Cumpleaños: sí, si es dentro del mismo mes y avisa a su jefe con al menos 5 días hábiles de anticipación (Política, punto 4). Si no alcanza a avisar con 5 días hábiles, no cumple.'},
+ {id:'q4',type:'Ambigua',cls:'ambigua',text:'¿A quién le pido permiso?',test:'Que pida aclaración o separe los casos en lugar de adivinar.',expected:'Depende: permisos y vacaciones se registran en el portal de autogestión y los aprueba el jefe inmediato; los casos no previstos, Talento Humano; los programas del computador, la mesa de ayuda. Un buen asistente pregunta qué tipo de permiso es.'},
+ {id:'q5',type:'Trampa',cls:'trampa',text:'¿Cuántos días de licencia de paternidad me dan?',test:'Que reconozca que no está en los documentos.',expected:'No está en las fuentes. Lo correcto es decirlo y remitir a Talento Humano (casos no previstos). Si da un número, lo sacó de su memoria o de la ley, no de los documentos: hay que señalarlo.'}];
+let TRAP=QUESTIONS[4].text;
+let FAQ_PROMPT='Escribe 10 preguntas frecuentes que tendría una persona en su primera semana en la Organización Altamira. Para cada una, da la respuesta en máximo 2 líneas y el nombre del documento del que sale. Usa solo la información de las fuentes.';
+const EDIT_PROMPT='Conserva todo igual. Solo agrega un buscador arriba de las preguntas para filtrarlas por palabra, y haz el título más grande.';
+let CANVAS_DEFAULT=`T — Tarea: Crea una página web de bienvenida para el personal nuevo de la Organización Altamira.
+
+A — Acción: Usa las preguntas frecuentes de este cuaderno (o las que pego abajo). Muéstralas como un acordeón: la pregunta se ve y la respuesta se despliega al tocarla. Arriba, un saludo de bienvenida. Abajo, un recuadro de contacto de la mesa de ayuda: extensión 4521, mesadeayuda@altamira.example, lunes a viernes de 7:00 a. m. a 6:00 p. m.
+
+R — Rol: Actúa como diseñador web especializado en comunicación interna.
+
+E — Ejemplo de salida: Una sola página, colores amables, letra grande y legible, botones grandes, que funcione bien en el celular.
+
+A — Aclaraciones: Usa solo la información de las fuentes. No inventes datos, nombres, cifras ni enlaces. Escribe en español sencillo.`;
+const tareaFields=[
+ ['task','T','Tarea principal','¿Qué debe lograr el asistente?','Responder las preguntas del personal nuevo sobre horarios, trabajo en casa, vacaciones, permisos y sistemas de la Organización Altamira.'],
+ ['action','A','Acción esperada','¿Qué debe hacer con cada pregunta?','Busca la respuesta solo en las fuentes de este cuaderno. Responde en máximo 5 líneas y cita la fuente de cada dato. Si la pregunta es ambigua, pregunta qué caso aplica antes de responder.'],
+ ['role','R','Rol del modelo','¿Qué papel cumple?','Actúa como asistente de la mesa de ayuda de la Organización Altamira: amable, claro y preciso.'],
+ ['example','E','Ejemplo de salida','¿Cómo se ven sus respuestas?','Primero una respuesta corta en lenguaje sencillo; si hay un trámite, los pasos numerados; al final, "Fuente: [nombre del documento]".'],
+ ['clarifications','A','Aclaraciones adicionales','¿Qué límites tiene?','Si la información no está en las fuentes, responde: "No está en los documentos que tengo. Te recomiendo escribir a Talento Humano: talentohumano@altamira.example". No uses tu memoria ni internet. No inventes plazos, cifras ni nombres.']];
+const criteria=[
+ ['exactitud','Exactitud','¿Los datos (días, plazos, extensiones) coinciden con los documentos?'],
+ ['pertinencia','Pertinencia','¿Respondió lo que se preguntó, en lenguaje útil para una persona nueva?'],
+ ['completitud','Completitud','¿Incluyó todo lo necesario, por ejemplo las dos partes de la pregunta cruzada?'],
+ ['trazabilidad','Trazabilidad ★','¿Cada cita lleva al fragmento que de verdad respalda la respuesta? ¿Reconoce cuando algo no está?'],
+ ['coherencia','Coherencia','¿Se podría usar tal cual en una mesa de ayuda real, sin confundir a nadie?']];
+const checks={
+ check0:[['c0a','Tengo abiertas Gemini Notebook y Gemini con mi cuenta personal de Google'],['c0b','Puedo ver el botón para crear un cuaderno nuevo']],
+ check2:[['c2a','Documento 1: Manual de bienvenida'],['c2b','Documento 2: Política de vacaciones y permisos'],['c2c','Documento 3: Preguntas frecuentes de sistemas'],['c2d','El cuaderno se llama "Mesa de ayuda Altamira"']],
+ check6:[['c6a','La extensión de la mesa de ayuda es 4521'],['c6b','La contraseña se cambia cada 90 días'],['c6c','Las vacaciones son 15 días hábiles por año'],['c6d','No hay enlaces, nombres ni datos inventados'],['c6e','Se lee bien en el celular y la letra es grande']]};
+const CASES={"almendros": {"n": 1, "title": "Reglamento del Conjunto Residencial Los Almendros", "short": "el reglamento del conjunto", "nb": "Reglamento Los Almendros", "pdf": "reglamento-conjunto-los-almendros.pdf", "pages": 9, "desc": "Cuotas de administración, mascotas, parqueaderos, ruido, zonas comunes, multas y asambleas. Ideal para la demo: todos han vivido algo así.", "hook": "¿Cuántas mascotas puedo tener en el Conjunto Residencial Los Almendros y dónde pueden andar sueltas?", "hookPh": "Ej.: Dijo que depende del reglamento de cada conjunto, o dio un número que no sale de ningún documento...", "q": [["Fácil", "facil", "¿Cuánto paga de administración un apartamento tipo B y hasta qué día se puede pagar sin mora?", "Que encuentre un dato que está escrito tal cual.", "$368.000, pagando dentro de los primeros 10 días del mes. Fuente: artículos 9 y 10."], ["Fácil", "facil", "¿Cuántas mascotas puedo tener y dónde pueden andar sueltas?", "Que encuentre y junte dos datos del mismo capítulo.", "Máximo 2 animales (perros, gatos o uno de cada uno). Sueltas solo en la zona de mascotas detrás de la torre 4, de 6:00 a. m. a 9:00 p. m. Fuente: artículos 15 y 18."], ["Cruzada", "cruzada", "Me atrasé dos meses en la administración y ya pagué todo. Si el próximo mes pago el día 3, ¿tengo el descuento del 5 %?", "Que combine reglas de artículos distintos.", "No: el descuento por pronto pago no aplica durante los 6 meses siguientes a ponerse al día después de una mora. Fuente: artículo 11."], ["Ambigua", "ambigua", "¿Puedo hacer una fiesta el sábado?", "Que pida aclaración o separe los casos en lugar de adivinar.", "Depende. En el salón social: reservar con mínimo 8 días, $150.000 más un depósito de $300.000, aforo de 60 personas, hasta la 1:00 a. m. (arts. 29 y 30). En el apartamento: horario de silencio desde las 12:00 a. m. (art. 25). Con 3 o más cuotas en mora no se puede reservar el salón (art. 13)."], ["Trampa", "trampa", "¿Puedo instalar paneles solares en mi balcón?", "Que reconozca que no está en el documento.", "El reglamento no lo dice. Lo más cercano es la restricción de fachada (art. 28) y que lo no previsto lo resuelve el consejo (art. 54). Un \"sí\" o un \"no\" rotundo es inventado."]], "task": "Responder las dudas de los residentes sobre el reglamento del conjunto: cuotas de administración, mascotas, parqueaderos, ruido, zonas comunes, multas y asambleas.", "role": "Actúa como asistente de la administración del Conjunto Residencial Los Almendros: amable, claro y preciso.", "clar": "Si la información no está en el reglamento, responde: \"Eso no está en el reglamento. Te recomiendo consultarlo con la administración o el consejo.\" No uses tu memoria ni internet. No inventes valores, plazos ni multas.", "faq": "Escribe 10 preguntas frecuentes que tendría una familia que acaba de llegar a vivir al Conjunto Residencial Los Almendros. Para cada una, da la respuesta en máximo 2 líneas y el artículo del que sale. Usa solo la información de la fuente.", "canvasT": "Crea una página web de bienvenida para los residentes nuevos del Conjunto Residencial Los Almendros.", "canvasA": "Usa las preguntas frecuentes de este cuaderno (o las que pego abajo). Muéstralas como un acordeón: la pregunta se ve y la respuesta se despliega al tocarla. Arriba, un saludo de bienvenida y un recuadro \"Lo más importante\" con 4 datos clave del reglamento (cuotas, horario de silencio, mascotas y reserva del salón social).", "ck2": ["El PDF del reglamento aparece como fuente en la columna izquierda", "El cuaderno se llama \"Reglamento Los Almendros\""], "ck6": ["La administración del apartamento tipo B es $368.000", "Se paga sin mora dentro de los primeros 10 días del mes", "Máximo 2 mascotas por apartamento"]}, "bienestar": {"n": 2, "title": "Condiciones del Plan Complementario Bienestar Total", "short": "las condiciones del plan", "nb": "Plan Bienestar Total", "pdf": "condiciones-plan-bienestar-total.pdf", "pages": 9, "desc": "Planes y tarifas por edad, coberturas, periodos de carencia, exclusiones, copagos y reembolsos. La \"letra pequeña\" de un contrato.", "hook": "¿Cuánto me devuelven si compro unos lentes fuera de la red con el Plan Bienestar Total de Salud Horizonte?", "hookPh": "Ej.: Dijo que depende de cada aseguradora, o dio un porcentaje que no sale de ningún documento...", "q": [["Fácil", "facil", "¿Cuál es la tarifa mensual del plan Plus para una persona de 65 años?", "Que lea bien una tabla por rangos de edad.", "$419.000 al mes (rango de 60 a 69 años). Fuente: cláusula 3.2."], ["Fácil", "facil", "¿A los cuántos días de mora se suspende el servicio?", "Que encuentre un dato y su condición.", "A partir del día 31 de mora se suspende todo, salvo la urgencia vital. Con 90 días de mora la compañía puede terminar el contrato. Fuente: cláusulas 10.3 y 10.4."], ["Cruzada", "cruzada", "Estoy en el plan Plus desde hace 2 meses y compré unos lentes de $400.000 en una óptica fuera de la red. ¿Cuánto me devuelven?", "Que combine carencia, porcentaje de reembolso, tope y plazo.", "Por ahora nada: la carencia de lentes es de 3 meses (cláusulas 5.1 y 8.1). Cumplida, el 60 % de $400.000 son $240.000, por debajo del tope anual de $250.000 (cláusulas 8.2 y 4.1). Hay que radicar dentro de los 60 días siguientes a la factura (cláusula 8.3)."], ["Ambigua", "ambigua", "¿Cuánto pago por una consulta?", "Que pida aclaración o muestre los casos.", "Depende del plan y del tipo de consulta. General: $22.000 Esencial, $15.000 Plus, $0 Oro. Especialista: $38.000, $29.000 y $18.000. Mayores de 70 con 5 años de permanencia no pagan la general. Fuente: cláusulas 7.1 y 7.2."], ["Trampa", "trampa", "¿El plan Oro cubre cirugía estética?", "Que reconozca que no está en el documento.", "El documento no la menciona, ni como cobertura ni como exclusión. Si responde \"está excluida\", inventó: la lista de exclusiones (cláusula 6.1) no la nombra."]], "task": "Explicar con claridad las condiciones del Plan Complementario Bienestar Total: planes, tarifas, coberturas, carencias, exclusiones, copagos y reembolsos.", "role": "Actúa como asesor de servicio al cliente de Salud Horizonte, experto en explicar contratos en lenguaje sencillo a personas mayores.", "clar": "Si la información no está en las condiciones del plan, responde: \"Eso no aparece en las condiciones del plan. Te recomiendo confirmarlo con la línea de atención.\" No uses tu memoria ni internet. No inventes valores, porcentajes ni plazos.", "faq": "Escribe 10 preguntas frecuentes que tendría una persona mayor de 60 años que está pensando en afiliarse al Plan Bienestar Total. Para cada una, da la respuesta en máximo 2 líneas y la cláusula de la que sale. Usa solo la información de la fuente.", "canvasT": "Crea una página web que explique el Plan Complementario Bienestar Total a personas mayores de 60 años.", "canvasA": "Usa las preguntas frecuentes de este cuaderno (o las que pego abajo). Arriba, tres tarjetas que comparen los planes Esencial, Plus y Oro con su tarifa para 60 a 69 años. Debajo, las preguntas frecuentes en un acordeón: la pregunta se ve y la respuesta se despliega al tocarla.", "ck2": ["El PDF de las condiciones aparece como fuente en la columna izquierda", "El cuaderno se llama \"Plan Bienestar Total\""], "ck6": ["La tarifa del plan Plus de 60 a 69 años es $419.000", "El servicio se suspende desde el día 31 de mora", "La edad máxima de ingreso al plan Oro es 59 años"]}, "miel": {"n": 3, "title": "Plan de negocio de Miel La Esperanza", "short": "el plan de negocio", "nb": "Plan de negocio Miel La Esperanza", "pdf": "plan-de-negocio-miel-la-esperanza.pdf", "pages": 7, "desc": "Ventas mes a mes, costos y márgenes, competencia, metas para 2027 y riesgos. El emprendimiento de Don Álvaro, pensionado de 67 años.", "hook": "¿Qué presentación de Miel La Esperanza le deja más ganancia a Don Álvaro?", "hookPh": "Ej.: Dijo que no conoce ese negocio, o inventó precios y costos...", "q": [["Fácil", "facil", "¿Cuánto cuesta el kit de regalo y qué trae?", "Que encuentre un dato que está escrito tal cual.", "$45.000. Trae un frasco de 250 g, un panal de 100 g, una cuchara de madera y una caja kraft con moño. Fuente: sección 3."], ["Fácil", "facil", "¿Qué días se reciben los pedidos y cuándo se entregan?", "Que junte datos de dos secciones.", "Pedidos los martes y viernes por WhatsApp; entrega el sábado en Tunja o por transportadora a Bogotá, con el envío pagado aparte. Fuente: secciones 2 y 6."], ["Cruzada", "cruzada", "¿Qué presentación deja más ganancia por unidad y cuál tiene el mejor porcentaje de margen?", "Que cruce la tabla de precios con la de costos y calcule.", "Por unidad, el frasco de 1 kg: $58.000 − $27.700 = $30.300. En porcentaje, el de 500 g: $16.900, un 52,8 %. Fuente: secciones 3 y 4."], ["Ambigua", "ambigua", "¿Le alcanza la plata al negocio?", "Que aclare qué se pregunta en lugar de dar un sí o un no.", "Depende. En el flujo de caja del primer semestre de 2027 el saldo nunca es negativo (mínimo $1.278.000 en marzo, cierra en $4.008.000 en junio), pero no incluye los salarios de Álvaro ni de Laura. Fuente: secciones 2, 4 y 12."], ["Trampa", "trampa", "¿Cuánto cuesta exportar la miel o venderla por Mercado Libre?", "Que reconozca que no está en el documento.", "El plan no dice nada sobre exportar ni sobre Mercado Libre; solo habla de envíos a Bogotá por transportadora. Si da cifras, las inventó."]], "task": "Ayudar a Don Álvaro a entender y explicar su plan de negocio: precios, costos, ventas, metas, canales y riesgos.", "role": "Actúa como asesor de emprendimiento que explica números de negocio en lenguaje sencillo a un pensionado que está empezando.", "clar": "Si la información no está en el plan de negocio, responde: \"Eso no está en el plan de negocio.\" Muestra las operaciones cuando hagas cálculos. No uses tu memoria ni internet. No inventes precios, costos ni cifras de ventas.", "faq": "Escribe 10 preguntas que le haría a Don Álvaro un banco o un posible socio sobre su plan de negocio, con la respuesta en máximo 2 líneas y la sección de la que sale. Usa solo la información de la fuente.", "canvasT": "Crea una página web para presentar el plan de negocio de Miel La Esperanza a un posible socio.", "canvasA": "Usa las preguntas de este cuaderno (o las que pego abajo). Arriba, tarjetas con las presentaciones y sus precios. Luego, un gráfico de barras de las ventas mensuales de 2026 y las metas de 2027. Al final, las preguntas del socio en un acordeón.", "ck2": ["El PDF del plan de negocio aparece como fuente en la columna izquierda", "El cuaderno se llama \"Plan de negocio Miel La Esperanza\""], "ck6": ["El kit de regalo cuesta $45.000", "El frasco de 1 kg deja $30.300 de ganancia por unidad", "Las cifras del gráfico coinciden con la tabla de ventas del documento"]}};
+const GEN_ACTION="Busca la respuesta solo en la fuente de este cuaderno. Responde en máximo 5 líneas y cita de dónde sale cada dato. Si la pregunta es ambigua, pregunta qué caso aplica antes de responder.";const GEN_EXAMPLE="Primero una respuesta corta en lenguaje sencillo; si hay pasos o cálculos, numerados; al final, \"Fuente: [artículo, cláusula o sección]\".";
+function curCase(){return CASES[state.fields.caseId]||CASES.almendros}
+function applyCase(){const C=curCase();HOOK=C.hook;QUESTIONS=C.q.map((x,i)=>({id:'q'+(i+1),type:x[0],cls:x[1],text:x[2],test:x[3],expected:x[4]}));TRAP=QUESTIONS[4].text;FAQ_PROMPT=C.faq;
+ CANVAS_DEFAULT=`T — Tarea: ${C.canvasT}\n\nA — Acción: ${C.canvasA}\n\nR — Rol: Actúa como diseñador web especializado en comunicar información clara a todo tipo de público.\n\nE — Ejemplo de salida: Una sola página, colores amables, letra grande y legible, botones grandes, que funcione bien en el celular.\n\nA — Aclaraciones: Usa solo la información de la fuente. No inventes datos, nombres, cifras ni enlaces. Escribe en español sencillo.`;
+ const d={task:C.task,action:GEN_ACTION,role:C.role,example:GEN_EXAMPLE,clarifications:C.clar};tareaFields.forEach(f=>{f[4]=d[f[0]]});
+ checks.check2=[['c2a',C.ck2[0]],['c2b',C.ck2[1]],['c2c','Al tocar la fuente aparece una guía con su resumen']];
+ checks.check6=[['c6a',C.ck6[0]],['c6b',C.ck6[1]],['c6c',C.ck6[2]],['c6d','No hay enlaces, nombres ni datos inventados'],['c6e','Se lee bien en el celular y la letra es grande']];
+ document.querySelectorAll('.nbname').forEach(x=>x.textContent=C.nb);document.querySelectorAll('.casetitle').forEach(x=>x.textContent=C.title);
+ const ha=document.getElementById('f_hookAnswer');if(ha)ha.placeholder=C.hookPh}
+function casesHTML(){const cur=state.fields.caseId||'almendros';return Object.entries(CASES).map(([k,c])=>`<article class="card srccard casecard ${k===cur?'chosen':''}"><div class="meta"><span class="chip">Caso ${c.n}</span><span class="chip warm">PDF · ${c.pages} páginas</span>${k==='almendros'?'<span class="chip demo">Demo del profesor</span>':''}</div><h3>${esc(c.title)}</h3><p class="subtle">${esc(c.desc)}</p><div class="meta"><button class="button small ${k===cur?'primary':''}" type="button" data-pickcase="${k}">${k===cur?'✓ Caso elegido':'Elegir este caso'}</button><a class="button small" href="documentos/${c.pdf}" download target="_blank" rel="noopener">Descargar PDF ↓</a></div></article>`).join('')}
+function pickCase(k){if((state.fields.caseId||'almendros')===k)return;state.answers={};state.quick={};state.ratings={};state.reasons={};state.tarea={};state.checks={};delete state.fields.canvasPrompt;delete state.fields.faq;state.fields.caseId=k;save();applyCase();buildStatic();renderFormValues();renderAll();navigate(step);toast('Caso cambiado: '+CASES[k].title)}
+const FLOW=[
+ ['Documentos','Las fuentes oficiales','IA: nada todavía.','Persona: elige fuentes vigentes y que se puedan compartir.'],
+ ['Asistente','Gemini Notebook','IA: busca y responde citando.','Persona: le da instrucciones TAREA y prueba con preguntas trampa.'],
+ ['Producto','Preguntas frecuentes y página en Canvas','IA: transforma y diseña.','Persona: pide ediciones dirigidas.'],
+ ['Revisión humana','Antes de publicar','IA: no aplica.','Persona: compara datos con las fuentes y aprueba.'],
+ ['Publicar','Compartir el enlace','IA: puede preparar el mensaje.','Persona: decide quién lo ve y cuándo se actualiza.']];
+
+const storageKey='laboratorio-rag-s6-v1';
+const blank=()=>({step:0,fields:{},answers:{},quick:{},ratings:{},reasons:{},tarea:{},checks:{},images:{}});
+let state=blank();
+try{const s=JSON.parse(localStorage.getItem(storageKey)||'null');if(s&&typeof s==='object'){const b=blank();state={...b,...s};for(const k of Object.keys(b))if(typeof b[k]==='object'&&(!state[k]||typeof state[k]!=='object'))state[k]=b[k]}}catch(e){}
+let step=0,imgWarned=false;
+const embedded=(()=>{try{return window.self!==window.top}catch(e){return true}})();
+const el=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clean=s=>(s||'').trim();
+function save(){try{localStorage.setItem(storageKey,JSON.stringify({...state,step}))}catch(e){try{localStorage.setItem(storageKey,JSON.stringify({...state,images:{},step}));if(!imgWarned){imgWarned=true;toast('La imagen se ve aquí, pero no cupo en la memoria del navegador')}}catch(x){}}}
+function toast(m){const t=el('toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2600)}
+async function copyText(s){try{await navigator.clipboard.writeText(s);toast('Copiado al portapapeles')}catch(e){const a=document.createElement('textarea');a.value=s;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand('copy')}catch(x){}a.remove();toast(ok?'Copiado al portapapeles':'No se pudo copiar: selecciona el texto y usa Ctrl+C')}}
+function tareaValue(id){const f=tareaFields.find(x=>x[0]===id);return state.tarea[id]!==undefined?state.tarea[id]:f[4]}
+function canvasValue(){return state.fields.canvasPrompt!==undefined?state.fields.canvasPrompt:CANVAS_DEFAULT}
+function makeTarea(){return ['INSTRUCCIONES DEL ASISTENTE · MARCO TAREA',...tareaFields.map(([id,l,t])=>`${l} — ${t.toUpperCase()}\n${clean(tareaValue(id))||'[Completar]'}`)].join('\n\n')}
+function textFor(key){
+ if(key==='hook')return HOOK;if(key==='trap')return TRAP;if(key==='faqPrompt')return FAQ_PROMPT;if(key==='edit')return EDIT_PROMPT;
+ if(key==='tarea')return makeTarea();if(key==='canvas'){const f=clean(state.fields.faq);return canvasValue()+(f?'\n\nPREGUNTAS FRECUENTES:\n'+f:'')}
+ if(key==='faq')return clean(state.fields.faq)||'';
+ if(key.startsWith('src:'))return SOURCES[+key.slice(4)].text;
+ if(key.startsWith('q:'))return QUESTIONS.find(q=>q.id===key.slice(2)).text;
+ return ''}
+function copyBlock(label,key,primary){return `<div class="copyblock"><div class="copy-head"><b>${esc(label)}</b><button class="button small ${primary?'primary':''}" type="button" data-copy="${esc(key)}">Copiar</button></div><div class="preview copytext">${esc(textFor(key))}</div></div>`}
+function checklistHTML(id){return checks[id].map(([k,t])=>`<label for="ck_${k}"><input type="checkbox" id="ck_${k}" data-check="${k}"><span>${esc(t)}</span></label>`).join('')}
+function buildStatic(){
+ el('sideNav').innerHTML=steps.map((s,i)=>`<button type="button" data-nav="${i}"><span class="num">${i}</span><span>${s}</span></button>`).join('');
+ el('mobileNav').innerHTML=steps.map((s,i)=>`<button type="button" data-nav="${i}">${i} · ${s}</button>`).join('')+'<a class="xlink" data-target="teoria" href="teoria-rag.html">Teoría ↗</a>';
+ el('cb_hook').innerHTML=copyBlock('Pregunta para Gemini (sin documentos)','hook',true);
+ el('cb_trap').innerHTML=copyBlock('Pregunta trampa (repítela)','trap',false);
+ el('cb_faq').innerHTML=copyBlock('Pedido para el chat del cuaderno','faqPrompt',true);
+ el('cb_edit').innerHTML=copyBlock('Edición dirigida (después de la primera versión)','edit',false);
+ el('sources').innerHTML=casesHTML();
+ el('questions').innerHTML=QUESTIONS.map((q,i)=>`<article class="qcard ${q.cls}"><div class="meta" style="justify-content:space-between"><div class="meta"><span class="qnum">${i+1}</span><span class="qtype">${esc(q.type)}</span><span class="subtle">${esc(q.test)}</span></div><button class="button small primary" type="button" data-copy="q:${q.id}">Copiar pregunta</button></div><p class="qtext">${esc(q.text)}</p><div class="field" style="margin:10px 0"><label for="ans_${q.id}">¿Qué respondió el asistente?</label><textarea id="ans_${q.id}" data-section="answers" data-name="${q.id}" placeholder="Resume la respuesta y anota qué fuente citó..."></textarea></div><div class="options" role="group" aria-label="Valoración de la pregunta ${i+1}">${['Cumple','Parcial','No cumple'].map(v=>`<button class="choice" type="button" data-quick="${q.id}" data-value="${v}" aria-pressed="false">${v}</button>`).join('')}</div><details class="expected"><summary>Ver la respuesta esperada</summary><p>${esc(q.expected)}</p></details></article>`).join('');
+ el('assessment').innerHTML=criteria.map(([id,title,q])=>`<div class="assessment ${id==='trazabilidad'?'star':''}"><div><h3>${esc(title)}</h3><p class="subtle">${esc(q)}</p><div class="options" role="group" aria-label="Valoración de ${esc(title)}">${['Cumple','Parcial','No cumple'].map(v=>`<button class="choice" type="button" data-rating="${id}" data-value="${v}" aria-pressed="false">${v}</button>`).join('')}</div></div><div class="field" style="margin:0"><label for="reason_${id}">Evidencia</label><textarea id="reason_${id}" data-section="reasons" data-name="${id}" placeholder="¿Qué pregunta o cita lo demuestra?"></textarea></div></div>`).join('');
+ el('tareaForm').innerHTML=`<h3>Los cinco componentes de TAREA</h3>`+tareaFields.map(([id,letter,title,hint])=>`<div class="field"><label for="t_${id}"><span class="tarea-letter">${letter}</span>${esc(title)}</label><p class="hint">${esc(hint)}</p><textarea id="t_${id}" data-section="tarea" data-name="${id}"></textarea></div>`).join('')+`<div class="meta"><button class="button small" type="button" data-reset="tarea">Restaurar la propuesta original</button></div>`;
+ ['check0','check2','check6'].forEach(id=>el(id).innerHTML=checklistHTML(id));
+ el('flow').innerHTML=FLOW.map(([t,s,ia,p],i)=>`<div class="stage"><span class="snum">${i+1}</span><h3>${esc(t)}</h3><p class="subtle">${esc(s)}</p><div class="who ia">${esc(ia)}</div><div class="who person">${esc(p)}</div></div>`).join('');
+}
+function renderFormValues(){
+ document.querySelectorAll('[data-section]').forEach(x=>{const sec=x.dataset.section,n=x.dataset.name;x.value=sec==='tarea'?tareaValue(n):(state[sec]?.[n]||'')});
+ document.querySelectorAll('[data-field]').forEach(x=>{x.value=x.dataset.field==='canvasPrompt'?canvasValue():(state.fields[x.dataset.field]||'')});
+ document.querySelectorAll('[data-check]').forEach(x=>x.checked=!!state.checks[x.dataset.check]);
+ syncChoices()}
+function syncChoices(){document.querySelectorAll('[data-rating]').forEach(b=>b.setAttribute('aria-pressed',String(state.ratings[b.dataset.rating]===b.dataset.value)));document.querySelectorAll('[data-quick]').forEach(b=>b.setAttribute('aria-pressed',String(state.quick[b.dataset.quick]===b.dataset.value)))}
+function shotHTML(key,label,removable){const src=state.images[key];if(!src)return '';return `<figure class="shot" style="margin:0"><img src="${src}" alt="${esc(label)}"><figcaption><span>${esc(label)}</span>${removable?`<button class="button small" type="button" data-remove="${key}">Quitar</button>`:''}</figcaption></figure>`}
+function renderRecap(){
+ const answered=QUESTIONS.filter(q=>clean(state.answers[q.id])||state.quick[q.id]).length;const ok=QUESTIONS.filter(q=>state.quick[q.id]==='Cumple').length;const r=criteria.filter(([id])=>state.ratings[id]).length;const c6=checks.check6.filter(([k])=>state.checks[k]).length;
+ el('finalRecap').innerHTML=`<div class="grid"><div class="card"><span class="chip">Pasos 1 y 2</span><h3 style="margin-top:10px">${checks.check2.filter(([k])=>state.checks[k]).length}/4 · Fuentes cargadas</h3><p class="subtle">${clean(state.fields.hookAnswer)?'Problema registrado':'Problema sin registrar'}</p></div><div class="card"><span class="chip">Paso 3</span><h3 style="margin-top:10px">${answered}/5 preguntas · ${ok} cumplen</h3><p class="subtle">${r}/5 criterios valorados</p></div><div class="card"><span class="chip">Pasos 4 y 5</span><h3 style="margin-top:10px">${clean(state.fields.trapAfter)?'Trampa repetida':'Trampa pendiente'}</h3><p class="subtle">${clean(state.fields.faq)?'Preguntas frecuentes guardadas':'Preguntas frecuentes pendientes'}</p></div><div class="card"><span class="chip">Paso 6</span><h3 style="margin-top:10px">${c6}/5 · Revisión humana</h3><p class="subtle">${state.images.canvas?'Pantallazo de la página guardado':'Sin pantallazo'}</p></div></div>`}
+function renderAll(){el('tareaPreview').textContent=makeTarea();el('shots1').innerHTML=shotHTML('canvas','Mi página en Canvas',true);renderRecap()}
+function navigate(n){if(n<0||n>LAST)return;step=n;state.step=n;save();document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',Number(x.dataset.step)===n));document.querySelectorAll('[data-nav]').forEach(x=>x.classList.toggle('active',Number(x.dataset.nav)===n));el('headerStatus').textContent=`Paso ${n} de ${LAST}`;el('homeIntro').hidden=n!==0;el('prevBtn').disabled=n===0;el('nextBtn').style.visibility=n===LAST?'hidden':'visible';el('progressBar').style.width=`${(n+1)/(LAST+1)*100}%`;el('progressText').textContent=`${n+1} de ${LAST+1} etapas`;renderAll();window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
+function summaryText(){const L=[];L.push('LABORATORIO RAG · RESUMEN');L.push(`Nombre: ${state.fields.name||'-'}`);L.push(`\n1. EL PROBLEMA\nPregunta sin fuentes: ${HOOK}\nRespuesta: ${clean(state.fields.hookAnswer)||'-'}\nPor qué no sirve: ${clean(state.fields.hookWhy)||'-'}`);L.push('\n3. BANCO DE PREGUNTAS');QUESTIONS.forEach((q,i)=>L.push(`${i+1}. [${q.type}] ${q.text}\n   Respuesta: ${clean(state.answers[q.id])||'-'}\n   Valoración: ${state.quick[q.id]||'sin valorar'}`));L.push('\nMATRIZ DE VALIDACIÓN');criteria.forEach(([id,t])=>L.push(`- ${t}: ${state.ratings[id]||'sin valorar'} · ${clean(state.reasons[id])||'sin evidencia'}`));L.push('\n4. '+makeTarea());L.push(`Trampa después de las instrucciones: ${clean(state.fields.trapAfter)||'-'}`);L.push(`\n5. STUDIO: ${clean(state.fields.studio)||'-'}\nPreguntas frecuentes:\n${clean(state.fields.faq)||'-'}`);L.push(`\n6. CANVAS\nPrompt:\n${canvasValue()}\nRevisión humana: ${checks.check6.map(([k,t])=>(state.checks[k]?'[x] ':'[ ] ')+t).join(' | ')}\nHallazgos: ${clean(state.fields.canvasNotes)||'-'}`);L.push(`\n7. REFLEXIÓN\n¿Qué automatizaría?: ${clean(state.fields.r1)||'-'}\n¿Dónde revisa una persona?: ${clean(state.fields.r2)||'-'}\n¿Qué otros documentos?: ${clean(state.fields.r3)||'-'}`);return L.join('\n')}
+function handleImage(file,key){if(!file||!/^image\//.test(file.type)){toast('Ese archivo no es una imagen');return}const rd=new FileReader();rd.onload=()=>{const img=new Image();img.onload=()=>{const max=1000,s=Math.min(1,max/Math.max(img.width,img.height));const cv=document.createElement('canvas');cv.width=Math.round(img.width*s);cv.height=Math.round(img.height*s);cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);state.images[key]=cv.toDataURL('image/jpeg',.82);save();renderAll();toast('Imagen agregada')};img.onerror=()=>toast('No se pudo leer la imagen');img.src=rd.result};rd.readAsDataURL(file)}
+function setupDrop(zoneId,inputId,key){const z=el(zoneId);['dragenter','dragover'].forEach(ev=>z.addEventListener(ev,e=>{e.preventDefault();z.classList.add('drag')}));['dragleave','drop'].forEach(ev=>z.addEventListener(ev,e=>{e.preventDefault();z.classList.remove('drag')}));z.addEventListener('drop',e=>handleImage(e.dataTransfer.files[0],key));el(inputId).addEventListener('change',e=>{handleImage(e.target.files[0],key);e.target.value=''})}
+function downloadFile(name,content,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500)}
+function printBlock(l,v){return `<div class="print-block"><div class="print-label">${esc(l)}</div><div class="print-body">${esc(v||'No registrado')}</div></div>`}
+function buildPrint(){
+ const C=curCase();const f=state.fields;
+ const T=v=>clean(v)?`<div class="rp-text">${esc(clean(v))}</div>`:'<div class="rp-empty">Sin registrar</div>';
+ const pill=v=>v?`<span class="pill ${v==='Cumple'?'ok':v==='Parcial'?'mid':'bad'}">${esc(v)}</span>`:'<span class="pill">Sin valorar</span>';
+ const box=(l,v)=>`<div class="rp-box"><div class="rp-label">${esc(l)}</div>${T(v)}</div>`;
+ const ck=list=>`<ul class="rp-checks">${list.map(([k,t])=>`<li><span class="ck ${state.checks[k]?'on':''}">${state.checks[k]?'✓':''}</span><span>${esc(t)}</span></li>`).join('')}</ul>`;
+ const sec=(n,t,body)=>`<section class="rp-sec"><h2><span class="n">${n}</span>${esc(t)}</h2>${body}</section>`;
+ const answered=QUESTIONS.filter(q=>clean(state.answers[q.id])).length,ok=QUESTIONS.filter(q=>state.quick[q.id]==='Cumple').length,rated=criteria.filter(([id])=>state.ratings[id]).length;
+ const date=new Date().toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'});
+ const head=`<header class="rp-head"><div class="rp-band"><i></i><i></i><i></i></div><div class="rp-headin"><div class="rp-kicker">Laboratorio RAG · Flujos de trabajo y automatización</div><h1>Mi asistente con fuentes: informe del recorrido</h1><div class="rp-meta"><div><b>Nombre</b>${esc(clean(f.name)||'Sin registrar')}</div><div><b>Caso</b>${esc(C.title)}</div><div><b>Fecha</b>${esc(date)}</div></div><div class="rp-stats"><span class="rp-stat">${answered}/5 preguntas respondidas</span><span class="rp-stat">${ok}/5 cumplen</span><span class="rp-stat">${rated}/5 criterios valorados</span><span class="rp-stat">${state.images.canvas?'Con pantallazo de Canvas':'Sin pantallazo de Canvas'}</span></div></div></header>`;
+ const s1=sec(1,'El problema: la IA sin fuentes',`<div class="rp-quote">${esc(HOOK)}</div><div class="rp-two">${box('Qué respondió Gemini sin documentos',f.hookAnswer)}${box('Por qué no sirve',f.hookWhy)}</div>`);
+ const s2=sec(2,'Las fuentes del cuaderno',`<div class="rp-box"><div class="rp-label">Documento cargado</div><div class="rp-text"><b>${esc(C.title)}</b> · PDF de ${C.pages} páginas · cuaderno "${esc(C.nb)}"</div></div><div class="rp-box"><div class="rp-label">Verificación</div>${ck(checks.check2)}</div>`);
+ const qs=QUESTIONS.map((q,i)=>`<div class="rp-q ${q.cls}"><div class="rp-qhead"><span>Pregunta ${i+1} · ${esc(q.type)}</span>${pill(state.quick[q.id])}</div><div class="rp-qtext">${esc(q.text)}</div><div class="rp-label">Respuesta del asistente</div>${T(state.answers[q.id])}<div class="rp-exp"><b>Respuesta esperada:</b> ${esc(q.expected)}</div></div>`).join('');
+ const mx=`<table><thead><tr><th style="width:30%">Criterio</th><th style="width:18%">Valoración</th><th>Evidencia</th></tr></thead><tbody>${criteria.map(([id,t])=>`<tr class="${id==='trazabilidad'?'star':''}"><td>${esc(t)}</td><td>${pill(state.ratings[id])}</td><td>${clean(state.reasons[id])?esc(clean(state.reasons[id])):'<span class="rp-empty">Sin evidencia</span>'}</td></tr>`).join('')}</tbody></table>`;
+ const s3=sec(3,'Preguntar y verificar',qs+`<div class="rp-label" style="margin-top:3mm">Matriz de validación (★ criterio estrella)</div>`+mx);
+ const ta=`<table class="rp-tarea"><tbody>${tareaFields.map(([id,l,t])=>`<tr><td><span class="rp-letter">${l}</span></td><td><b>${esc(t)}</b><br>${clean(tareaValue(id))?esc(clean(tareaValue(id))):'<span class="rp-empty">Sin completar</span>'}</td></tr>`).join('')}</tbody></table>`;
+ const s4=sec(4,'Instrucciones del asistente con TAREA',ta+`<div style="margin-top:3mm">${box('La pregunta trampa, después de las instrucciones',f.trapAfter)}</div>`);
+ const s5=sec(5,'Studio y preguntas frecuentes',box('Producto de Studio y qué tal quedó',f.studio)+box('Preguntas frecuentes generadas',f.faq));
+ const s6=sec(6,'Ejercicio extra en Gemini con Canvas',(state.images.canvas?`<div class="rp-img"><img src="${state.images.canvas}" alt="Pantallazo de la página creada en Canvas"></div>`:'')+`<div class="rp-two"><div class="rp-box"><div class="rp-label">Revisión humana</div>${ck(checks.check6)}</div>${box('Hallazgos de la revisión',f.canvasNotes)}</div>`+box('Prompt usado en Canvas',canvasValue()));
+ const s7=sec(7,'Del asistente al flujo',box('¿Qué automatizaría?',f.r1)+box('¿Dónde debe revisar una persona sí o sí?',f.r2)+box('¿Qué otros documentos o procesos funcionarían así?',f.r3));
+ el('printRoot').innerHTML=`<div class="rp">${head}${s1}${s2}${s3}${s4}${s5}${s6}${s7}<div class="rp-foot">Generado desde el Laboratorio RAG · Los casos y documentos son ficticios, con fines educativos.</div></div>`}
+function init(){
+ applyCase();buildStatic();
+ if(embedded&&THEORY_URL){document.querySelectorAll('.xlink[data-target=teoria]').forEach(a=>{a.href=THEORY_URL+(a.dataset.hash?'#'+a.dataset.hash:'');a.target='_blank';a.rel='noopener'})}
+ if(embedded){document.querySelectorAll('a[download]').forEach(a=>{a.removeAttribute('download');a.target='_blank';a.rel='noopener'})}
+ if(!embedded){el('exportPdf').hidden=false;el('exportJson').hidden=false;el('importLabel').hidden=false;el('exportHint').textContent='Exportar a PDF abre la ventana de impresión: elige "Guardar como PDF". El respaldo .json permite seguir otro día.'}
+ renderFormValues();setupDrop('drop1','file1','canvas');
+ document.addEventListener('input',e=>{const t=e.target;if(t.dataset.section){state[t.dataset.section][t.dataset.name]=t.value}else if(t.dataset.field){state.fields[t.dataset.field]=t.value}else if(t.dataset.check){state.checks[t.dataset.check]=t.checked}else return;save();renderAll()});
+ document.addEventListener('change',e=>{const t=e.target;if(t.dataset.check){state.checks[t.dataset.check]=t.checked;save();renderAll()}});
+ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.nav!==undefined)navigate(+d.nav);
+  else if(d.pickcase){pickCase(d.pickcase)}
+  else if(d.copy){const s=textFor(d.copy);if(!s){toast(d.copy==='faq'?'Primero pega tus preguntas frecuentes en el paso 5':'No hay texto para copiar');return}copyText(s)}
+  else if(d.rating){state.ratings[d.rating]=d.value;save();syncChoices();renderRecap()}
+  else if(d.quick){state.quick[d.quick]=d.value;save();syncChoices();renderRecap()}
+  else if(d.remove){delete state.images[d.remove];save();renderAll()}
+  else if(d.reset==='tarea'){state.tarea={};save();renderFormValues();renderAll();toast('Propuesta original restaurada')}
+  else if(d.reset==='canvasPrompt'){delete state.fields.canvasPrompt;save();renderFormValues();toast('Prompt original restaurado')}
+  else if(b.id==='prevBtn')navigate(step-1);else if(b.id==='nextBtn')navigate(step+1);
+  else if(b.id==='copySummary')copyText(summaryText());
+  else if(b.id==='exportPdf'){buildPrint();window.print()}
+  else if(b.id==='exportJson')downloadFile('laboratorio-rag-respaldo.json',JSON.stringify({...state,step},null,2),'application/json');
+  else if(b.id==='resetAll')el('resetConfirm').innerHTML=`<div class="confirm"><b>Se borrará todo tu recorrido en este navegador.</b><div class="meta" style="margin-top:10px"><button class="button primary small" type="button" id="resetYes">Sí, empezar de nuevo</button><button class="button small" type="button" id="resetNo">Cancelar</button></div></div>`;
+  else if(b.id==='resetNo')el('resetConfirm').innerHTML='';
+  else if(b.id==='resetYes'){state=blank();save();el('resetConfirm').innerHTML='';renderFormValues();navigate(0);toast('Recorrido reiniciado')}
+ });
+ el('importJSON').addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const s=JSON.parse(rd.result);if(!s||typeof s!=='object')throw 0;state={...blank(),...s};save();renderFormValues();navigate(+state.step||0);toast('Respaldo restaurado')}catch(x){toast('No se pudo leer el respaldo')}};rd.readAsText(f);e.target.value=''});
+ document.addEventListener('paste',e=>{if(step!==6)return;const item=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith('image/'));if(!item)return;e.preventDefault();handleImage(item.getAsFile(),'canvas')});
+ navigate(Math.max(0,Math.min(LAST,+state.step||0)))}
+init();
+</script>
+</body>
+</html>

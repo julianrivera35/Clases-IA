@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Laboratorio TAREA Visual</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#ffffff">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+/* Concepto: imprenta CMYK y semitono. Tema claro a propósito: papel blanco, tinta azul-negra, acentos cian, magenta y amarillo */
+:root{
+  --bg:#f4f7fc;--paper:#ffffff;--ink:#1b1e3c;--muted:#4d5272;--line:#dfe3f0;
+  --cyan:#0098d4;--cyan-dark:#0072a8;--cyan-soft:#e3f5fd;
+  --magenta:#e0307a;--magenta-dark:#b81f5f;--magenta-soft:#fde8f1;
+  --yellow:#ffc531;--yellow-soft:#fff6d9;--green:#12a37a;--green-soft:#e2f6ef;
+  --pre:#f6f8fd;--shadow:0 10px 30px #1b1e3c12;--radius:18px;
+  --display:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --font:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Consolas,monospace;color-scheme:light}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background-color:var(--bg);background-image:radial-gradient(#d3dbef 1.1px,transparent 1.3px);background-size:20px 20px;color:var(--ink);font:17px/1.6 var(--font)}
+button,input,textarea,select{font:inherit;color:inherit}button{cursor:pointer}a{color:var(--cyan-dark)}
+:focus-visible{outline:3px solid var(--magenta);outline-offset:2px}
+h1,h2,h3,.brand strong{font-family:var(--display)}
+.shell{max-width:1380px;margin:auto;display:grid;grid-template-columns:272px minmax(0,1fr);min-height:100vh}
+.sidebar{background:var(--paper);border-right:1px solid var(--line);color:var(--ink);padding:28px 18px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:20px;overflow-y:auto}
+.brand{display:flex;align-items:center;gap:12px;padding:2px 8px}
+.brandmark{height:46px;width:46px;border-radius:14px;display:grid;place-items:center;font:800 22px var(--display);color:var(--ink);position:relative;background:var(--yellow)}
+.brandmark:before,.brandmark:after{content:'';position:absolute;width:15px;height:15px;border-radius:50%;mix-blend-mode:multiply}
+.brandmark:before{background:var(--cyan);right:-5px;top:-5px}.brandmark:after{background:var(--magenta);right:4px;top:-8px}
+.brand strong{display:block;font-size:19px;letter-spacing:-.2px}.brand small{color:var(--muted);font-size:12px}
+.side-title{color:var(--magenta-dark);padding-left:12px;margin-bottom:10px}
+.nav{display:grid;gap:4px}
+.nav button{border:0;text-align:left;color:var(--ink);background:transparent;border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:11px;font-weight:700;font-size:14px}
+.nav button:hover{background:var(--bg)}
+.nav .num{display:grid;place-items:center;width:29px;height:29px;border-radius:9px;flex-shrink:0;font-weight:800;border:2px solid var(--c,var(--cyan));color:var(--cd,var(--cyan-dark));background:var(--paper)}
+.nav button:nth-child(3n+2){--c:var(--magenta);--cd:var(--magenta-dark)}.nav button:nth-child(3n+3){--c:var(--yellow);--cd:#8a6200}
+.nav button.active{background:var(--ink);color:#fff}.nav button.active .num{background:var(--c,var(--cyan));border-color:var(--c,var(--cyan));color:var(--ink)}
+.side-link{display:flex;align-items:center;justify-content:space-between;gap:8px;text-decoration:none;font-weight:800;color:var(--ink);background:var(--cyan-soft);border:2px solid var(--cyan);border-radius:12px;padding:11px 14px}
+.side-link:hover{background:var(--cyan);color:#fff}
+.sidetip{margin-top:auto;background:var(--yellow-soft);border:1px solid #f3dc94;padding:14px;border-radius:14px;font-size:13px;color:var(--muted)}.sidetip b{display:block;color:var(--ink);margin-bottom:4px}
+.main{padding:30px 44px 80px;min-width:0}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.eyebrow{font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:1.4px;color:var(--magenta-dark)}
+.status{border:1px solid var(--line);padding:7px 12px;background:var(--paper);border-radius:100px;color:var(--muted);font-size:13px;font-weight:700}
+.hero{background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow);color:var(--ink);padding:34px 38px;border-radius:26px;position:relative;overflow:hidden;margin-bottom:22px;display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:28px;align-items:center}
+.hero .kicker{display:flex;gap:8px;flex-wrap:wrap}
+.hero .kicker span{font-size:12.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:30px}
+.hero .kicker span:nth-child(1){background:var(--cyan-soft);color:var(--cyan-dark)}.hero .kicker span:nth-child(2){background:var(--magenta-soft);color:var(--magenta-dark)}.hero .kicker span:nth-child(3){background:var(--yellow-soft);color:#7a5600}.hero .kicker span:nth-child(4){background:var(--green-soft);color:#0b6e52}
+.hero h1{font-size:clamp(28px,3.1vw,42px);letter-spacing:-1px;line-height:1.1;margin:14px 0 12px;text-wrap:balance;font-weight:800}
+.hl{background:linear-gradient(transparent 58%,var(--yellow) 58%,var(--yellow) 92%,transparent 92%);padding:0 2px}
+.hero p{color:var(--muted);max-width:690px;margin:0}
+.hero-art{position:relative;max-width:100%;aspect-ratio:1}
+.hero-art:before,.hero-art:after{content:'';position:absolute;border-radius:50%;mix-blend-mode:multiply;width:62%;aspect-ratio:1}
+.hero-art:before{background:var(--cyan);left:-6%;top:-4%}.hero-art:after{background:var(--magenta);right:-6%;top:6%}
+.hero-art .dot{position:absolute;border-radius:50%;background:var(--yellow);mix-blend-mode:multiply;width:62%;aspect-ratio:1;left:18%;bottom:-6%}
+.hero-art canvas{position:absolute;inset:20%;width:60%;height:60%;display:block;image-rendering:pixelated;border-radius:14px;border:4px solid #fff;box-shadow:0 8px 24px #1b1e3c33;z-index:1}
+.page{display:none;animation:rise .18s ease}.page.active{display:block}
+@keyframes rise{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.page{animation:none}html{scroll-behavior:auto}}
+h2{font-size:28px;line-height:1.2;margin:6px 0 10px;letter-spacing:-.6px;text-wrap:balance;font-weight:800}h3{font-size:18px;margin:0 0 8px;font-weight:700}
+.lead{max-width:800px;color:var(--muted);margin-top:0}.section-heading{margin:22px 0 18px}
+.theory-link{display:inline-flex;align-items:center;gap:6px;margin-top:4px;font-size:14px;font-weight:800;color:var(--magenta-dark);text-decoration:none;border-bottom:2px solid var(--magenta-soft)}
+.theory-link:hover{border-color:var(--magenta)}
+.panel,.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.panel{padding:24px;margin:17px 0}.card{padding:20px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid.auto{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.learn{border-top:6px solid var(--cyan);padding:20px}.learn b{color:var(--cyan-dark);font-family:var(--display);font-size:18px}.learn p{margin:8px 0 0}
+.learn:nth-child(2){border-top-color:var(--magenta)}.learn:nth-child(2) b{color:var(--magenta-dark)}
+.learn:nth-child(3){border-top-color:var(--yellow)}.learn:nth-child(3) b{color:#7a5600}
+.chip{display:inline-flex;align-items:center;background:var(--cyan-soft);color:var(--cyan-dark);padding:4px 10px;border-radius:30px;font-size:12.5px;font-weight:800}
+.chip.warm{background:var(--yellow-soft);color:#6e4d00}
+.subtle{color:var(--muted);font-size:15px}
+.meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.button{display:inline-flex;justify-content:center;align-items:center;gap:7px;border:2px solid var(--line);background:var(--paper);border-radius:12px;padding:10px 16px;color:var(--ink);font-weight:800;font-size:15px;text-decoration:none;transition:.15s}
+.button:hover{border-color:var(--cyan);background:var(--cyan-soft)}
+.button.primary{background:var(--cyan-dark);color:#fff;border-color:var(--cyan-dark)}.button.primary:hover{background:var(--ink);border-color:var(--ink)}
+.button.small{padding:7px 11px;font-size:13px}.button:disabled{opacity:.45;cursor:not-allowed}
+.platform{display:flex;gap:12px;flex-direction:column;justify-content:space-between;border-top:6px solid var(--cyan)}
+.platform:nth-child(3n+2){border-top-color:var(--magenta)}.platform:nth-child(3n+3){border-top-color:var(--yellow)}
+.platform h3{margin:10px 0 2px;font-size:19px}.platform .use{font-size:15px;color:var(--muted);margin:0}
+.limit{font-size:14px;background:var(--bg);color:var(--ink);border-radius:10px;padding:7px 10px;font-weight:700}
+.case-card{display:flex;flex-direction:column;gap:10px;border-top:6px solid var(--cyan)}.case-card:nth-child(3n+2){border-top-color:var(--magenta)}.case-card:nth-child(3n+3){border-top-color:var(--yellow)}
+.case-card h3{font-size:18px}.case-card .summary{flex:1;color:var(--muted);font-size:15px}
+.case-card.selected{outline:3px solid var(--cyan-dark);background:var(--cyan-soft)}
+.case-lock{background:var(--cyan-soft);border:2px solid var(--cyan);padding:14px 17px;border-radius:14px;margin:17px 0;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.case-lock strong{color:var(--ink)}.case-lock small{display:block;color:var(--muted)}
+.table-wrap{overflow-x:auto}
+.dataset{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+.dataset td,.dataset th{padding:10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+.dataset th{background:var(--ink);color:#fff}.dataset td:first-child{font-weight:700;width:34%}
+.quote{padding:12px 15px;background:var(--yellow-soft);border-left:4px solid var(--yellow);border-radius:8px;margin:7px 0;font-size:15px}
+.question-list{padding-left:21px;margin:8px 0}.question-list li{margin:8px 0}
+.field{margin:17px 0}.field label{font-weight:700;display:block;margin-bottom:5px}
+.field .hint{font-size:14px;color:var(--muted);margin:0 0 8px}
+.field textarea,.field input,.field select{display:block;width:100%;padding:12px 13px;border:2px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);outline:none;resize:vertical}
+.field textarea:focus,.field input:focus,.field select:focus{border-color:var(--cyan);box-shadow:0 0 0 4px var(--cyan-soft)}
+.field textarea{min-height:96px}
+.tarea-letter{display:inline-grid;place-items:center;width:34px;height:34px;background:var(--cyan);color:#fff;border-radius:10px;margin-right:10px;font:800 18px var(--display)}
+#tareaForm .field:nth-of-type(2) .tarea-letter{background:var(--magenta)}#tareaForm .field:nth-of-type(3) .tarea-letter{background:var(--yellow);color:var(--ink)}#tareaForm .field:nth-of-type(4) .tarea-letter{background:var(--green)}#tareaForm .field:nth-of-type(5) .tarea-letter{background:var(--ink)}
+.helpers{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.helpers button{border:1.5px dashed #b9c2dc;background:var(--paper);border-radius:30px;padding:4px 11px;font-size:13px;color:var(--ink);font-weight:700}
+.helpers button:hover{border-style:solid;border-color:var(--magenta);background:var(--magenta-soft)}
+.divider{border:0;border-top:1px solid var(--line);margin:23px 0}
+.note{background:var(--yellow-soft);border:2px solid var(--yellow);padding:13px 16px;border-radius:14px;color:var(--ink);font-size:15px}
+.preview{white-space:pre-wrap;word-break:break-word;font-family:var(--mono);font-size:13.5px;line-height:1.7;background:var(--pre);border:1px solid var(--line);padding:21px;border-radius:14px;max-height:500px;overflow:auto}
+.assessment{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start;padding:18px 0;border-bottom:1px solid var(--line)}.assessment:last-child{border-bottom:0}
+.options{display:flex;flex-wrap:wrap;gap:7px}
+.choice{border:2px solid var(--line);padding:8px 12px;border-radius:10px;background:var(--paper);font-size:13px;font-weight:800}
+.choice[data-value="Cumple"][aria-pressed=true]{color:#fff;background:var(--green);border-color:var(--green)}
+.choice[data-value="Parcial"][aria-pressed=true]{color:var(--ink);background:var(--yellow);border-color:var(--yellow)}
+.choice[data-value="No cumple"][aria-pressed=true]{color:#fff;background:var(--magenta);border-color:var(--magenta)}
+.assessment textarea{min-height:76px}
+.step-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:26px;padding-top:20px;border-top:1px solid var(--line)}
+.progress-track{height:8px;border-radius:10px;background:var(--line);overflow:hidden}.progress-track span{height:100%;display:block;background:linear-gradient(90deg,var(--cyan),var(--magenta),var(--yellow));width:0;transition:width .2s}
+.mobile-nav{display:none}
+footer{font-size:13px;color:var(--muted);padding-top:28px}
+.toast{position:fixed;right:calc(22px + env(safe-area-inset-right,0px));bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:10;color:#fff;background:var(--ink);padding:12px 20px;border-radius:12px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.2s}.toast.show{opacity:1}
+.print-only,.print-page{display:none}
+.diffusion{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:22px;align-items:center}
+.diffusion canvas{width:100%;max-width:100%;aspect-ratio:8/5;border-radius:14px;border:4px solid var(--paper);box-shadow:0 0 0 2px var(--cyan);image-rendering:pixelated;display:block;background:#000}
+.diffusion input[type=range]{width:100%;accent-color:var(--magenta)}
+.analogies{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:6px}
+.analogy{border:1px solid var(--line);border-left:5px solid var(--cyan);border-radius:12px;padding:14px;background:var(--paper)}
+.analogy:nth-child(2){border-left-color:var(--magenta)}.analogy:nth-child(3){border-left-color:var(--yellow)}.analogy:nth-child(4){border-left-color:var(--green)}
+.analogy b{display:block;font-size:15px}.analogy span{font-size:14px;color:var(--muted)}
+.limits{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.limits .chip{background:var(--magenta-soft);color:var(--magenta-dark)}
+.dropzone{border:2.5px dashed #b9c2dc;border-radius:16px;padding:20px;text-align:center;color:var(--muted);background:var(--paper)}
+.dropzone.drag{border-color:var(--magenta);background:var(--magenta-soft)}
+.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;margin-top:14px}
+.shot{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg)}
+.shot img{display:block;width:100%;max-height:420px;object-fit:contain;background:var(--pre)}
+.shot figcaption{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 12px;font-size:13px;font-weight:800;color:var(--ink)}
+.counter{font-size:13px;color:var(--muted);margin-top:6px}.counter.over{color:var(--magenta-dark);font-weight:800}
+.confirm{border:2px solid var(--magenta);background:var(--magenta-soft);color:var(--ink);border-radius:14px;padding:14px 16px;margin:16px 0}
+@media(max-width:1050px){.main{padding:25px}.shell{grid-template-columns:220px 1fr}.grid.three{grid-template-columns:repeat(2,minmax(0,1fr))}.assessment{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.hero-art{display:none}}
+@media(max-width:700px){
+  .shell{display:block}.sidebar{display:none}
+  .mobile-nav{display:flex;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line);padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));gap:6px;overflow-x:auto}
+  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+  .mobile-nav button,.mobile-nav a{border:2px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;padding:7px 11px;white-space:nowrap;font-size:13px;font-weight:700;text-decoration:none}
+  .mobile-nav button.active{background:var(--ink);border-color:var(--ink);color:#fff}
+  .mobile-nav a{background:var(--cyan-soft);border-color:var(--cyan)}
+  .main{padding-block:19px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .hero{padding:24px}.grid,.grid.three{grid-template-columns:1fr}.panel{padding:18px}.topbar{margin-bottom:14px}
+  .case-lock{align-items:flex-start;flex-direction:column}.diffusion{grid-template-columns:1fr}
+}
+@page{size:A4;margin:13mm}
+@media print{
+  body{background:#fff;color:#1b1e3c;font:11pt/1.4 Arial,sans-serif}
+  .shell,.mobile-nav,.toast{display:none!important}.print-only{display:block!important}
+  .print-page{display:block!important;break-after:page;page-break-after:always;padding:6mm 3mm;overflow-wrap:anywhere}
+  .print-page:last-child{break-after:auto;page-break-after:auto}
+  .print-page h1{font-size:20pt;margin:0 0 5mm;color:#0072a8}
+  .print-block{border:1px solid #ccd3e3;padding:4mm;border-radius:3mm;margin:4mm 0;break-inside:avoid}
+  .print-label{font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#b81f5f}
+  .print-body{white-space:pre-wrap;font-size:10pt}
+  .print-page table{width:100%;border-collapse:collapse}.print-page td,.print-page th{border:1px solid #ccd3e3;padding:6px;text-align:left;font-size:9pt}
+  .print-page img{max-width:100%;max-height:110mm;display:block;margin:3mm 0}
+  .print-small{font-size:8pt;color:#4d5272}
+}
+</style>
+</head>
+<body>
+
+<div class="mobile-nav" id="mobileNav"></div>
+<div class="shell">
+<aside class="sidebar">
+  <div class="brand"><div class="brandmark">T</div><div><strong>TAREA Visual</strong><small>Imagen · Audio · Video · IAGen</small></div></div>
+  <div><div class="eyebrow side-title">Tu recorrido</div><nav class="nav" id="sideNav"></nav></div>
+  <a class="side-link xlink" data-target="teoria" href="teoria-tarea-visual.html"><span>Teoría de la clase</span><span aria-hidden="true">↗</span></a>
+  <div class="sidetip"><b>Tu trabajo se guarda en este navegador</b>Nada se envía a un servidor. Al terminar, copia o exporta tu resumen.</div>
+</aside>
+<main class="main">
+  <div class="topbar"><span class="eyebrow">Sesión 4 · IAGen para contenido visual y audiovisual</span><span class="meta"><a class="button small xlink" data-target="teoria" href="teoria-tarea-visual.html">Ver la teoría ↗</a><span class="status" id="headerStatus">Paso 0 de 6</span></span></div>
+  <div class="hero">
+    <div>
+      <div class="kicker"><span>Describir</span><span>Crear</span><span>Verificar</span><span>Ajustar</span></div>
+      <h1>Diseñar con IA empieza por <span class="hl">describir bien</span> lo que imaginas y <span class="hl">revisar con cuidado</span> lo que obtienes.</h1>
+      <p>La misma ruta TAREA de la sesión anterior, ahora para crear imágenes, infografías, audio y video. Primero piensas sin IA, luego construyes el prompt, creas, verificas y pides ajustes precisos.</p>
+    </div>
+    <div class="hero-art" aria-hidden="true"><span class="dot"></span><canvas id="heroCanvas" width="96" height="96"></canvas></div>
+  </div>
+
+  <div id="homeIntro" class="panel">
+    <div class="eyebrow">Antes de comenzar</div>
+    <h2>Resultados de aprendizaje</h2>
+    <div class="grid three">
+      <div class="card learn"><b>Aplicación</b><p>Usar el marco TAREA para describir piezas visuales y audiovisuales: qué se ve, cómo se ve y qué texto lleva.</p></div>
+      <div class="card learn"><b>Verificación</b><p>Evaluar imágenes, audio y video con una matriz que incluye exactitud del texto, coherencia y representación de las personas.</p></div>
+      <div class="card learn"><b>Mejora</b><p>Pedir ediciones dirigidas: cambiar una cosa a la vez y decir explícitamente qué se debe conservar.</p></div>
+    </div>
+    <p class="subtle">Modalidad: trabajo en equipo. Todos los casos usan información ficticia.</p>
+  </div>
+
+  <section class="page active" data-step="0">
+    <div class="section-heading"><div class="eyebrow">Paso 0 · Preparación</div><h2>Entiende la herramienta y escoge tu plataforma</h2><p class="lead">Todas las plataformas tienen plan gratuito. Los cupos cambian con frecuencia: si una se agota, pasa a la de respaldo.</p><a class="theory-link xlink" data-target="teoria" data-hash="herramientas" href="teoria-tarea-visual.html#herramientas">Repasar herramientas en la teoría ↗</a></div>
+
+    <div class="panel">
+      <h3>¿Cómo “piensa” una IA que genera imágenes?</h3>
+      <div class="diffusion">
+        <canvas id="diffCanvas" width="160" height="100" aria-label="Simulación: una imagen aparece desde el ruido"></canvas>
+        <div>
+          <p class="subtle" style="margin-top:0">La mayoría de generadores parten de <b>ruido</b>, como la estática de un televisor viejo, y en muchos pasos van quitando lo que no se parece a tu descripción. Es como un escultor que parte de un bloque y retira lo que sobra. Tu prompt es la guía del escultor.</p>
+          <label for="diffRange" class="subtle"><b id="diffLabel">Paso 0 de 50 · solo ruido</b></label>
+          <input id="diffRange" type="range" min="0" max="50" value="0">
+          <div class="meta" style="margin-top:8px"><button class="button small" id="diffPlay" type="button">▶ Ver el proceso</button></div>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="analogies">
+        <div class="analogy"><b>Imagen</b><span>Un escultor que parte del ruido y lo va limpiando según tu descripción.</span></div>
+        <div class="analogy"><b>Edición conversacional</b><span>Un diseñador que te escucha: “cambia el fondo, deja todo lo demás igual”.</span></div>
+        <div class="analogy"><b>Video</b><span>Un animador que dibuja 24 cuadros por segundo y debe recordar cómo era cada personaje.</span></div>
+        <div class="analogy"><b>Voz y música</b><span>Un locutor o compositor que escuchó millones de horas de audio y aprendió entonación y ritmo.</span></div>
+      </div>
+      <h3 style="margin-top:20px">Lo que vas a ver fallar hoy <a class="theory-link xlink" data-target="teoria" data-hash="limites" href="teoria-tarea-visual.html#limites" style="margin-left:8px">Cómo detectarlo ↗</a></h3>
+      <div class="limits"><span class="chip warm">Letras con errores o deformes</span><span class="chip warm">Manos y dedos de más</span><span class="chip warm">Estereotipos (“jefe” = hombre)</span><span class="chip warm">Datos o detalles inventados</span><span class="chip warm">Personajes que cambian en el video</span></div>
+    </div>
+
+    <div class="grid auto" id="platformCards"></div>
+    <div class="note" style="margin-top:18px">Usa tu cuenta personal de Google o Microsoft. No subas fotos de otras personas sin su permiso, ni documentos reales de tu trabajo. Los casos de esta guía son ficticios. Lo que crees con planes gratuitos sirve para aprender y prototipar; varios no permiten uso comercial.</div>
+  </section>
+
+  <section class="page" data-step="1">
+    <div class="section-heading"><div class="eyebrow">Paso 1 · Sin IA</div><h2>Selecciona un caso</h2><p class="lead">Hay casos de trabajo, de emprendimiento y de la vida personal. El caso que elijas te acompañará en todos los pasos siguientes.</p></div>
+    <div class="grid three" id="caseCards"></div>
+    <div id="chosenCase"></div>
+  </section>
+
+  <section class="page" data-step="2">
+    <div class="section-heading"><div class="eyebrow">Paso 2 · Sin IA</div><h2>Imagina la pieza antes de pedirla</h2><p class="lead">La IA no lee la mente. Antes de abrirla, pónganse de acuerdo sobre qué debe comunicar la pieza, cómo se la imaginan y qué no puede pasar.</p></div>
+    <div class="case-context"></div>
+    <div class="panel" id="humanForm"></div>
+  </section>
+
+  <section class="page" data-step="3">
+    <div class="section-heading"><div class="eyebrow">Paso 3 · Diseñar el prompt</div><h2>Construye tu prompt visual con TAREA</h2><p class="lead">Los mismos cinco componentes de la sesión anterior, pensados ahora para imagen, audio y video. Los botones punteados agregan frases útiles al campo.</p><a class="theory-link xlink" data-target="teoria" data-hash="tarea-visual" href="teoria-tarea-visual.html#tarea-visual">Ver TAREA visual con ejemplos ↗</a></div>
+    <div class="case-context"></div>
+    <div class="panel"><div class="meta" style="justify-content:space-between"><h3>Tu análisis previo</h3><button class="button small" type="button" data-go="2">Editar paso 2 ↗</button></div><div id="humanPreview"></div></div>
+    <div class="panel" id="tareaForm"></div>
+    <div class="panel">
+      <div class="meta" style="justify-content:space-between"><h3>Prompt TAREA completo</h3><button class="button primary" type="button" id="copyPrompt">Copiar prompt completo</button></div>
+      <p class="subtle">Para Gemini, ChatGPT o Copilot. Incluye los datos del caso.</p>
+      <div class="preview" id="promptPreview"></div>
+      <hr class="divider">
+      <div class="meta" style="justify-content:space-between"><h3>Versión compacta</h3><button class="button" type="button" id="copyCompact">Copiar versión compacta</button></div>
+      <p class="subtle">Un solo párrafo para cajas de texto cortas: Bing Image Creator, Google Flow, Suno o la personalización de NotebookLM. Revisa que los textos exactos queden incluidos.</p>
+      <div class="preview" id="compactPreview" style="max-height:220px"></div>
+      <div class="counter" id="compactCount"></div>
+    </div>
+  </section>
+
+  <section class="page" data-step="4">
+    <div class="section-heading"><div class="eyebrow">Paso 4 · Crear con IA</div><h2>Genera la pieza y guarda el resultado</h2><p class="lead">Ahora sí, usa la IA. Copia tu prompt, pégalo en la plataforma y trae aquí lo que obtuviste para evaluarlo en el siguiente paso.</p></div>
+    <div class="case-context"></div>
+    <div class="panel">
+      <h3>Cómo hacerlo</h3>
+      <ol class="question-list">
+        <li>Copia el prompt del paso 3 (completo o compacto según la plataforma).</li>
+        <li>Abre la plataforma en una pestaña nueva y pégalo en una conversación nueva.</li>
+        <li>Descarga la imagen o toma un pantallazo. Para audio o video, copia el enlace o describe lo que escuchaste.</li>
+        <li>Súbela aquí, o pega el pantallazo con Ctrl+V.</li>
+      </ol>
+      <div class="meta"><button class="button primary" type="button" id="copyPrompt2">Copiar prompt completo</button><button class="button" type="button" id="copyCompact2">Copiar versión compacta</button><button class="button" type="button" data-go="0">Ir a plataformas</button></div>
+      <div class="grid" style="margin-top:8px">
+        <div class="field"><label for="toolUsed">Plataforma utilizada</label><select id="toolUsed" data-field="toolUsed"></select></div>
+        <div class="field"><label for="mediaLink">Enlace al audio o video (opcional)</label><input id="mediaLink" data-field="mediaLink" placeholder="Pega aquí el enlace para compartir, si la plataforma lo da"></div>
+      </div>
+      <div class="dropzone" id="drop1"><b>Arrastra aquí la imagen o el pantallazo</b><br><span class="subtle">También puedes pegarla con Ctrl+V</span><div class="meta" style="justify-content:center;margin-top:10px"><label class="button small" for="file1">Elegir archivo</label><input id="file1" type="file" accept="image/*" hidden></div></div>
+      <div class="shots" id="shots1"></div>
+      <div class="field"><label for="aiResponse">¿Qué obtuviste?</label><p class="hint">Describe lo que ves o escuchas: ¿qué salió bien, qué te sorprendió, qué está mal? Este registro sirve para evaluar con evidencia.</p><textarea id="aiResponse" data-field="aiResponse" rows="6" placeholder="Ej.: El afiche tiene buen color, pero escribió “novienbre” y la hora quedó en 3:30..."></textarea></div>
+    </div>
+  </section>
+
+  <section class="page" data-step="5">
+    <div class="section-heading"><div class="eyebrow">Paso 5 · Pensamiento crítico</div><h2>Evalúa la pieza con evidencia</h2><p class="lead">Valora cada criterio como Cumple, Parcial o No cumple, y explica por qué señalando algo concreto de la pieza.</p><a class="theory-link xlink" data-target="teoria" data-hash="riesgos" href="teoria-tarea-visual.html#riesgos">Repasar riesgos y ética ↗</a></div>
+    <div class="case-context"></div>
+    <div class="panel"><div class="meta" style="justify-content:space-between"><h3>Pieza que vas a evaluar</h3><button class="button small" type="button" data-go="4">Editar resultado ↗</button></div><div class="shots" id="shotsEval"></div><div id="answerPreview" class="preview" style="max-height:200px;margin-top:12px"></div></div>
+    <div class="panel"><h3>Matriz de validación visual</h3><div class="subtle">Una calificación sin justificación no es una validación.</div><div id="assessment"></div></div>
+    <div class="panel">
+      <h3>Pide una edición dirigida</h3>
+      <p class="subtle">En imagen y video funciona mejor corregir poco a poco: di qué conservar, cambia una o dos cosas por vez y repite el texto exacto que debe aparecer.</p>
+      <div class="field"><label for="revision">¿Qué ajustes específicos pedirás?</label><textarea id="revision" data-field="revision" placeholder="Ej.: Conserva los colores y las personas. Corrige el texto: escribe exactamente “viernes 14 de noviembre”. Quita el logo inventado."></textarea></div>
+      <div class="meta"><button class="button primary" type="button" id="copyRevision">Copiar solicitud de edición</button><button class="button" type="button" id="copyCaseRevision">Copiar edición sugerida del caso</button></div>
+      <div class="dropzone" id="drop2" style="margin-top:16px"><b>Resultado después de la edición (opcional)</b><br><span class="subtle">Arrastra, elige o pega con Ctrl+V para comparar antes y después</span><div class="meta" style="justify-content:center;margin-top:10px"><label class="button small" for="file2">Elegir archivo</label><input id="file2" type="file" accept="image/*" hidden></div></div>
+      <div class="shots" id="shots2"></div>
+      <div class="field"><label for="revisedResult">¿Qué cambió con la edición?</label><textarea id="revisedResult" data-field="revisedResult" placeholder="¿Qué corrigió la IA? ¿Dañó algo que estaba bien? ¿Persistieron errores?"></textarea></div>
+    </div>
+  </section>
+
+  <section class="page" data-step="6">
+    <div class="section-heading"><div class="eyebrow">Paso 6 · Síntesis y entrega</div><h2>Documenta lo aprendido</h2><p class="lead">Escriban su reflexión, decidan qué harían con la pieza y guarden el resumen del recorrido.</p><a class="theory-link xlink" data-target="teoria" data-hash="criterio" href="teoria-tarea-visual.html#criterio">Usar el semáforo de decisión ↗</a></div>
+    <div class="case-context"></div>
+    <div class="panel">
+      <h3>Información de la actividad</h3>
+      <div class="grid"><div class="field"><label for="team">Nombre del equipo</label><input id="team" data-field="team" placeholder="Ej.: Equipo 3"></div><div class="field"><label for="members">Integrantes</label><input id="members" data-field="members" placeholder="Nombres de los participantes"></div></div>
+      <div class="field"><label for="reflection">Reflexión del equipo</label><p class="hint">¿Qué aprendieron sobre describir una imagen, verificarla y corregirla? Incluyan un error que detectaron, una mejora que lograron con la edición y una situación de su trabajo o su vida donde usarían esto.</p><textarea id="reflection" data-field="reflection" rows="6" placeholder="Al principio pedimos... / La IA se equivocó en... / Lo corregimos diciendo... / Lo usaríamos para..."></textarea></div>
+      <div class="field"><label for="decision">Decisión sobre la pieza</label><select id="decision" data-field="decision"><option value="">Selecciona una opción</option><option>Se puede usar tal como quedó</option><option>Se puede usar después de ajustes manuales (por ejemplo, el texto en Canva)</option><option>Sirve como borrador para un diseñador o un área de comunicaciones</option><option>Se descarta: hay que rehacerla</option></select></div>
+      <div class="field"><label for="conclusion">¿Por qué?</label><textarea id="conclusion" data-field="conclusion" rows="3" placeholder="¿Bajo qué condiciones la usarían? ¿Quién debería revisarla antes?"></textarea></div>
+    </div>
+    <div class="panel">
+      <h3>Resumen de tu recorrido</h3>
+      <div id="finalRecap"></div>
+      <div class="shots" id="shotsFinal"></div>
+      <hr class="divider">
+      <div class="meta">
+        <button class="button primary" type="button" id="copySummary">Copiar resumen completo</button>
+        <button class="button" type="button" id="exportPdf" hidden>Exportar a PDF</button>
+        <button class="button" type="button" id="exportJson" hidden>Guardar respaldo (.json)</button>
+        <label class="button" for="importJSON" id="importLabel" hidden>Restaurar respaldo</label><input id="importJSON" type="file" accept="application/json" hidden>
+        <button class="button" type="button" id="resetAll">Empezar de nuevo</button>
+      </div>
+      <div id="resetConfirm"></div>
+      <p class="subtle" id="exportHint">El resumen copiado se puede pegar en un correo, un documento o el chat del curso.</p>
+    </div>
+  </section>
+
+  <div class="step-footer"><button class="button" id="prevBtn" type="button">← Anterior</button><div style="min-width:110px;flex:1;max-width:350px"><div class="progress-track"><span id="progressBar"></span></div><div class="subtle" id="progressText" style="text-align:center;font-size:12px;margin-top:5px"></div></div><button class="button primary" id="nextBtn" type="button">Siguiente →</button></div>
+  <footer>Laboratorio TAREA Visual · Adaptación del Laboratorio TAREA del curso para contenido visual y audiovisual · Actividad con datos ficticios · Cupos gratuitos revisados en octubre de 2026, pueden cambiar.</footer>
+</main>
+</div>
+<div class="toast" id="toast" role="status"></div><div id="printRoot" class="print-only"></div>
+
+<script>
+const platforms=[
+ {name:'Gemini',url:'https://gemini.google.com/app?hl=es',by:'Google',kind:'Imagen',use:'Crear y editar imágenes conversando.',limit:'Cerca de 20 imágenes al día',tag:'Principal'},
+ {name:'Bing Image Creator',url:'https://www.bing.com/images/create',by:'Microsoft',kind:'Imagen',use:'Respaldo si Gemini se agota. Prompts cortos.',limit:'15 rápidas al día; luego modo lento',tag:'Respaldo'},
+ {name:'Napkin AI',url:'https://app.napkin.ai',by:'Napkin',kind:'Infografía',use:'Convierte un texto corto en diagrama o infografía.',limit:'500 créditos por semana (≈500 palabras)',tag:'Principal'},
+ {name:'Canva',url:'https://www.canva.com',by:'Canva',kind:'Diseño',use:'Poner el texto final sobre la imagen, sin errores.',limit:'Plantillas gratis; pocos usos de IA',tag:'Apoyo'},
+ {name:'NotebookLM',url:'https://notebooklm.google.com',by:'Google',kind:'Audio y video',use:'Pódcast o video explicativo a partir de un documento.',limit:'3 audios y 3 videos al día',tag:'Principal'},
+ {name:'Google Flow',url:'https://labs.google/fx/tools/flow',by:'Google',kind:'Video',use:'Clips de unos 8 segundos, con sonido.',limit:'50 créditos al día (≈5 clips) · solo mayores de 18',tag:'Avanzado'},
+ {name:'Suno',url:'https://suno.com',by:'Suno',kind:'Música',use:'Jingles y canciones con letra en español.',limit:'≈10 canciones al día · no comercial',tag:'Opcional'},
+ {name:'ChatGPT',url:'https://chatgpt.com',by:'OpenAI',kind:'Imagen',use:'Imágenes conversacionales.',limit:'Cupo gratis muy bajo (2 o 3 al día)',tag:'Solo demo'}
+];
+const cases=[
+{id:1,title:'¿Cómo invitamos a la jornada de integración?',label:'Afiche para un evento interno',kind:'Imagen',tools:['Gemini','Bing Image Creator','Canva'],
+ intro:'El área de Bienestar te pide un afiche para invitar a todo el personal a una actividad de integración. Estos son los datos ficticios:',
+ rows:[['Evento','Tarde de integración: Bingo y Talentos'],['Fecha','Viernes 14 de noviembre de 2026'],['Hora','3:00 a 6:00 p. m.'],['Lugar','Salón principal, piso 2'],['Público','Todo el personal y sus familias'],['Tono','Alegre, incluyente, para todas las edades'],['Inscripción','Con tu jefe inmediato antes del 7 de noviembre']],
+ task:'Usa TAREA para pedir un afiche vertical que incluya la información exacta y que invite a participar.',
+ checks:['¿La fecha, la hora y el lugar aparecen escritos exactamente como en los datos?','¿Hay errores de ortografía o letras deformes?','¿Las personas representan distintas edades y géneros?','¿Inventó premios, precios o datos que no estaban?'],
+ revision:'Conserva los colores, las personas y la composición. Corrige solo el texto: escribe exactamente "Viernes 14 de noviembre · 3:00 a 6:00 p. m. · Salón principal, piso 2". Quita cualquier dato que no esté en esta lista.',
+ learning:'La IA dibuja las letras, no las escribe. Revisa siempre el texto o agrégalo después en Canva.'},
+{id:2,title:'¿Cómo explicamos un trámite en una sola imagen?',label:'Infografía paso a paso',kind:'Infografía',tools:['Napkin AI','Gemini','Canva'],
+ intro:'La mesa de ayuda recibe muchas llamadas sobre cómo pedir un certificado laboral. Te piden una infografía con este procedimiento ficticio:',
+ quotes:['1. Ingresa al portal de autogestión con tu usuario y contraseña.','2. Elige "Certificados" y luego "Certificado laboral".','3. Indica si lo necesitas con salario o sin salario.','4. Descarga el PDF. También llega a tu correo en máximo 2 días hábiles.','¿Problemas? Escribe a la mesa de ayuda, extensión 4521.'],
+ task:'Usa TAREA para pedir una infografía clara, legible en el celular, que respete los cuatro pasos.',
+ checks:['¿Respeta el orden y el contenido de los cuatro pasos?','¿Agregó pasos, plazos o requisitos que no existen?','¿Se puede leer en la pantalla de un celular?','¿Los íconos ayudan a entender o confunden?'],
+ revision:'Simplifica: máximo 8 palabras por paso, letra grande y un ícono por paso. Conserva exactamente "2 días hábiles" y "extensión 4521". No agregues pasos.',
+ learning:'Una infografía bonita con un paso equivocado genera más llamadas a la mesa de ayuda, no menos.'},
+{id:3,title:'¿Cómo le damos imagen a un emprendimiento?',label:'Logo y publicación para WhatsApp',kind:'Imagen',tools:['Gemini','Bing Image Creator','Canva'],
+ intro:'Don Álvaro, de 67 años, se pensionó y empezó a vender miel de la finca de su familia. Necesita verse más profesional. Datos ficticios:',
+ rows:[['Negocio','Miel La Esperanza'],['Producto','Miel de abejas de una finca en Boyacá, en frascos de 250 g y 500 g'],['Valores','Natural, familiar, hecha con tradición'],['Clientes','Vecinos y conocidos que le compran por WhatsApp'],['Necesita','Un logo sencillo y una imagen para su estado de WhatsApp'],['Mensaje del estado','"Pedidos los martes y viernes"']],
+ task:'Usa TAREA para pedir primero tres propuestas de logo y luego la imagen para el estado de WhatsApp.',
+ checks:['¿El logo es simple y se reconoce en tamaño pequeño?','¿Se parece demasiado a una marca que ya existe?','¿El texto tiene errores?','¿Transmite lo artesanal y familiar, o parece de supermercado?'],
+ revision:'Haz tres variantes más simples del logo: máximo dos colores, sin texto pequeño y que se vea bien en un círculo de perfil. Conserva el nombre exacto "Miel La Esperanza".',
+ learning:'La IA sirve mucho para explorar ideas de marca. La versión final necesita criterio humano y, si el negocio crece, revisar que no se parezca a otra marca registrada.'},
+{id:4,title:'¿Cómo hacemos una invitación familiar que emocione?',label:'Celebración personal',kind:'Imagen y música',tools:['Gemini','Canva','Suno'],
+ intro:'Laura quiere sorprender a sus papás, Rosa y Hernando, en sus bodas de oro. Todos los datos son ficticios:',
+ rows:[['Celebración','50 años de casados de Rosa y Hernando'],['Fecha y hora','Sábado 6 de diciembre, 12:30 p. m.'],['Lugar','Restaurante El Portal, Chía'],['Estilo','Elegante, tonos dorados, flores'],['Frase','"50 años eligiéndonos"'],['Confirmar asistencia','Con Laura, antes del 30 de noviembre'],['Opcional','Una canción corta para el video de la fiesta']],
+ task:'Usa TAREA para pedir una invitación digital para enviar por WhatsApp. Si les sobra tiempo, pidan a Suno una canción corta con la frase.',
+ checks:['¿Los datos aparecen exactos?','¿Las personas de la imagen se ven de la edad correcta, sin caricaturizarlas?','¿Se ve elegante o recargada?','¿Usarían fotos reales de los papás? ¿Pidieron permiso?'],
+ revision:'Conserva el estilo dorado y las flores. Haz que la pareja se vea de unos 75 años, con naturalidad y sin exagerar arrugas. Escribe exactamente "50 años eligiéndonos" y "Sábado 6 de diciembre · 12:30 p. m.".',
+ learning:'Subir fotos de familiares a una IA gratuita es una decisión que les corresponde a ellos. Pregunta antes.'},
+{id:5,title:'¿Cómo logramos que la gente nueva sí conozca el manual?',label:'De documento a pódcast o video',kind:'Audio y video',tools:['NotebookLM'],
+ intro:'Nadie lee el manual de bienvenida. Talento Humano quiere convertirlo en un pódcast o un video corto. Este es el texto ficticio que se usará como fuente:',
+ quotes:['Bienvenida a la organización. Nuestro horario es de lunes a viernes, de 7:30 a. m. a 5:00 p. m., con una hora de almuerzo entre las 12:00 m. y las 2:00 p. m. Puedes trabajar desde casa dos días a la semana, acordados con tu jefe inmediato.','Durante tu primera semana tendrás un compañero guía que te mostrará las instalaciones y las herramientas. Las solicitudes de vacaciones, permisos y certificados se hacen en el portal de autogestión. Para fallas con el computador o el correo, escribe a la mesa de ayuda, extensión 4521.','Cada día, a las 10:00 a. m. y a las 3:00 p. m., hacemos una pausa activa de 5 minutos. El último viernes de cada mes celebramos los cumpleaños. Si tienes dudas, tu primer contacto es tu jefe inmediato; el segundo, el equipo de Talento Humano.'],
+ task:'Copia el texto, créalo como fuente en NotebookLM ("Texto copiado") y usa TAREA para escribir las instrucciones de personalización del resumen de audio o de video.',
+ checks:['¿Dice algo que no está en el texto (beneficios, nombres, cifras)?','¿Respeta los horarios, la extensión y los dos días de trabajo en casa?','¿El tono hace sentir bienvenida a la persona o la abruma?','¿La duración es razonable para escucharlo camino al trabajo?'],
+ revision:'Ajusta la personalización: dirígete a una persona en su primer día, en español de Colombia, en menos de 5 minutos. Repite al final los tres datos clave: horario, extensión 4521 y a quién preguntar. No agregues información que no esté en la fuente.',
+ learning:'NotebookLM trabaja sobre tus fuentes. Si la fuente está desactualizada, el pódcast también lo estará, aunque suene muy convincente.'},
+{id:6,title:'¿Cómo hacemos una campaña que la gente recuerde?',label:'Video corto y jingle de bienestar',kind:'Video y música',tools:['Google Flow','Suno','Gemini'],
+ intro:'Mucha gente pasa ocho horas sentada. Bienestar lanza una campaña de pausas activas y quiere piezas para las pantallas del edificio. Datos ficticios:',
+ rows:[['Campaña','"Muévete 5"'],['Qué es','Una pausa activa de 5 minutos a las 10:00 a. m. y a las 3:00 p. m.'],['Público','Personal de oficina de todas las edades'],['Mensaje','"Cinco minutos que te cambian el día"'],['Piezas','Un clip de 8 segundos para las pantallas y un jingle de 20 a 30 segundos'],['Cuidado','Solo estiramientos suaves; nada que pueda causar una lesión']],
+ task:'Usa TAREA para pedir el clip de video (Flow) o el jingle (Suno). Si eligen video, describan una sola acción por clip.',
+ checks:['¿El movimiento de las personas se ve natural, sin brazos o manos deformes?','¿Muestra algún ejercicio que pueda ser peligroso?','¿El jingle dice el mensaje exacto?','¿El video se entiende sin sonido, como en una pantalla de pasillo?'],
+ revision:'Conserva el lugar y las personas. Haz un solo movimiento lento: estirar los brazos hacia arriba sentados en la silla. Cámara fija, plano medio, luz natural. Al final, el texto "Muévete 5" en la pared.',
+ learning:'En video, una acción simple por toma da resultados mucho más coherentes que una escena con muchas cosas pasando.'}
+];
+const casesById=Object.fromEntries(cases.map(c=>[c.id,c]));
+const steps=['Plataformas','Elegir caso','Imaginar la pieza','Prompt TAREA','Crear con IA','Validación crítica','Reflexión y entrega'];
+const humanFields=[
+ ['purpose','¿Para qué sirve la pieza y quién la va a ver?','Propósito y público. Piensen en la edad, el lugar y el medio donde la verán.'],
+ ['message','¿Qué debe entender alguien que la mire solo 3 segundos?','El mensaje principal en una frase.'],
+ ['elements','¿Qué tiene que aparecer sí o sí?','Textos exactos, fechas, objetos, personas, logotipo, sonidos.'],
+ ['look','¿Cómo se la imaginan?','Estilo (foto, ilustración, acuarela), colores, ambiente, formato (vertical, cuadrado, horizontal) o duración.'],
+ ['avoid','¿Qué no debe aparecer y qué podría salir mal?','Errores de texto, estereotipos, marcas ajenas, datos inventados, personas reales.']];
+const tareaFields=[
+ ['task','T','Tarea principal','¿Qué pieza necesitas y para qué? Ej.: "Crea un afiche vertical para invitar al personal a..."',['Crea un afiche vertical para ','Crea una infografía de ','Diseña tres propuestas de logo para ','Genera un clip de video de 8 segundos para ','Compón un jingle de 30 segundos para ']],
+ ['action','A','Acción esperada','Describe la escena: quién aparece, qué hace, dónde está y cómo se organiza la composición.',['Muestra a ','en un ','La composición: título arriba, imagen al centro y datos abajo. ','Deja espacio libre arriba para el título. ','Una sola acción, cámara fija. ']],
+ ['role','R','Rol del modelo','¿Desde qué experiencia debe crear la IA?',['Actúa como diseñador gráfico especializado en comunicación interna. ','Actúa como ilustrador de material educativo para adultos. ','Actúa como director de fotografía. ','Actúa como compositor de jingles publicitarios. ','Actúa como guionista de pódcast. ']],
+ ['example','E','Ejemplo de salida','¿Cómo debe verse o sonar? Formato, proporción, estilo, colores, luz o duración.',['Formato vertical 9:16. ','Formato cuadrado 1:1. ','Formato horizontal 16:9. ','Estilo ilustración plana. ','Estilo fotografía realista. ','Estilo acuarela. ','Estilo 3D amigable. ','Colores cálidos. ','Luz natural de mañana. ','Plano medio. ','Duración: 8 segundos. ','Ritmo alegre de cumbia. ']],
+ ['clarifications','A','Aclaraciones adicionales','Textos exactos entre comillas, público, restricciones y lo que se debe evitar.',['Escribe exactamente este texto: "" ','Sin logotipos ni marcas. ','No agregues texto distinto al indicado. ','Personas diversas en edad y género. ','Letra grande y legible. ','Sin personas reales reconocibles. ','Revisa la ortografía en español. ','No inventes datos. ']]];
+const criteria=[
+ ['exactitud','Exactitud','¿Textos, fechas y datos aparecen tal cual? ¿Hay letras deformes, manos u objetos mal dibujados?'],
+ ['pertinencia','Pertinencia','¿La pieza cumple su propósito y le habla al público del caso?'],
+ ['completitud','Completitud','¿Incluye todo lo pedido: elementos, formato, proporción o duración?'],
+ ['trazabilidad','Trazabilidad','¿Todo lo que muestra o dice se puede verificar con los datos del caso? ¿Inventó algo?'],
+ ['coherencia','Coherencia','¿Se podría usar en el contexto real? ¿Es legible y consistente con el estilo pedido?'],
+ ['etica','Representación y ética','¿Evita estereotipos? ¿Imita marcas o personas reales? ¿Podría confundirse con una foto real?']];
+
+const THEORY_URL='https://claude.ai/artifact/4p5oAXEjQT6CKAyFWq6976';
+const storageKey='laboratorio-tarea-visual-v1';
+const blank=()=>({caseId:null,step:0,human:{},tarea:{},ratings:{},reasons:{},fields:{},images:{}});
+let state=blank();
+try{const saved=JSON.parse(localStorage.getItem(storageKey)||'null');if(saved&&typeof saved==='object'){state={...blank(),...saved,human:saved.human||{},tarea:saved.tarea||{},ratings:saved.ratings||{},reasons:saved.reasons||{},fields:saved.fields||{},images:saved.images||{}}}}catch(e){}
+let step=0,pendingCase=null,imgWarned=false;
+const embedded=(()=>{try{return window.self!==window.top}catch(e){return true}})();
+const el=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function save(){try{localStorage.setItem(storageKey,JSON.stringify({...state,step}))}catch(e){try{localStorage.setItem(storageKey,JSON.stringify({...state,images:{},step}));if(!imgWarned){imgWarned=true;toast('La imagen se ve aquí, pero no cupo en la memoria del navegador')}}catch(x){}}}
+function toast(m){const t=el('toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2600)}
+
+function dataText(c){if(!c)return '';let x=`CASO ${c.id}. ${c.title}\n${c.intro}\n`;if(c.rows)x+='\n'+c.rows.map(r=>`- ${r[0]}: ${r[1]}`).join('\n');if(c.quotes)x+='\n'+c.quotes.join('\n');return x+`\n\nACTIVIDAD: ${c.task}`}
+function dataHtml(c){if(!c)return '';return `<p>${esc(c.intro)}</p>${c.rows?`<div class="table-wrap"><table class="dataset"><thead><tr><th>Dato</th><th>Detalle (ficticio)</th></tr></thead><tbody>${c.rows.map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td></tr>`).join('')}</tbody></table></div>`:''}${c.quotes?c.quotes.map(q=>`<div class="quote">${esc(q)}</div>`).join(''):''}<p><b>Actividad:</b> ${esc(c.task)}</p><div class="meta"><span class="subtle">Herramientas sugeridas:</span>${c.tools.map(t=>`<span class="chip">${esc(t)}</span>`).join('')}</div>`}
+function hasWork(){return Object.values(state.human).some(v=>v&&v.trim())||Object.values(state.tarea).some(v=>v&&v.trim())||Object.keys(state.ratings).length||Object.keys(state.images).length}
+function selectCase(id,force){
+  if(state.caseId&&state.caseId!==id&&hasWork()&&!force){pendingCase=id;renderCaseSelection();el('chosenCase').scrollIntoView({behavior:'smooth',block:'start'});return}
+  if(state.caseId!==id&&force){const keep=state.fields;state={...blank(),fields:{team:keep.team||'',members:keep.members||''}}}
+  pendingCase=null;state.caseId=id;save();renderCaseSelection();renderContexts();renderFormValues();renderAll();toast(`Caso ${id} seleccionado`)}
+function renderCaseSelection(){
+  el('caseCards').innerHTML=cases.map(c=>`<article class="card case-card ${state.caseId===c.id?'selected':''}"><div class="meta"><span class="chip">Caso ${c.id}</span><span class="chip warm">${esc(c.kind)}</span></div><h3>${esc(c.title)}</h3><div class="summary">${esc(c.label)}</div><button class="button ${state.caseId===c.id?'primary':''}" type="button" data-case="${c.id}">${state.caseId===c.id?'✓ Caso elegido':'Elegir este caso'}</button></article>`).join('');
+  const c=casesById[state.caseId];let html='';
+  if(pendingCase){html+=`<div class="confirm"><b>Al cambiar al caso ${pendingCase} se borrará lo que hicieron en el caso ${state.caseId}.</b><div class="meta" style="margin-top:10px"><button class="button primary small" type="button" data-case-force="${pendingCase}">Sí, cambiar de caso</button><button class="button small" type="button" id="cancelCase">Seguir con el caso ${state.caseId}</button></div></div>`}
+  if(c)html+=`<div class="panel"><div class="meta" style="justify-content:space-between"><div><span class="chip">Caso seleccionado</span><h2 style="margin-top:10px">${esc(c.title)}</h2></div><button class="button small" type="button" data-copy="case">Copiar caso y datos</button></div>${dataHtml(c)}<hr class="divider"><h3>Preguntas para verificar la pieza</h3><ul class="question-list">${c.checks.map(q=>`<li>${esc(q)}</li>`).join('')}</ul><p class="note">${esc(c.learning)}</p></div>`;
+  el('chosenCase').innerHTML=html}
+function renderContexts(){const c=casesById[state.caseId];document.querySelectorAll('.case-context').forEach(n=>n.innerHTML=c?`<div class="case-lock"><div><strong>Caso ${c.id}: ${esc(c.title)}</strong><small>${esc(c.label)} · ${esc(c.kind)} · Datos completos en el paso 1</small></div><div class="meta"><button class="button small" type="button" data-copy="case">Copiar datos</button><button class="button small" type="button" data-go="1">Ver caso</button></div></div>`:`<div class="note" style="margin:16px 0">Todavía no han elegido un caso. <button class="button small" type="button" data-go="1">Elegir caso</button></div>`)}
+function formHTML(){
+  el('humanForm').innerHTML=`<h3>Su idea, antes de la IA</h3><p class="subtle">Respondan sin abrir ninguna plataforma.</p>`+humanFields.map(([id,label,hint])=>`<div class="field"><label for="h_${id}">${esc(label)}</label><p class="hint">${esc(hint)}</p><textarea id="h_${id}" data-section="human" data-name="${id}" placeholder="Escriban la decisión del equipo..."></textarea></div>`).join('');
+  el('tareaForm').innerHTML=`<h3>Los cinco componentes de TAREA</h3>`+tareaFields.map(([id,letter,title,hint,chips])=>`<div class="field"><label for="t_${id}"><span class="tarea-letter">${letter}</span>${esc(title)}</label><p class="hint">${esc(hint)}</p><textarea id="t_${id}" data-section="tarea" data-name="${id}" placeholder="Escriban aquí: ${esc(title.toLowerCase())}..."></textarea><div class="helpers">${chips.map(ch=>`<button type="button" data-insert="${id}" data-text="${esc(ch)}">+ ${esc(ch.trim().replace(/""/,'“…”'))}</button>`).join('')}</div></div>`).join('');
+  el('assessment').innerHTML=criteria.map(([id,title,q])=>`<div class="assessment"><div><h3>${esc(title)}</h3><p class="subtle">${esc(q)}</p><div class="options" role="group" aria-label="Valoración de ${esc(title)}">${['Cumple','Parcial','No cumple'].map(v=>`<button class="choice" type="button" data-rating="${id}" data-value="${v}" aria-pressed="false">${v}</button>`).join('')}</div></div><div class="field" style="margin:0"><label for="reason_${id}">Evidencia</label><textarea id="reason_${id}" data-section="reasons" data-name="${id}" placeholder="¿Qué ven en la pieza que lo demuestra?"></textarea></div></div>`).join('');
+  el('toolUsed').innerHTML='<option value="">Selecciona la plataforma</option>'+platforms.map(p=>`<option>${esc(p.name)}</option>`).join('')+'<option>Otra</option>'}
+function syncRatings(){document.querySelectorAll('[data-rating]').forEach(b=>b.setAttribute('aria-pressed',String(state.ratings[b.dataset.rating]===b.dataset.value)))}
+function renderFormValues(){document.querySelectorAll('[data-section]').forEach(x=>x.value=state[x.dataset.section]?.[x.dataset.name]||'');document.querySelectorAll('[data-field]').forEach(x=>x.value=state.fields[x.dataset.field]||'');syncRatings()}
+const clean=s=>(s||'').trim();
+function makePrompt(){const c=casesById[state.caseId],t=state.tarea;return ['PROMPT VISUAL · MARCO TAREA',`T — TAREA PRINCIPAL\n${clean(t.task)||'[Definir la pieza y su propósito]'}`,`A — ACCIÓN ESPERADA\n${clean(t.action)||'[Describir la escena y la composición]'}`,`R — ROL DEL MODELO\n${clean(t.role)||'[Definir el rol]'}`,`E — EJEMPLO DE SALIDA (FORMATO Y ESTILO)\n${clean(t.example)||'[Definir formato, estilo, colores o duración]'}`,`A — ACLARACIONES ADICIONALES\n${clean(t.clarifications)||'[Textos exactos, restricciones y qué evitar]'}`,`DATOS DEL CASO (FICTICIOS)\n${c?dataText(c):'[Seleccionar un caso en el paso 1]'}`].join('\n\n')}
+function makeCompact(){const t=state.tarea;const parts=['task','action','role','example','clarifications'].map(k=>clean(t[k]).replace(/\s+/g,' ')).filter(Boolean).map(s=>/[.!?"”]$/.test(s)?s:s+'.');return parts.join(' ')||'Completa los componentes TAREA para ver la versión compacta.'}
+function makeRevision(){const issues=criteria.filter(([id])=>state.ratings[id]&&state.ratings[id]!=='Cumple').map(([id,title])=>`- ${title} (${state.ratings[id]}): ${clean(state.reasons[id])||'revisar este aspecto'}`);return `Edita la pieza anterior. Conserva todo lo que no se menciona aquí.\n\nLO QUE DEBES CORREGIR:\n${issues.length?issues.join('\n'):'- Revisa exactitud del texto, coherencia del estilo y representación de las personas.'}\n\nINSTRUCCIÓN DEL EQUIPO:\n${clean(state.fields.revision)||casesById[state.caseId]?.revision||'[Especificar el ajuste]'}\n\nNo agregues elementos nuevos ni texto distinto al indicado.`}
+function shotHTML(key,label,removable){const src=state.images[key];if(!src)return '';return `<figure class="shot" style="margin:0"><img src="${src}" alt="${esc(label)}"><figcaption><span>${esc(label)}</span>${removable?`<button class="button small" type="button" data-remove="${key}">Quitar</button>`:''}</figcaption></figure>`}
+function renderImages(){
+  el('shots1').innerHTML=shotHTML('first','Primer resultado',true);
+  el('shots2').innerHTML=shotHTML('revised','Después de la edición',true);
+  const both=shotHTML('first','Antes',false)+shotHTML('revised','Después',false);
+  el('shotsEval').innerHTML=shotHTML('first','Primer resultado',false)||'<div class="subtle">Todavía no han subido una imagen. Si su pieza es audio o video, descríbanla en el paso 4.</div>';
+  el('shotsFinal').innerHTML=both}
+function renderHumanPreview(){el('humanPreview').innerHTML=humanFields.map(([id,q])=>`<div style="padding:10px 0;border-bottom:1px solid var(--line)"><b style="font-size:13px">${esc(q)}</b><div class="subtle" style="white-space:pre-wrap">${esc(state.human[id]||'Pendiente')}</div></div>`).join('')}
+function renderRecap(){const c=casesById[state.caseId];const h=humanFields.filter(([id])=>clean(state.human[id])).length,t=tareaFields.filter(([id])=>clean(state.tarea[id])).length,r=criteria.filter(([id])=>state.ratings[id]).length;
+  el('finalRecap').innerHTML=`<div class="grid"><div class="card"><span class="chip">Paso 1</span><h3 style="margin-top:10px">${c?esc(c.title):'Sin caso'}</h3><p class="subtle">${c?esc(c.label):'Elijan un caso'}</p></div><div class="card"><span class="chip">Pasos 2 y 3</span><h3 style="margin-top:10px">${h}/5 · Idea del equipo</h3><p class="subtle">${t}/5 componentes TAREA</p></div><div class="card"><span class="chip">Pasos 4 y 5</span><h3 style="margin-top:10px">${state.images.first||clean(state.fields.aiResponse)?'Resultado registrado':'Resultado pendiente'}</h3><p class="subtle">${r}/6 criterios valorados${state.fields.toolUsed?' · '+esc(state.fields.toolUsed):''}</p></div><div class="card"><span class="chip">Paso 6</span><h3 style="margin-top:10px">${clean(state.fields.decision)?esc(state.fields.decision):'Decisión pendiente'}</h3><p class="subtle">${clean(state.fields.reflection)?'Reflexión registrada':'Reflexión pendiente'}</p></div></div>`}
+function renderAll(){renderHumanPreview();el('promptPreview').textContent=makePrompt();const cp=makeCompact();el('compactPreview').textContent=cp;const n=cp.length;const cc=el('compactCount');cc.textContent=`${n} caracteres${n>480?' · Bing Image Creator acepta unos 480: recórtalo para usarlo allí':''}`;cc.classList.toggle('over',n>480);el('answerPreview').textContent=clean(state.fields.aiResponse)||'Todavía no han descrito el resultado. Vayan al paso 4.';renderImages();renderRecap()}
+function navigate(n){if(n<0||n>6)return;step=n;state.step=n;save();document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',Number(x.dataset.step)===n));document.querySelectorAll('[data-nav]').forEach(x=>x.classList.toggle('active',Number(x.dataset.nav)===n));el('headerStatus').textContent=`Paso ${n} de 6`;el('homeIntro').hidden=n!==0;el('prevBtn').disabled=n===0;el('nextBtn').style.visibility=n===6?'hidden':'visible';el('progressBar').style.width=`${(n+1)/7*100}%`;el('progressText').textContent=`${n+1} de 7 etapas`;renderAll();window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
+async function copyText(s){try{await navigator.clipboard.writeText(s);toast('Copiado al portapapeles')}catch(e){const a=document.createElement('textarea');a.value=s;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand('copy')}catch(x){}a.remove();toast(ok?'Copiado al portapapeles':'No se pudo copiar: selecciona el texto y usa Ctrl+C')}}
+function summaryText(){const c=casesById[state.caseId];const L=[];L.push('LABORATORIO TAREA VISUAL · RESUMEN');L.push(`Equipo: ${state.fields.team||'-'} · Integrantes: ${state.fields.members||'-'}`);L.push(`Caso: ${c?c.id+'. '+c.title:'sin seleccionar'}`);L.push('\nIDEA DEL EQUIPO (sin IA)');humanFields.forEach(([id,q])=>L.push(`- ${q} ${clean(state.human[id])||'-'}`));L.push('\n'+makePrompt());L.push(`\nPLATAFORMA: ${state.fields.toolUsed||'-'}${state.fields.mediaLink?' · '+state.fields.mediaLink:''}`);L.push(`RESULTADO: ${clean(state.fields.aiResponse)||'-'}`);L.push('\nMATRIZ DE VALIDACIÓN');criteria.forEach(([id,t])=>L.push(`- ${t}: ${state.ratings[id]||'sin valorar'} · ${clean(state.reasons[id])||'sin evidencia'}`));L.push(`\nEDICIÓN SOLICITADA: ${clean(state.fields.revision)||'-'}`);L.push(`QUÉ CAMBIÓ: ${clean(state.fields.revisedResult)||'-'}`);L.push(`\nREFLEXIÓN: ${clean(state.fields.reflection)||'-'}`);L.push(`DECISIÓN: ${state.fields.decision||'-'} · ${clean(state.fields.conclusion)||''}`);return L.join('\n')}
+function handleImage(file,key){if(!file||!/^image\//.test(file.type)){toast('Ese archivo no es una imagen');return}const rd=new FileReader();rd.onload=()=>{const img=new Image();img.onload=()=>{const max=1000,s=Math.min(1,max/Math.max(img.width,img.height));const cv=document.createElement('canvas');cv.width=Math.round(img.width*s);cv.height=Math.round(img.height*s);cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);state.images[key]=cv.toDataURL('image/jpeg',.82);save();renderAll();toast('Imagen agregada')};img.onerror=()=>toast('No se pudo leer la imagen');img.src=rd.result};rd.readAsDataURL(file)}
+function setupDrop(zoneId,inputId,key){const z=el(zoneId);['dragenter','dragover'].forEach(ev=>z.addEventListener(ev,e=>{e.preventDefault();z.classList.add('drag')}));['dragleave','drop'].forEach(ev=>z.addEventListener(ev,e=>{e.preventDefault();z.classList.remove('drag')}));z.addEventListener('drop',e=>handleImage(e.dataTransfer.files[0],key));el(inputId).addEventListener('change',e=>{handleImage(e.target.files[0],key);e.target.value=''})}
+/* Exportes fuera del visor (por ejemplo, GitHub Pages) */
+function printBlock(l,v){return `<div class="print-block"><div class="print-label">${esc(l)}</div><div class="print-body">${esc(v||'No registrado')}</div></div>`}
+function printCard(n,title,body){return `<section class="print-page"><div class="print-small">LABORATORIO TAREA VISUAL</div><h1>Paso ${n} · ${esc(title)}</h1><div class="print-small">Equipo: ${esc(state.fields.team||'—')} · Integrantes: ${esc(state.fields.members||'—')} · Caso: ${state.caseId||'—'}</div>${body}</section>`}
+function buildPrint(){const c=casesById[state.caseId];const img=k=>state.images[k]?`<img src="${state.images[k]}" alt="">`:'';const out=[];
+ out.push(printCard(1,'Caso',printBlock('Caso y datos ficticios',c?dataText(c):'Sin caso')+printBlock('Preguntas de verificación',c?c.checks.join('\n'):'')));
+ out.push(printCard(2,'Idea del equipo',humanFields.map(([id,q])=>printBlock(q,state.human[id])).join('')));
+ out.push(printCard(3,'Prompt TAREA',printBlock('Prompt completo',makePrompt())+printBlock('Versión compacta',makeCompact())));
+ out.push(printCard(4,'Resultado',printBlock('Plataforma',(state.fields.toolUsed||'')+(state.fields.mediaLink?'\n'+state.fields.mediaLink:''))+img('first')+printBlock('Descripción',state.fields.aiResponse)));
+ out.push(printCard(5,'Validación y edición',`<table><thead><tr><th>Criterio</th><th>Valoración</th><th>Evidencia</th></tr></thead><tbody>${criteria.map(([id,t])=>`<tr><td>${esc(t)}</td><td>${esc(state.ratings[id]||'—')}</td><td>${esc(state.reasons[id]||'—')}</td></tr>`).join('')}</tbody></table>`+printBlock('Edición solicitada',state.fields.revision)+img('revised')+printBlock('Qué cambió',state.fields.revisedResult)));
+ out.push(printCard(6,'Síntesis',printBlock('Reflexión',state.fields.reflection)+printBlock('Decisión',(state.fields.decision||'')+'\n'+(state.fields.conclusion||''))));
+ el('printRoot').innerHTML=out.join('')}
+function downloadFile(name,content,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500)}
+/* Difusión: una escena aparece desde el ruido */
+function makeScene(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');const sky=g.createLinearGradient(0,0,0,h);sky.addColorStop(0,'#1d6f8a');sky.addColorStop(1,'#f3c77a');g.fillStyle=sky;g.fillRect(0,0,w,h);g.fillStyle='#f6b23f';g.beginPath();g.arc(w*.74,h*.34,h*.17,0,7);g.fill();g.fillStyle='#2f8f6f';g.beginPath();g.moveTo(0,h*.75);g.quadraticCurveTo(w*.3,h*.48,w*.62,h*.74);g.lineTo(w,h*.7);g.lineTo(w,h);g.lineTo(0,h);g.fill();g.fillStyle='#1f6b56';g.beginPath();g.moveTo(0,h*.88);g.quadraticCurveTo(w*.5,h*.68,w,h*.9);g.lineTo(w,h);g.lineTo(0,h);g.fill();g.fillStyle='#fbf3e4';g.fillRect(w*.2,h*.56,w*.16,h*.2);g.fillStyle='#c4573a';g.beginPath();g.moveTo(w*.18,h*.57);g.lineTo(w*.28,h*.43);g.lineTo(w*.38,h*.57);g.fill();g.fillStyle='#103c50';g.fillRect(w*.26,h*.65,w*.04,h*.11);return g.getImageData(0,0,w,h)}
+function diffusion(canvas){const w=canvas.width,h=canvas.height,ctx=canvas.getContext('2d');const target=makeScene(w,h);const noise=new Uint8ClampedArray(w*h*4);for(let i=0;i<noise.length;i++)noise[i]=Math.random()*255;const out=ctx.createImageData(w,h);
+  return t=>{const a=Math.pow(t,1.6);for(let i=0;i<out.data.length;i+=4){out.data[i]=noise[i]*(1-a)+target.data[i]*a;out.data[i+1]=noise[i+1]*(1-a)+target.data[i+1]*a;out.data[i+2]=noise[i+2]*(1-a)+target.data[i+2]*a;out.data[i+3]=255}ctx.putImageData(out,0,0)}}
+function initDiffusion(){const draw=diffusion(el('diffCanvas'));const r=el('diffRange');const lab=el('diffLabel');const upd=()=>{const v=+r.value;draw(v/50);lab.textContent=v===0?'Paso 0 de 50 · solo ruido':v===50?'Paso 50 de 50 · imagen terminada':`Paso ${v} de 50 · quitando ruido`};r.addEventListener('input',upd);upd();let timer=null;el('diffPlay').addEventListener('click',()=>{clearInterval(timer);r.value=0;upd();timer=setInterval(()=>{r.value=+r.value+1;upd();if(+r.value>=50)clearInterval(timer)},70)});
+  const hero=diffusion(el('heroCanvas'));const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;if(reduce){hero(1);return}let t=0,dir=1;hero(.15);setInterval(()=>{t+=dir*.012;if(t>=1){t=1;dir=-1}else if(t<=.15){t=.15;dir=1}hero(t)},90)}
+function init(){
+  el('sideNav').innerHTML=steps.map((s,i)=>`<button type="button" data-nav="${i}"><span class="num">${i}</span><span>${s}</span></button>`).join('');
+  el('mobileNav').innerHTML=steps.map((s,i)=>`<button type="button" data-nav="${i}">${i} · ${s}</button>`).join('')+'<a class="xlink" data-target="teoria" href="teoria-tarea-visual.html">Teoría ↗</a>';
+  el('platformCards').innerHTML=platforms.map(p=>`<div class="card platform"><div><div class="meta"><span class="chip">${esc(p.kind)}</span><span class="chip warm">${esc(p.tag)}</span></div><h3>${esc(p.name)}</h3><p class="use">${esc(p.use)}</p></div><div class="limit">Gratis: ${esc(p.limit)}</div><a class="button primary" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">Abrir ${esc(p.name)} ↗</a></div>`).join('');
+  if(embedded&&THEORY_URL){document.querySelectorAll('.xlink[data-target=teoria]').forEach(a=>{a.href=THEORY_URL+(a.dataset.hash?'#'+a.dataset.hash:'');a.target='_blank';a.rel='noopener'})}
+  formHTML();renderCaseSelection();renderContexts();renderFormValues();setupDrop('drop1','file1','first');setupDrop('drop2','file2','revised');initDiffusion();
+  if(!embedded){el('exportPdf').hidden=false;el('exportJson').hidden=false;el('importLabel').hidden=false;el('exportHint').textContent='Exportar a PDF abre la ventana de impresión: elige "Guardar como PDF". El respaldo .json permite seguir otro día.'}
+  document.addEventListener('input',e=>{const t=e.target;if(t.dataset.section)state[t.dataset.section][t.dataset.name]=t.value;else if(t.dataset.field)state.fields[t.dataset.field]=t.value;else return;save();renderAll()});
+  document.addEventListener('change',e=>{const t=e.target;if(t.tagName==='SELECT'&&t.dataset.field){state.fields[t.dataset.field]=t.value;save();renderAll()}});
+  document.addEventListener('click',e=>{const b=e.target.closest('button,[data-go]');if(!b)return;const d=b.dataset;
+    if(d.nav!==undefined)navigate(+d.nav);else if(d.go!==undefined)navigate(+d.go);
+    else if(d.case)selectCase(+d.case);else if(d.caseForce)selectCase(+d.caseForce,true);
+    else if(d.copy==='case'){const c=casesById[state.caseId];if(c)copyText(dataText(c))}
+    else if(d.rating){state.ratings[d.rating]=d.value;save();syncRatings();renderRecap()}
+    else if(d.remove){delete state.images[d.remove];save();renderAll()}
+    else if(d.insert){const ta=el('t_'+d.insert);const txt=d.text;const pos=ta.selectionStart??ta.value.length;const before=ta.value.slice(0,pos),after=ta.value.slice(pos);const sep=before&&!/\s$/.test(before)?' ':'';ta.value=before+sep+txt+after;const q=txt.indexOf('""');const caret=(before+sep).length+(q>=0?q+1:txt.length);ta.focus();ta.setSelectionRange(caret,caret);state.tarea[d.insert]=ta.value;save();renderAll()}
+    else if(b.id==='cancelCase'){pendingCase=null;renderCaseSelection()}
+    else if(b.id==='prevBtn')navigate(step-1);else if(b.id==='nextBtn')navigate(step+1);
+    else if(b.id==='copyPrompt'||b.id==='copyPrompt2')copyText(makePrompt());
+    else if(b.id==='copyCompact'||b.id==='copyCompact2')copyText(makeCompact());
+    else if(b.id==='copyRevision')copyText(makeRevision());
+    else if(b.id==='copyCaseRevision')copyText(casesById[state.caseId]?.revision||'Primero elijan un caso.');
+    else if(b.id==='copySummary')copyText(summaryText());
+    else if(b.id==='exportPdf'){buildPrint();window.print()}
+    else if(b.id==='exportJson')downloadFile('tarea-visual-respaldo.json',JSON.stringify({...state,step},null,2),'application/json');
+    else if(b.id==='resetAll')el('resetConfirm').innerHTML=`<div class="confirm"><b>Se borrará todo el recorrido de este navegador.</b><div class="meta" style="margin-top:10px"><button class="button primary small" type="button" id="resetYes">Sí, empezar de nuevo</button><button class="button small" type="button" id="resetNo">Cancelar</button></div></div>`;
+    else if(b.id==='resetNo')el('resetConfirm').innerHTML='';
+    else if(b.id==='resetYes'){state=blank();save();el('resetConfirm').innerHTML='';renderCaseSelection();renderContexts();renderFormValues();navigate(0);toast('Recorrido reiniciado')}
+  });
+  el('importJSON').addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const s=JSON.parse(rd.result);if(!s||typeof s!=='object')throw 0;state={...blank(),...s};save();renderCaseSelection();renderContexts();renderFormValues();navigate(+state.step||0);toast('Respaldo restaurado')}catch(x){toast('No se pudo leer el respaldo')}};rd.readAsText(f);e.target.value=''});
+  document.addEventListener('paste',e=>{if(step!==4&&step!==5)return;const item=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith('image/'));if(!item)return;e.preventDefault();handleImage(item.getAsFile(),step===4?'first':'revised')});
+  navigate(Math.max(0,Math.min(6,+state.step||0)))}
+init();
+</script>
+</body>
+</html>

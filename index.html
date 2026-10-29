@@ -3,38 +3,61 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TAREA Visual · Sesión 4</title>
+<title>Clases de IA Generativa · Julián Rivera</title>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f4f7fc;--paper:#fff;--ink:#1b1e3c;--muted:#4d5272;--line:#dfe3f0;--cyan:#0098d4;--cyan-dark:#0072a8;--magenta:#e0307a;--magenta-dark:#b81f5f;--yellow:#ffc531;color-scheme:light}
+:root{--bg:#f4f7fc;--paper:#fff;--ink:#1b1e3c;--muted:#4d5272;--line:#dfe3f0;--cyan:#0098d4;--cyan-dark:#0072a8;--cyan-soft:#e3f5fd;--magenta:#e0307a;--magenta-dark:#b81f5f;--magenta-soft:#fde8f1;--yellow:#ffc531;--yellow-soft:#fff6d9;color-scheme:light}
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;background-color:var(--bg);background-image:radial-gradient(#d3dbef 1.1px,transparent 1.3px);background-size:20px 20px;color:var(--ink);font:18px/1.6 "Atkinson Hyperlegible",system-ui,sans-serif;display:grid;place-items:center;padding:40px max(16px,env(safe-area-inset-left,0px)) 40px max(16px,env(safe-area-inset-right,0px))}
-main{max-width:920px;width:100%}
+body{margin:0;min-height:100vh;background-color:var(--bg);background-image:radial-gradient(#d3dbef 1.1px,transparent 1.3px);background-size:20px 20px;color:var(--ink);font:18px/1.6 "Atkinson Hyperlegible",system-ui,sans-serif;padding:48px max(16px,env(safe-area-inset-left,0px)) 48px max(16px,env(safe-area-inset-right,0px))}
+main{max-width:980px;margin:auto}
+.mark{display:flex;gap:0;margin-bottom:18px}.mark span{width:26px;height:26px;border-radius:50%;mix-blend-mode:multiply;margin-right:-8px}
+.mark span:nth-child(1){background:var(--cyan)}.mark span:nth-child(2){background:var(--magenta)}.mark span:nth-child(3){background:var(--yellow)}
 .eyebrow{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.4px;color:var(--magenta-dark)}
-h1{font:800 clamp(34px,5vw,56px)/1.05 "Bricolage Grotesque",system-ui,sans-serif;letter-spacing:-1.5px;margin:10px 0 14px;text-wrap:balance}
+h1{font:800 clamp(34px,5vw,58px)/1.04 "Bricolage Grotesque",system-ui,sans-serif;letter-spacing:-1.5px;margin:10px 0 14px;text-wrap:balance}
 .hl{background:linear-gradient(transparent 58%,var(--yellow) 58%,var(--yellow) 92%,transparent 92%)}
-p.lead{color:var(--muted);max-width:640px;margin:0 0 30px}
-.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
-a.card{display:flex;flex-direction:column;gap:10px;text-decoration:none;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-top:8px solid var(--cyan);border-radius:22px;padding:26px;box-shadow:0 10px 30px #1b1e3c12;transition:transform .15s}
-a.card:nth-child(2){border-top-color:var(--magenta)}
-a.card:hover{transform:translateY(-3px)}a.card:focus-visible{outline:3px solid var(--magenta);outline-offset:3px}
-a.card h2{font:800 28px "Bricolage Grotesque",system-ui,sans-serif;margin:0}
-a.card span{color:var(--muted)}a.card b{color:var(--cyan-dark);margin-top:auto}a.card:nth-child(2) b{color:var(--magenta-dark)}
-footer{margin-top:26px;font-size:14px;color:var(--muted)}
-@media(max-width:640px){.cards{grid-template-columns:1fr}}
-@media (prefers-reduced-motion:reduce){a.card{transition:none}}
+p.lead{color:var(--muted);max-width:660px;margin:0 0 34px}
+.sessions{display:grid;gap:18px}
+.session{display:grid;grid-template-columns:120px minmax(0,1fr) auto;gap:22px;align-items:center;text-decoration:none;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-left:10px solid var(--cyan);border-radius:22px;padding:24px 26px;box-shadow:0 10px 30px #1b1e3c12;transition:transform .15s}
+.session:nth-child(2){border-left-color:var(--magenta)}.session:nth-child(3){border-left-color:var(--yellow)}
+a.session:hover{transform:translateY(-3px)}a.session:focus-visible{outline:3px solid var(--magenta);outline-offset:3px}
+.num{font:800 54px/1 "Bricolage Grotesque",system-ui,sans-serif;color:var(--cyan-dark)}
+.session:nth-child(2) .num{color:var(--magenta-dark)}.session:nth-child(3) .num{color:#8a6200}
+.num small{display:block;font:700 13px "Atkinson Hyperlegible",system-ui,sans-serif;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.session h2{font:800 26px/1.15 "Bricolage Grotesque",system-ui,sans-serif;margin:0 0 6px}
+.session p{margin:0;color:var(--muted);font-size:16px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.tags span{font-size:13px;font-weight:700;padding:3px 10px;border-radius:30px;background:var(--bg)}
+.go{font-weight:700;color:var(--cyan-dark);white-space:nowrap}.session:nth-child(2) .go{color:var(--magenta-dark)}
+.today{display:inline-block;background:var(--magenta);color:#fff;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 10px;border-radius:30px;margin-left:8px;vertical-align:middle}
+.soon{opacity:.62}.soon .go{color:var(--muted)}
+footer{margin-top:30px;font-size:14px;color:var(--muted)}
+@media(max-width:700px){.session{grid-template-columns:1fr;gap:10px}.num{font-size:40px}}
+@media (prefers-reduced-motion:reduce){.session{transition:none}}
 </style>
 </head>
 <body>
 <main>
-  <div class="eyebrow">Sesión 4 · IAGen para contenido visual y audiovisual</div>
-  <h1>Crear imágenes, audio y video con IA, <span class="hl">con criterio</span>.</h1>
-  <p class="lead">Dos materiales que se usan juntos: la teoría para entender y repasar, y el laboratorio para practicar en equipo con el marco TAREA.</p>
-  <div class="cards">
-    <a class="card" href="teoria-tarea-visual.html"><h2>Teoría</h2><span>Cómo funciona la IA visual, qué falla, cómo escribir prompts visuales con TAREA, herramientas gratuitas, riesgos y criterio para decidir.</span><b>Abrir la teoría →</b></a>
-    <a class="card" href="laboratorio-tarea-visual.html"><h2>Laboratorio</h2><span>Elige un caso, imagina la pieza, construye el prompt, créala con IA, evalúala con la matriz y documenta lo aprendido.</span><b>Abrir el laboratorio →</b></a>
+  <div class="mark" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="eyebrow">IA Generativa aplicada · Sanitas · 2026</div>
+  <h1>Material de clase para aprender a usar la IA <span class="hl">con criterio</span>.</h1>
+  <p class="lead">Cada sesión tiene dos partes: la teoría, para entender y repasar cuando quieras, y el laboratorio, para practicar paso a paso. Todos los ejercicios usan información ficticia y herramientas gratuitas.</p>
+  <div class="sessions">
+    <a class="session" href="sesion-4/">
+      <div class="num"><small>Sesión</small>04</div>
+      <div><h2>Contenido visual y audiovisual</h2><p>Crear imágenes, infografías, audio y video con IA usando el marco TAREA, y evaluarlos con una matriz.</p><div class="tags"><span>22 de octubre</span><span>Gemini</span><span>Napkin</span><span>NotebookLM</span><span>Flow</span></div></div>
+      <div class="go">Entrar →</div>
+    </a>
+    <a class="session" href="sesion-6/">
+      <div class="num"><small>Sesión</small>06</div>
+      <div><h2>Flujos de trabajo y automatización II <span class="today">Hoy</span></h2><p>Cómo una IA responde con tus documentos (RAG), cómo comprobar sus citas y cómo convertir eso en un flujo de trabajo.</p><div class="tags"><span>29 de octubre</span><span>Gemini Notebook</span><span>Gemini</span><span>Canvas</span></div></div>
+      <div class="go">Entrar →</div>
+    </a>
+    <div class="session soon" aria-disabled="true">
+      <div class="num"><small>Sesión</small>08</div>
+      <div><h2>Herramientas de la IAG en contextos laborales</h2><p>Disponible próximamente.</p><div class="tags"><span>5 de noviembre</span></div></div>
+      <div class="go">Próximamente</div>
+    </div>
   </div>
-  <footer>Actividad con datos ficticios · Herramientas con plan gratuito, revisadas en octubre de 2026.</footer>
+  <footer>Julián Camilo Rivera Monroy · Material de apoyo del curso</footer>
 </main>
 </body>
 </html>

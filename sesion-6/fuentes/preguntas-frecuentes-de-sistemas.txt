@@ -1,0 +1,23 @@
+PREGUNTAS FRECUENTES DE SISTEMAS · MESA DE AYUDA · ORGANIZACIÓN ALTAMIRA (documento ficticio para fines educativos)
+Actualizado en octubre de 2026
+
+¿Cómo contacto a la mesa de ayuda?
+Por la extensión 4521, por el chat del portal de autogestión o al correo mesadeayuda@altamira.example. Atendemos de lunes a viernes, de 7:00 a. m. a 6:00 p. m. Respondemos en máximo 4 horas hábiles.
+
+¿Cada cuánto cambio mi contraseña?
+Cada 90 días. El sistema te avisa 7 días antes. La contraseña debe tener al menos 12 caracteres.
+
+Olvidé mi contraseña, ¿qué hago?
+Usa la opción "Olvidé mi contraseña" en el portal de autogestión. Si no funciona, llama a la extensión 4521. Nunca compartas tu contraseña por correo ni por chat.
+
+¿Cómo me conecto cuando trabajo desde casa?
+Debes conectarte a la VPN institucional antes de abrir las aplicaciones internas. La guía de instalación está en el portal de autogestión, sección "Trabajo en casa".
+
+¿Puedo instalar programas en mi computador?
+No. Solicita cualquier programa a la mesa de ayuda; lo revisan y lo instalan si está aprobado.
+
+Recibí un correo sospechoso, ¿qué hago?
+No abras enlaces ni archivos adjuntos. Reenvíalo como adjunto a seguridad@altamira.example y elimínalo.
+
+Mi computador se dañó, ¿qué hago?
+Reporta el daño a la mesa de ayuda. Si la reparación toma más de un día, te prestan un equipo de reemplazo.

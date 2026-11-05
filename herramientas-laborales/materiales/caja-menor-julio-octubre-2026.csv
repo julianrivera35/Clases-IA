@@ -1,0 +1,60 @@
+Fecha,Categoría,Valor (COP),Responsable,¿Tiene soporte?
+2026-07-02,Cafetería,101000,Luisa Fernanda Ruiz,Sí
+2026-07-02,Papelería,94000,Luisa Fernanda Ruiz,Sí
+2026-07-04,Cafetería,99000,Carolina Pérez,Sí
+2026-07-04,Mensajería,24000,Luisa Fernanda Ruiz,Sí
+2026-07-05,Papelería,60000,Andrés Gómez,Sí
+2026-07-08,Transporte,18000,Carolina Pérez,Sí
+2026-07-10,Transporte,24000,Andrés Gómez,Sí
+2026-07-12,Mensajería,24000,Carolina Pérez,Sí
+2026-07-14,Cafetería,36000,Andrés Gómez,No
+2026-07-18,Cafetería,37000,Andrés Gómez,No
+2026-07-19,Mantenimiento,56000,Carolina Pérez,Sí
+2026-07-19,Transporte,23000,Andrés Gómez,Sí
+2026-07-27,Papelería,27000,Luisa Fernanda Ruiz,No
+2026-08-05,Transporte,37000,Andrés Gómez,Sí
+2026-08-09,Mantenimiento,65000,Andrés Gómez,Sí
+2026-08-10,Cafetería,72000,Carolina Pérez,Sí
+2026-08-10,Cafetería,84000,Luisa Fernanda Ruiz,Sí
+2026-08-11,Mensajería,33000,Luisa Fernanda Ruiz,Sí
+2026-08-15,Papelería,59000,Luisa Fernanda Ruiz,Sí
+2026-08-17,Cafetería,64000,Andrés Gómez,Sí
+2026-08-17,Transporte,23000,Andrés Gómez,Sí
+2026-08-19,Mantenimiento,170000,Andrés Gómez,No
+2026-08-22,Papelería,83000,Luisa Fernanda Ruiz,Sí
+2026-08-25,Cafetería,117000,Carolina Pérez,No
+2026-08-25,Mensajería,17000,Luisa Fernanda Ruiz,Sí
+2026-09-01,Mensajería,27000,Andrés Gómez,Sí
+2026-09-02,Cafetería,90000,Carolina Pérez,Sí
+2026-09-02,Papelería,27000,Luisa Fernanda Ruiz,Sí
+2026-09-03,Cafetería,90000,Carolina Pérez,Sí
+2026-09-03,Transporte,25000,Carolina Pérez,Sí
+2026-09-05,Mantenimiento,124000,Luisa Fernanda Ruiz,Sí
+2026-09-09,Cafetería,97000,Carolina Pérez,Sí
+2026-09-09,Mensajería,24000,Andrés Gómez,No
+2026-09-09,Transporte,51000,Luisa Fernanda Ruiz,Sí
+2026-09-12,Cafetería,86000,Carolina Pérez,Sí
+2026-09-15,Eventos,108000,Luisa Fernanda Ruiz,Sí
+2026-09-18,Mensajería,39000,Andrés Gómez,Sí
+2026-09-22,Papelería,69000,Andrés Gómez,No
+2026-09-22,Papelería,94000,Andrés Gómez,Sí
+2026-09-22,Transporte,39000,Andrés Gómez,Sí
+2026-09-24,Cafetería,42000,Carolina Pérez,Sí
+2026-10-04,Transporte,23000,Andrés Gómez,Sí
+2026-10-04,Transporte,24000,Luisa Fernanda Ruiz,Sí
+2026-10-05,Cafetería,99000,Luisa Fernanda Ruiz,No
+2026-10-07,Cafetería,34000,Andrés Gómez,Sí
+2026-10-07,Mensajería,14000,Luisa Fernanda Ruiz,Sí
+2026-10-11,Eventos,344000,Luisa Fernanda Ruiz,Sí
+2026-10-12,Cafetería,58000,Luisa Fernanda Ruiz,Sí
+2026-10-12,Eventos,168000,Carolina Pérez,Sí
+2026-10-13,Papelería,69000,Andrés Gómez,Sí
+2026-10-15,Eventos,320000,Andrés Gómez,No
+2026-10-16,Transporte,32000,Luisa Fernanda Ruiz,Sí
+2026-10-16,Transporte,46000,Andrés Gómez,Sí
+2026-10-20,Cafetería,52000,Andrés Gómez,Sí
+2026-10-20,Cafetería,70000,Carolina Pérez,No
+2026-10-20,Cafetería,73000,Carolina Pérez,No
+2026-10-21,Papelería,81000,Andrés Gómez,No
+2026-10-23,Mantenimiento,64000,Andrés Gómez,Sí
+2026-10-25,Mensajería,14000,Luisa Fernanda Ruiz,Sí

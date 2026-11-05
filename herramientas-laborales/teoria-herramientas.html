@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Teoría · Herramientas de IA para el trabajo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+/* Layout: imprenta CMYK, igual que las otras guías — índice blanco fijo, lectura en columna sobre papel con trama de semitono */
+:root{
+  --bg:#f4f7fc;--paper:#ffffff;--ink:#1b1e3c;--muted:#4d5272;--line:#dfe3f0;
+  --cyan:#0098d4;--cyan-dark:#0072a8;--cyan-soft:#e3f5fd;
+  --magenta:#e0307a;--magenta-dark:#b81f5f;--magenta-soft:#fde8f1;
+  --yellow:#ffc531;--yellow-soft:#fff6d9;--green:#12a37a;--green-soft:#e2f6ef;
+  --red:#d6453d;--red-soft:#fde9e7;
+  --display:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Consolas,monospace;
+  --radius:16px;--shadow:0 8px 28px #1b1e3c10;
+  color-scheme:light;font-size:17.5px;
+}
+html.projector{font-size:22px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:20px}
+body{margin:0;color:var(--ink);font:1rem/1.6 var(--body);
+  background:radial-gradient(circle,#1b1e3c17 1px,transparent 1.4px) 0 0/18px 18px,var(--bg)}
+a{color:var(--cyan-dark)}
+:focus-visible{outline:3px solid var(--magenta);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+p{margin:0}
+.shell{display:grid;grid-template-columns:290px minmax(0,1fr);max-width:1440px;margin:0 auto;min-height:100vh}
+/* Índice */
+.side{position:sticky;top:0;height:100vh;overflow:auto;background:var(--paper);border-right:1px solid var(--line);padding:26px 18px;display:flex;flex-direction:column;gap:18px}
+.brand{display:flex;gap:12px;align-items:center}
+.dots{position:relative;width:44px;height:44px;flex-shrink:0}
+.dots i{position:absolute;width:26px;height:26px;border-radius:50%;mix-blend-mode:multiply}
+.dots i:nth-child(1){background:var(--cyan);left:0;top:0}.dots i:nth-child(2){background:var(--magenta);right:0;top:0}.dots i:nth-child(3){background:var(--yellow);left:9px;bottom:0}
+.brand strong{font-family:var(--display);font-size:1.15rem;display:block}
+.brand small{color:var(--muted);font-size:.78rem}
+.toc{display:grid;gap:2px}
+.toc a{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--muted);padding:7px 10px;border-radius:10px;font-size:.88rem;font-weight:700}
+.toc a span{font-family:var(--display);font-size:.78rem;width:26px;height:26px;display:grid;place-items:center;border-radius:8px;background:var(--bg);color:var(--ink);flex-shrink:0}
+.toc a:hover{background:var(--cyan-soft);color:var(--ink)}
+.toc a[aria-current="true"]{background:var(--yellow-soft);color:var(--ink)}
+.toc a[aria-current="true"] span{background:var(--yellow)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:2px solid var(--cyan-dark);background:var(--cyan-dark);color:#fff;font:700 .95rem/1 var(--body);padding:12px 18px;border-radius:12px;text-decoration:none;cursor:pointer}
+.btn:hover{background:#005c88;border-color:#005c88}
+.btn.ghost{background:var(--paper);color:var(--cyan-dark)}
+.btn.ghost:hover{background:var(--cyan-soft)}
+.btn.sm{padding:8px 12px;font-size:.82rem;border-radius:10px}
+.switch{display:flex;align-items:center;gap:10px;font-size:.85rem;font-weight:700;color:var(--muted);cursor:pointer;border:0;background:none;padding:4px 0}
+.switch .track{width:42px;height:24px;border-radius:20px;background:var(--line);position:relative;transition:background .2s;flex-shrink:0}
+.switch .track:after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0003;transition:left .2s}
+.switch[aria-pressed="true"] .track{background:var(--magenta)}
+.switch[aria-pressed="true"] .track:after{left:21px}
+/* Barra móvil */
+.mbar{display:none}
+/* Contenido */
+.main{min-width:0;padding-block:34px 90px;padding-left:max(44px,env(safe-area-inset-left,0px));padding-right:max(44px,env(safe-area-inset-right,0px))}
+.wrap{max-width:980px}
+.hero{background:var(--paper);border:1px solid var(--line);border-radius:26px;padding:40px;display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:30px;align-items:center;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero .kicker{color:var(--magenta-dark);font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:.78rem}
+.hero h1{font-size:clamp(2rem,4.2vw,3.3rem);font-weight:800;letter-spacing:-.02em;margin:12px 0 14px}
+.hero p{color:var(--muted);font-size:1.08rem;max-width:60ch}
+.hero .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.cmyk{position:relative;width:230px;max-width:100%;aspect-ratio:1}
+.cmyk i{position:absolute;width:62%;aspect-ratio:1;border-radius:50%;mix-blend-mode:multiply;animation:breathe 7s ease-in-out infinite}
+.cmyk i:nth-child(1){background:var(--cyan);left:0;top:4%}
+.cmyk i:nth-child(2){background:var(--magenta);right:0;top:4%;animation-delay:-2.3s}
+.cmyk i:nth-child(3){background:var(--yellow);left:19%;bottom:0;animation-delay:-4.6s}
+@keyframes breathe{50%{transform:scale(1.06) translate(2%,-2%)}}
+mark{background:linear-gradient(transparent 52%,var(--yellow) 52%,var(--yellow) 92%,transparent 92%);color:inherit;padding:0 .1em}
+.sec{margin-top:64px;scroll-margin-top:20px}
+.sec-head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:start;margin-bottom:22px}
+.num{font-family:var(--display);font-weight:800;font-size:2.6rem;line-height:1;color:var(--accent,var(--cyan))}
+.eyebrow{font-size:.74rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--magenta-dark)}
+.sec h2{font-size:clamp(1.6rem,2.6vw,2.15rem);font-weight:800;letter-spacing:-.015em;margin-top:4px}
+.lead{color:var(--muted);max-width:68ch;margin-top:8px}
+.c{--accent:var(--cyan);--soft:var(--cyan-soft)}.m{--accent:var(--magenta);--soft:var(--magenta-soft)}.y{--accent:#e0a400;--soft:var(--yellow-soft)}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr))}
+.card{background:var(--paper);border:1px solid var(--line);border-top:5px solid var(--accent,var(--cyan));border-radius:var(--radius);padding:18px 18px 20px;display:flex;flex-direction:column;gap:8px}
+.card h3{font-size:1.1rem}
+.card p{color:var(--muted);font-size:.95rem}
+.card .ex{font-size:.86rem;background:var(--soft,var(--cyan-soft));color:var(--ink);padding:8px 10px;border-radius:9px}
+.tag{display:inline-flex;align-items:center;font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:30px;background:var(--magenta-soft);color:var(--magenta-dark);width:fit-content;white-space:nowrap}
+.tag.c{background:var(--cyan-soft);color:var(--cyan-dark)}.tag.y{background:var(--yellow-soft);color:#7a5600}.tag.g{background:var(--green-soft);color:#0b6e52}
+.note{background:var(--yellow-soft);border:1px solid #f3dc97;border-radius:12px;padding:12px 16px;font-size:.92rem;margin-top:16px}
+.stack{display:grid;gap:14px}
+/* Ruta */
+.route{display:grid;gap:10px}
+.stop{display:grid;grid-template-columns:120px minmax(0,1fr) auto;gap:16px;align-items:center;background:var(--paper);border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:14px;padding:14px 18px}
+.stop time{font-family:var(--display);font-weight:800;font-size:1.05rem;font-variant-numeric:tabular-nums}
+.stop b{display:block}.stop small{color:var(--muted);font-size:.88rem}
+.stop .where{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.chiplink{font-size:.78rem;font-weight:700;padding:5px 10px;border-radius:30px;text-decoration:none;background:var(--cyan-soft);color:var(--cyan-dark);white-space:nowrap}
+.chiplink.lab{background:var(--magenta-soft);color:var(--magenta-dark)}
+/* Difusión */
+.diff{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:24px;align-items:center}
+.diff canvas{width:100%;max-width:100%;aspect-ratio:8/5;display:block;border-radius:14px;image-rendering:pixelated;border:1px solid var(--line);background:#000}
+.diff input[type=range]{width:100%;accent-color:var(--magenta);margin:10px 0}
+.steplabel{font-family:var(--display);font-weight:600;font-size:1.05rem}
+/* Tablas */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--paper)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:.92rem}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--ink);color:#fff;font-weight:700;font-size:.82rem;letter-spacing:.02em}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:700}
+/* TAREA */
+.letters{display:grid;gap:12px}
+.letter{display:grid;grid-template-columns:64px minmax(0,1fr) minmax(0,1fr);gap:16px;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;align-items:start}
+.letter .L{font-family:var(--display);font-weight:800;font-size:2.4rem;line-height:1;width:64px;height:64px;display:grid;place-items:center;border-radius:14px;background:var(--soft);color:var(--accent)}
+.letter h3{font-size:1.05rem;margin-bottom:4px}
+.letter p{font-size:.92rem;color:var(--muted)}
+.letter .say{font-size:.88rem;background:var(--bg);border-radius:10px;padding:10px 12px}
+.letter .say b{display:block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--magenta-dark);margin-bottom:2px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tab{border:2px solid var(--line);background:var(--paper);border-radius:30px;padding:8px 14px;font:700 .88rem var(--body);color:var(--ink);cursor:pointer}
+.tab[aria-selected="true"]{border-color:var(--ink);background:var(--ink);color:#fff}
+.compare{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:14px}
+.pbox{border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.pbox.weak{background:var(--red-soft);border:1px solid #f4c4bf}
+.pbox.strong{background:var(--green-soft);border:1px solid #b5e4d3}
+.pbox h3{font-size:1rem;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.pbox pre{margin:0;white-space:pre-wrap;word-break:break-word;font:.86rem/1.6 var(--mono);background:#ffffffc0;border-radius:10px;padding:12px}
+.why{display:flex;gap:6px;flex-wrap:wrap}
+/* Editar */
+.turns{display:grid;gap:12px;counter-reset:t}
+.turn{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:start}
+.turn .who{font-family:var(--display);font-weight:800;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#fff}
+.bubble{background:var(--paper);border:1px solid var(--line);border-radius:4px 14px 14px 14px;padding:12px 16px}
+.bubble .res{margin-top:8px;font-size:.88rem;color:var(--muted)}
+.rules{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.rule{background:var(--ink);color:#fff;border-radius:14px;padding:16px}
+.rule b{font-family:var(--display);font-size:1.15rem;display:block;color:var(--yellow)}
+.rule span{font-size:.9rem;color:#dfe3f0}
+/* Semáforo */
+.traffic{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px;align-items:start}
+.q{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.q:last-child{border-bottom:0}
+.q p{font-size:.95rem}
+.yn{display:flex;gap:6px}
+.yn button{border:2px solid var(--line);background:var(--paper);border-radius:10px;padding:7px 14px;font:700 .85rem var(--body);cursor:pointer;color:var(--ink)}
+.yn button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.light{border-radius:18px;padding:22px;position:sticky;top:20px;border:2px solid var(--line);background:var(--paper)}
+.lamps{display:flex;gap:10px;margin-bottom:14px}
+.lamps i{width:34px;height:34px;border-radius:50%;background:var(--line)}
+.light[data-v="verde"] .lamps i:nth-child(3){background:var(--green);box-shadow:0 0 18px var(--green)}
+.light[data-v="amarillo"] .lamps i:nth-child(2){background:var(--yellow);box-shadow:0 0 18px var(--yellow)}
+.light[data-v="rojo"] .lamps i:nth-child(1){background:var(--red);box-shadow:0 0 18px var(--red)}
+.light h3{font-size:1.5rem}
+.light ul{padding-left:18px;margin:10px 0 0;font-size:.9rem;color:var(--muted)}
+.vrce{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px;margin-top:18px}
+.vrce div{border-radius:12px;padding:14px;background:var(--soft);border:1px solid var(--line)}
+.vrce b{font-family:var(--display);font-size:1.1rem;display:block;color:var(--accent)}
+.vrce span{font-size:.88rem}
+/* Glosario y fuentes */
+.gloss{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));gap:12px;margin:0}
+.gloss div{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px}
+.gloss dt{font-family:var(--display);font-weight:800;font-size:1.05rem}
+.gloss dd{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.sources{columns:2 300px;column-gap:28px;padding-left:20px;font-size:.88rem}
+.sources li{margin:0 0 8px;break-inside:avoid;overflow-wrap:anywhere}
+.finale{margin-top:70px;background:var(--ink);color:#fff;border-radius:26px;padding:42px;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;position:relative;overflow:hidden}
+.finale h2{font-size:clamp(1.8rem,3.4vw,2.6rem);font-weight:800;max-width:18ch}
+.finale p{color:#c9cee6;margin-top:8px;max-width:50ch}
+.finale .btn{background:var(--yellow);border-color:var(--yellow);color:var(--ink);font-size:1.1rem;padding:16px 24px}
+.finale .btn:hover{background:#ffd660;border-color:#ffd660}
+footer{color:var(--muted);font-size:.82rem;margin-top:30px}
+.toast{position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:30}
+.toast.show{opacity:1}
+@media (max-width:1020px){
+  .shell{grid-template-columns:1fr}
+  .side{display:none}
+  .mbar{display:flex;position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--paper);border-bottom:1px solid var(--line);gap:8px;align-items:center;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:25;background:var(--paper)}
+  .mbar nav{display:flex;gap:6px;overflow-x:auto;flex:1;min-width:0;scrollbar-width:none}
+  .mbar nav a{white-space:nowrap;text-decoration:none;font-size:.8rem;font-weight:700;color:var(--muted);padding:7px 10px;border-radius:9px;background:var(--bg)}
+  .mbar nav a[aria-current="true"]{background:var(--yellow);color:var(--ink)}
+  .mbar .btn{flex-shrink:0}
+  .main{padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+  html{scroll-padding-top:70px}.sec{scroll-margin-top:70px}
+}
+@media (max-width:760px){
+  .main{padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .hero{grid-template-columns:1fr;padding:26px}
+  .cmyk{width:140px;order:-1}
+  .stop{grid-template-columns:1fr}.stop .where{justify-content:flex-start}
+  .diff,.compare,.traffic{grid-template-columns:1fr}
+  .letter{grid-template-columns:52px minmax(0,1fr)}
+  .letter .L{width:52px;height:52px;font-size:1.9rem}
+  .letter .say{grid-column:1/-1}
+  .q{grid-template-columns:1fr}
+  .light{position:static}
+  .num{font-size:2rem}
+  .finale{padding:28px}
+  .mbar .btn span{display:none}
+}
+/* ===== RAG y flujos ===== */
+.g{--accent:var(--green);--soft:var(--green-soft)}
+/* Pipeline genérico */
+.pipe{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:0;align-items:stretch}
+.pipe .st{position:relative;background:var(--paper);border:1px solid var(--line);border-top:6px solid var(--accent,var(--cyan));border-radius:14px;padding:16px 16px 18px;margin-right:22px;display:flex;flex-direction:column;gap:6px;transition:transform .25s,box-shadow .25s,background .25s}
+.pipe .st:last-child{margin-right:0}
+.pipe .st:not(:last-child):after{content:"→";position:absolute;right:-21px;top:50%;transform:translateY(-50%);font:800 1.3rem var(--display);color:var(--muted)}
+.pipe .st b{font-family:var(--display);font-size:1.05rem}
+.pipe .st small{color:var(--muted);font-size:.86rem;line-height:1.45}
+.pipe .st .k{font:800 .72rem var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--accent,var(--cyan))}
+.pipe .st.on{background:var(--soft,var(--cyan-soft));transform:translateY(-3px);box-shadow:0 10px 24px #1b1e3c1c}
+.pipe .st .who{font-size:.8rem;border-top:1px dashed var(--line);padding-top:8px;margin-top:auto;color:var(--ink)}
+.pipe .st .who span{display:block;color:var(--muted)}
+/* Examen a libro abierto */
+.books{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
+.book{border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:8px}
+.book.closed{background:var(--red-soft);border:1px solid #f4c4bf}
+.book.open{background:var(--green-soft);border:1px solid #b5e4d3}
+.book .big{font-family:var(--display);font-weight:800;font-size:1.3rem}
+.book .ico{font-size:2rem;line-height:1}
+/* RAG en vivo */
+.live{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow)}
+.live-q{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.live-steps{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 16px}
+.live-steps span{font:700 .78rem var(--body);padding:6px 11px;border-radius:30px;background:var(--bg);color:var(--muted);border:2px solid transparent}
+.live-steps span.on{background:var(--ink);color:#fff}
+.live-steps span.done{border-color:var(--ink);color:var(--ink);background:var(--paper)}
+.live-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px;align-items:start}
+.docs{display:grid;gap:12px}
+.doc{border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.doc h4{margin:0;font:800 .82rem var(--body);letter-spacing:.06em;text-transform:uppercase;padding:9px 12px;background:var(--bg);color:var(--ink);display:flex;justify-content:space-between;gap:8px}
+.doc h4 em{font-style:normal;color:var(--muted);font-weight:700;letter-spacing:0;text-transform:none}
+.frags{display:flex;flex-wrap:wrap;gap:6px;padding:10px}
+.frag{font-size:.8rem;line-height:1.35;padding:6px 9px;border-radius:9px;background:var(--bg);color:var(--muted);border:2px solid transparent;transition:all .3s;max-width:100%}
+.frag b{color:var(--ink);font-weight:700}
+.frag.hit{background:var(--yellow);color:var(--ink);border-color:var(--ink);transform:scale(1.03)}
+.frag.near{border:2px dashed var(--magenta);color:var(--ink);background:var(--magenta-soft)}
+.frag sup{font:800 .7rem var(--body);background:var(--ink);color:#fff;border-radius:6px;padding:1px 5px;margin-left:4px}
+.out{display:grid;gap:12px}
+.box{border-radius:14px;padding:14px 16px;border:1px solid var(--line);background:var(--bg);transition:opacity .3s}
+.box.dim{opacity:.35}
+.box h4{margin:0 0 6px;font:800 .74rem var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--magenta-dark)}
+.box pre{margin:0;white-space:pre-wrap;word-break:break-word;font:.8rem/1.55 var(--mono)}
+.box.ans{background:var(--green-soft);border-color:#b5e4d3}
+.box.ans.no{background:var(--yellow-soft);border-color:#f3dc97}
+.box.ans p{font-size:.98rem}
+.cite{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 5px;border-radius:7px;background:var(--ink);color:#fff;font:800 .72rem var(--body);vertical-align:2px;margin:0 2px}
+.box ul{margin:8px 0 0;padding-left:18px;font-size:.84rem;color:var(--muted)}
+/* Sin / con RAG */
+.vs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.vs .pbox p{font-size:.95rem}
+.vs .issues{display:flex;gap:6px;flex-wrap:wrap}
+.chatq{background:var(--ink);color:#fff;border-radius:14px 14px 4px 14px;padding:12px 16px;margin:0 0 14px auto;max-width:560px;font-size:.98rem}
+/* Mapa de significado */
+.semmap{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px;align-items:center}
+.semmap svg{width:100%;height:auto;display:block;background:var(--paper);border:1px solid var(--line);border-radius:16px}
+.semmap text{font-family:var(--body);font-size:13px;fill:var(--ink)}
+.semmap .lbl{font-weight:700}
+/* Tabla comparativa */
+.t-yes{color:#0b6e52;font-weight:700}.t-no{color:var(--red);font-weight:700}.t-mid{color:#7a5600;font-weight:700}
+/* Herramientas */
+.toolhead{display:flex;align-items:center;gap:14px;margin:26px 0 12px;flex-wrap:wrap}
+.toolhead h3{font-size:1.45rem}
+.toolhead .logo{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font:800 1.2rem var(--display);color:#fff;flex-shrink:0}
+.when{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.when .card{border-top-width:8px}
+.when ul{margin:4px 0 0;padding-left:18px;color:var(--muted);font-size:.93rem}
+.others{background:var(--ink);color:#fff;border-radius:16px;padding:20px 22px;margin-top:16px}
+.others h3{color:var(--yellow);font-size:1.1rem;margin-bottom:6px}
+.others p{color:#dfe3f0;font-size:.93rem}
+.others .grid{margin-top:12px}
+.others .grid div{background:#ffffff14;border-radius:12px;padding:12px}
+.others .grid b{display:block;color:#fff}.others .grid span{font-size:.86rem;color:#c9cee6}
+/* Niveles */
+.levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.lvl{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;position:relative}
+.lvl .bar{height:10px;border-radius:10px;background:var(--line);overflow:hidden}
+.lvl .bar i{display:block;height:100%;background:var(--accent);width:var(--w)}
+.lvl h3{font-size:1.25rem}
+.lvl dl{margin:0;display:grid;gap:6px;font-size:.9rem}
+.lvl dt{font:800 .72rem var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--magenta-dark)}
+.lvl dd{margin:0;color:var(--ink)}
+@media (max-width:1020px){.pipe{grid-template-columns:1fr}.pipe .st{margin:0 0 22px}.pipe .st:last-child{margin-bottom:0}.pipe .st:not(:last-child):after{content:"↓";right:auto;left:50%;top:auto;bottom:-24px;transform:translateX(-50%)}}
+@media (max-width:760px){.live-grid,.vs,.semmap,.when,.levels{grid-template-columns:1fr}.live{padding:16px}}
+@media (prefers-reduced-motion:reduce){.frag,.pipe .st,.box{transition:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.cmyk i{animation:none}}
+/* ===== Herramientas de IA para el trabajo ===== */
+.g{--accent:var(--green);--soft:var(--green-soft)}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.trio .card ul{margin:2px 0 0;padding-left:18px;color:var(--muted);font-size:.93rem}
+.thieves{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.thieves span{background:var(--paper);border:1px solid var(--line);border-radius:30px;padding:7px 14px;font-weight:700;font-size:.9rem}
+.thieves span b{color:var(--magenta-dark);margin-right:6px}
+/* Familias de tareas */
+.fams{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.fam{border:2px solid var(--line);background:var(--paper);border-radius:16px;padding:14px 12px;text-align:left;cursor:pointer;font:inherit;color:var(--ink);display:flex;flex-direction:column;gap:6px;border-top:6px solid var(--fc)}
+.fam .ico{font-size:1.6rem;line-height:1}
+.fam b{font-family:var(--display);font-size:1.02rem;line-height:1.2}
+.fam small{color:var(--muted);font-size:.8rem}
+.fam[aria-pressed="true"]{border-color:var(--fc);background:var(--fs);box-shadow:0 8px 20px #1b1e3c14}
+.famdetail{margin-top:14px;background:var(--paper);border:1px solid var(--line);border-left:8px solid var(--fc,var(--cyan));border-radius:16px;padding:20px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:18px}
+.famdetail h3{font-size:1.35rem;margin-bottom:8px}
+.famdetail dl{margin:0;display:grid;gap:10px}
+.famdetail dt{font:800 .72rem var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--magenta-dark)}
+.famdetail dd{margin:2px 0 0}
+.promptbox{background:var(--bg);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.promptbox pre{margin:0;white-space:pre-wrap;word-break:break-word;font:.86rem/1.6 var(--mono)}
+.promptbox .row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+/* Herramientas */
+.gcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,210px),1fr));gap:12px}
+.gcard{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.gcard .emo{font-size:1.7rem;line-height:1}
+.gcard h4{margin:0;font:800 1.05rem var(--display)}
+.gcard p{color:var(--muted);font-size:.9rem}
+.gcard .office{font-size:.84rem;background:var(--green-soft);border-radius:9px;padding:7px 9px;color:var(--ink)}
+.gcard .office b{color:#0b6e52}
+.gcard.out .office{background:var(--yellow-soft)}.gcard.out .office b{color:#7a5600}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px}
+.facts span{font-size:.82rem;font-weight:700;padding:6px 12px;border-radius:30px;background:var(--green-soft);color:#0b6e52}
+.facts span.warn{background:var(--yellow-soft);color:#7a5600}
+.quote{border-left:5px solid var(--yellow);background:var(--paper);border-radius:0 12px 12px 0;padding:12px 16px;font-size:.95rem;margin-top:14px}
+/* Otras herramientas */
+.ocards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:12px}
+.ocard{background:var(--paper);border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:4px}
+.ocard b{font-family:var(--display);font-size:1.05rem}
+.ocard span{color:var(--muted);font-size:.88rem}
+.ocard a{font-size:.8rem;font-weight:700;text-decoration:none;margin-top:auto;padding-top:6px}
+/* Revisar */
+.errs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px;margin-top:16px}
+.err{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.err b{font-family:var(--display);font-size:1.02rem}
+.err .bad{font-size:.86rem;background:var(--red-soft);border-radius:9px;padding:8px 10px}
+.err .good{font-size:.86rem;background:var(--green-soft);border-radius:9px;padding:8px 10px}
+/* Calculadora */
+.calc{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px;align-items:stretch}
+.calc form{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:14px}
+.calc label{display:grid;gap:6px;font-weight:700;font-size:.92rem}
+.calc label small{font-weight:400;color:var(--muted)}
+.calc input,.calc select{font:inherit;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);width:100%}
+.calc input:focus,.calc select:focus{outline:none;border-color:var(--cyan)}
+.calc .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.result{background:var(--ink);color:#fff;border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:10px}
+.result .big{font:800 clamp(2.2rem,5vw,3.2rem)/1 var(--display);color:var(--yellow);font-variant-numeric:tabular-nums}
+.result .row{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #ffffff24;padding-bottom:6px;font-size:.92rem;font-variant-numeric:tabular-nums}
+.result .row span{color:#c9cee6}
+.result p{color:#dfe3f0;font-size:.9rem}
+.result.neg .big{color:#ff9a92}
+/* Caja de herramientas */
+.boxcard{background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.boxcard .tbl{border:0;border-radius:0}
+.min{font-variant-numeric:tabular-nums;white-space:nowrap}
+/* Recorrido */
+.journey{margin-top:70px;background:var(--paper);border:1px solid var(--line);border-radius:26px;padding:34px;box-shadow:var(--shadow)}
+.journey h2{font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:800}
+.journey .lead{margin-bottom:18px}
+.jcards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.jcard{border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:6px;text-decoration:none;color:var(--ink);border:2px solid var(--line);background:var(--bg)}
+.jcard .k{font:800 .72rem var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--jc)}
+.jcard b{font-family:var(--display);font-size:1.3rem}
+.jcard span{color:var(--muted);font-size:.92rem}
+.jcard em{font-style:normal;font-weight:700;color:var(--jc);margin-top:auto;padding-top:6px}
+.jcard.here{border-color:var(--jc);background:var(--paper)}
+a.jcard:hover{border-color:var(--jc)}
+.thread{margin-top:16px;background:var(--ink);color:#fff;border-radius:14px;padding:14px 18px;font-weight:700;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.thread mark{color:var(--ink)}
+@media (max-width:1020px){.fams{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:760px){.trio,.famdetail,.calc,.jcards{grid-template-columns:1fr}.fams{grid-template-columns:repeat(2,minmax(0,1fr))}.calc .pair{grid-template-columns:1fr}.journey{padding:22px}}
+</style>
+</head>
+<body>
+
+<header class="mbar">
+  <nav id="mnav" aria-label="Secciones"></nav>
+  <a class="btn sm xlink" data-target="lab" href="laboratorio-oficina.html">Laboratorio<span> →</span></a>
+</header>
+<div class="shell">
+<aside class="side">
+  <div class="brand"><div class="dots" aria-hidden="true"><i></i><i></i><i></i></div><div><strong>Teoría · IA para el trabajo</strong><small>Herramientas en contextos laborales</small></div></div>
+  <a class="btn xlink" data-target="lab" href="laboratorio-oficina.html">Ir al Laboratorio →</a>
+  <button class="switch" type="button" id="projector" aria-pressed="false"><span class="track"></span>Modo proyector</button>
+  <nav class="toc" id="toc" aria-label="Índice"></nav>
+  <a class="chiplink" href="../index.html" style="margin-top:auto;text-align:center">← Inicio del curso</a>
+</aside>
+
+<main class="main"><div class="wrap">
+  <section class="hero" aria-labelledby="t-hero">
+    <div>
+      <div class="kicker">Herramientas de la IA generativa en contextos laborales</div>
+      <h1 id="t-hero">La IA como <mark>asistente de oficina</mark>: menos tiempo en lo repetitivo, más tiempo para lo que necesita criterio.</h1>
+      <p>La guía de conceptos de este tema: qué tareas del trabajo se benefician de la IA, cómo usar Gemini y Goblin.tools, cómo escribir prompts de oficina con TAREA, cómo revisar y cuándo no usarla. La práctica está en el laboratorio "Un día de oficina con IA".</p>
+      <div class="actions"><a class="btn xlink" data-target="lab" href="laboratorio-oficina.html">Ir al Laboratorio →</a><a class="btn ghost" href="#tipos-de-tareas">Ver los tipos de tareas</a></div>
+    </div>
+    <div class="cmyk" aria-hidden="true"><i></i><i></i><i></i></div>
+  </section>
+
+  <!-- 1 -->
+  <section class="sec c" id="ruta" data-title="Ruta de la clase">
+    <div class="sec-head"><div class="num">01</div><div><div class="eyebrow">2 horas · Todos juntos, paso a paso</div><h2>Ruta de la clase</h2><p class="lead">Acompañamos un día de trabajo de <b>Carolina Pérez</b>, coordinadora administrativa de la Organización Altamira, una empresa ficticia. Cada momento de su día es una tarea real de oficina que resolvemos con Gemini o con Goblin.tools.</p></div></div>
+    <div class="route">
+      <div class="stop c"><time>4:00–4:10</time><div><b>Apertura</b><small>¿Qué tareas de tu semana te roban más tiempo? Conocemos el día de Carolina.</small></div><div class="where"><a class="chiplink" href="#ia-en-el-trabajo">La IA en el trabajo</a></div></div>
+      <div class="stop m"><time>4:10–4:25</time><div><b>Teoría corta</b><small>Los cinco tipos de tareas, las dos herramientas de hoy y la regla de las 3 preguntas.</small></div><div class="where"><a class="chiplink" href="#tipos-de-tareas">Tipos de tareas</a><a class="chiplink" href="#herramientas">Herramientas</a></div></div>
+      <div class="stop y"><time>4:25–4:38</time><div><b>Momento 1 · Organizar el día</b><small>Desglosar la fiesta de fin de año con Magic ToDo y el Estimador, y comparar con Gemini.</small></div><div class="where"><a class="chiplink" href="#goblin">Goblin.tools</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-oficina.html">Momento 1 ↗</a></div></div>
+      <div class="stop c"><time>4:38–4:53</time><div><b>Momento 2 · Un correo difícil</b><small>Leer el tono con Judge, mejorar la respuesta con Formalizer y con un prompt TAREA en Gemini.</small></div><div class="where"><a class="chiplink" href="#prompts-oficina">Prompts de oficina</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-oficina.html">Momento 2 ↗</a></div></div>
+      <div class="stop m"><time>4:53–5:08</time><div><b>Momento 3 · De la reunión al acta</b><small>Una transcripción desordenada se vuelve un acta con decisiones, compromisos y pendientes.</small></div><div class="where"><a class="chiplink" href="#revisar">Revisar</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-oficina.html">Momento 3 ↗</a></div></div>
+      <div class="stop y"><time>5:08–5:23</time><div><b>Momento 4 · Entender una tabla</b><small>La caja menor de cuatro meses en Gemini: totales, el tope, gastos sin soporte y un gráfico.</small></div><div class="where"><a class="chiplink" href="#gemini">Gemini</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-oficina.html">Momento 4 ↗</a></div></div>
+      <div class="stop c"><time>5:23–5:35</time><div><b>Momento 5 · Preparar la presentación</b><small>Canvas de Gemini arma las diapositivas para el comité. Revisamos que las cifras coincidan.</small></div><div class="where"><a class="chiplink" href="#gemini">Canvas</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-oficina.html">Momento 5 ↗</a></div></div>
+      <div class="stop m"><time>5:35–5:43</time><div><b>Momento 6 · Decidir y cerrar el día</b><small>El Consultor ayuda a elegir restaurante y el Compilador ordena los pendientes.</small></div><div class="where"><a class="chiplink" href="#goblin">Consultor y Compilador</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-oficina.html">Momento 6 ↗</a></div></div>
+      <div class="stop y"><time>5:43–5:53</time><div><b>Galería: compartimos resultados</b><small>Tres o cuatro personas muestran su mejor resultado y cuánto tiempo creen que se ahorraron.</small></div><div class="where"><a class="chiplink" href="#vale-la-pena">¿Vale la pena?</a></div></div>
+      <div class="stop c"><time>5:53–6:00</time><div><b>Caja de herramientas y cierre</b><small>Cada persona define qué usaría, para qué tarea suya y quién lo revisa.</small></div><div class="where"><a class="chiplink" href="#caja">Caja de herramientas</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-oficina.html">Cierre ↗</a></div></div>
+    </div>
+    <p class="note">Cada momento del laboratorio trae un <b>Nivel 2</b> para quien termina antes. Si el tiempo se acorta, el momento 5 lo muestra el profesor y el momento 6 queda de tarea.</p>
+  </section>
+
+  <!-- 2 -->
+  <section class="sec m" id="ia-en-el-trabajo" data-title="La IA en el trabajo">
+    <div class="sec-head"><div class="num">02</div><div><div class="eyebrow">Qué cambia y qué no</div><h2>Un asistente, no un reemplazo</h2><p class="lead">La IA generativa es buena para producir un <mark>primer borrador</mark>: un correo, un resumen, una tabla ordenada, un plan. Lo que sigue siendo tuyo es saber qué se necesita, conocer a las personas y al contexto, y decidir si el resultado sirve.</p></div></div>
+    <div class="trio">
+      <div class="card c"><span class="tag c">Qué cambia</span><h3>El primer borrador sale en segundos</h3><ul><li>Redactar y cambiar el tono de un texto</li><li>Resumir documentos y reuniones</li><li>Ordenar datos y hacer cuentas</li><li>Partir un proyecto en pasos</li></ul></div>
+      <div class="card m"><span class="tag">Qué no cambia</span><h3>El criterio sigue siendo humano</h3><ul><li>Conocer a tu equipo y a tus usuarios</li><li>Saber qué es confidencial</li><li>Decidir sobre personas</li><li>Responder por lo que se envía o se firma</li></ul></div>
+      <div class="card y"><span class="tag y">Tu papel</span><h3>Pedir bien y revisar mejor</h3><ul><li>Dar contexto con TAREA</li><li>Comprobar fechas, cifras y nombres</li><li>Quitar lo que la IA inventó</li><li>Decidir qué se usa y qué no</li></ul></div>
+    </div>
+    <div class="panel" style="margin-top:16px">
+      <h3 style="font-size:1.15rem">Las tareas que más tiempo roban en una oficina</h3>
+      <p class="lead" style="margin-top:4px">Para la apertura: ¿cuáles de estas te quitan más tiempo cada semana? Levanta la mano en las tuyas.</p>
+      <div class="thieves"><span><b>1</b>Responder correos</span><span><b>2</b>Escribir actas e informes</span><span><b>3</b>Organizar pendientes</span><span><b>4</b>Revisar y cuadrar tablas</span><span><b>5</b>Preparar presentaciones</span><span><b>6</b>Leer documentos largos</span><span><b>7</b>Decidir entre opciones</span></div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="sec y" id="tipos-de-tareas" data-title="Tipos de tareas">
+    <div class="sec-head"><div class="num">03</div><div><div class="eyebrow">Cinco familias</div><h2>¿Para qué tipo de tarea sirve la IA?</h2><p class="lead">Casi todo lo que hacemos con IA en una oficina cae en una de estas cinco familias. Toca cada una para ver un ejemplo del trabajo, uno de la vida diaria y un prompt para copiar.</p></div></div>
+    <div class="fams" id="fams" role="group" aria-label="Tipos de tareas"></div>
+    <div class="famdetail" id="famdetail" aria-live="polite"></div>
+  </section>
+
+  <!-- 4 -->
+  <section class="sec c" id="herramientas" data-title="Herramientas">
+    <div class="sec-head"><div class="num">04</div><div><div class="eyebrow">Las dos de hoy</div><h2>Gemini y Goblin.tools</h2><p class="lead">Gemini es el asistente completo: entiende contexto, lee archivos y arma tablas, gráficos y presentaciones. Goblin.tools es una caja de botones simples: una herramienta para cada cosa, sin crear cuenta.</p></div></div>
+
+    <div class="toolhead" id="gemini"><div class="logo" style="background:var(--cyan-dark)">G</div><h3>Gemini</h3><span class="tag c">gemini.google.com · cuenta de Google · gratis</span></div>
+    <div class="gcards">
+      <div class="gcard"><div class="emo" aria-hidden="true">💬</div><h4>Chat</h4><p>Conversar, pedir borradores y corregirlos por turnos.</p><div class="office"><b>En la oficina:</b> la respuesta al correo difícil, con un prompt TAREA.</div></div>
+      <div class="gcard"><div class="emo" aria-hidden="true">📎</div><h4>Subir archivos</h4><p>PDF, documentos y hojas de cálculo. Hasta 10 archivos por mensaje.</p><div class="office"><b>En la oficina:</b> el archivo de caja menor para analizarlo.</div></div>
+      <div class="gcard"><div class="emo" aria-hidden="true">📊</div><h4>Gráficos</h4><p>A partir de una hoja de cálculo, y se pueden editar después.</p><div class="office"><b>En la oficina:</b> gasto por mes con la línea del tope.</div></div>
+      <div class="gcard"><div class="emo" aria-hidden="true">🖼️</div><h4>Canvas</h4><p>Páginas web, documentos y presentaciones, exportables a Google Slides.</p><div class="office"><b>En la oficina:</b> las diapositivas para el comité.</div></div>
+      <div class="gcard"><div class="emo" aria-hidden="true">🤖</div><h4>Gems</h4><p>Asistentes con instrucciones guardadas para no repetirlas cada vez.</p><div class="office"><b>En la oficina:</b> un "redactor de actas" con el formato de tu área.</div></div>
+      <div class="gcard"><div class="emo" aria-hidden="true">📚</div><h4>Notebooks</h4><p>Los cuadernos de Gemini Notebook, con tus fuentes y sus citas.</p><div class="office"><b>En la oficina:</b> preguntarle al reglamento o al manual interno.</div></div>
+    </div>
+    <p class="note">Canvas genera presentaciones desde octubre de 2025: primero llegó a los planes de pago y luego a los gratuitos. Si en tu cuenta no aparece la opción, pide en el chat el guion de cada diapositiva.</p>
+
+    <div class="toolhead" id="goblin"><div class="logo" style="background:var(--green)">🧌</div><h3>Goblin.tools</h3><span class="tag g">goblin.tools · sin cuenta · gratis</span></div>
+    <div class="facts"><span>Gratis, sin anuncios</span><span>No pide crear cuenta</span><span>En español</span><span class="warn">Algunas opciones avanzadas son de pago (Pro)</span></div>
+    <div class="gcards" id="goblinCards"></div>
+    <div class="quote">Su propia advertencia: los resultados deben tomarse <b>"solo como conjeturas"</b>, y cada persona debe juzgar si le sirven. Fue creada pensando en personas a las que ciertas tareas les resultan abrumadoras, y por eso es tan sencilla.</div>
+
+    <h3 style="margin:28px 0 12px;font-size:1.3rem">¿Cuándo uso cuál?</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>Tarea</th><th>Gemini</th><th>Goblin.tools</th></tr></thead>
+      <tbody>
+        <tr><td>Responder un correo difícil</td><td>Cuando quieres controlar qué dice: contexto, límites y formato con TAREA.</td><td><b>Formalizer:</b> un clic para volver profesional un texto escrito a la carrera.</td></tr>
+        <tr><td>Saber cómo suena un correo</td><td>Puede hacerlo si se lo pides.</td><td><b>Judge:</b> directo, sin escribir prompt.</td></tr>
+        <tr><td>Organizar un proyecto</td><td>Cuando hay fechas, presupuesto y responsables.</td><td><b>Magic ToDo:</b> para arrancar rápido y no quedarse en blanco.</td></tr>
+        <tr><td>Analizar una tabla</td><td class="t-yes">Sí: sube el archivo y pide totales, gráficos y fórmulas.</td><td class="t-no">No lee archivos.</td></tr>
+        <tr><td>Escribir un acta</td><td class="t-yes">Sí, con el formato que pidas.</td><td><b>Compilador:</b> sirve para notas sueltas, no para un acta formal.</td></tr>
+        <tr><td>Preparar una presentación</td><td class="t-yes">Sí, con Canvas.</td><td class="t-no">No.</td></tr>
+        <tr><td>Decidir entre opciones</td><td>Con criterios que tú le das.</td><td><b>Consultor:</b> te hace preguntas para ordenar la decisión.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- 5 -->
+  <section class="sec m" id="otras-herramientas" data-title="Otras herramientas">
+    <div class="sec-head"><div class="num">05</div><div><div class="eyebrow">Para explorar después</div><h2>Otras herramientas útiles</h2><p class="lead">Cada una hace muy bien una sola cosa. Sus planes gratuitos tienen <mark>pocos usos al día</mark>, así que sirven para probar con calma, no para un taller de muchas personas a la vez.</p></div></div>
+    <div class="ocards">
+      <div class="ocard c"><b>Napkin</b><span>Convierte un texto en diagrama o infografía.</span><a href="https://www.napkin.ai/" target="_blank" rel="noopener">napkin.ai ↗</a></div>
+      <div class="ocard m"><b>Microsoft Designer</b><span>Imágenes y piezas gráficas a partir de una descripción.</span><a href="https://designer.microsoft.com/" target="_blank" rel="noopener">designer.microsoft.com ↗</a></div>
+      <div class="ocard y"><b>Explainpaper</b><span>Explica en sencillo los párrafos difíciles de un documento.</span><a href="https://www.explainpaper.com/" target="_blank" rel="noopener">explainpaper.com ↗</a></div>
+      <div class="ocard c"><b>Smallpdf</b><span>Trabajar con PDF: resumir, convertir, unir o comprimir.</span><a href="https://smallpdf.com/es" target="_blank" rel="noopener">smallpdf.com ↗</a></div>
+      <div class="ocard m"><b>Slidesgo</b><span>Plantillas de presentación y un creador de diapositivas con IA.</span><a href="https://slidesgo.com/es/" target="_blank" rel="noopener">slidesgo.com ↗</a></div>
+      <div class="ocard y"><b>ElevenLabs</b><span>Convierte texto en voz natural, en español.</span><a href="https://elevenlabs.io/" target="_blank" rel="noopener">elevenlabs.io ↗</a></div>
+      <div class="ocard c"><b>Fliki</b><span>Convierte un texto en un video corto con voz.</span><a href="https://fliki.ai/es" target="_blank" rel="noopener">fliki.ai ↗</a></div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="sec y" id="prompts-oficina" data-title="Prompts de oficina">
+    <div class="sec-head"><div class="num">06</div><div><div class="eyebrow">El marco TAREA en la oficina</div><h2>Cinco plantillas para el día a día</h2><p class="lead">Las mismas cinco partes de siempre: <b>T</b>area principal, <b>A</b>cción esperada, <b>R</b>ol del modelo, <b>E</b>jemplo de salida y <b>A</b>claraciones. Cada plantilla usa el caso de Carolina; cámbiale los datos por los tuyos.</p></div></div>
+    <div class="tabs" id="tplTabs" role="tablist" aria-label="Plantillas"></div>
+    <div class="compare" id="tplBody"></div>
+  </section>
+
+  <!-- 7 -->
+  <section class="sec c" id="revisar" data-title="Revisar">
+    <div class="sec-head"><div class="num">07</div><div><div class="eyebrow">Verificación humana</div><h2>La regla de las 3 preguntas</h2><p class="lead">Antes de usar cualquier resultado de la IA en el trabajo, hazle tres preguntas. Si alguna da "no", se corrige o se descarta.</p></div></div>
+    <div class="rules">
+      <div class="rule"><b>1. ¿Es correcto?</b><span>Fechas, cifras, nombres y responsables coinciden con la fuente. Nada inventado.</span></div>
+      <div class="rule"><b>2. ¿Ahorró tiempo?</b><span>Pedir más revisar tomó menos que hacerlo a mano. Si no, no vale la pena.</span></div>
+      <div class="rule"><b>3. ¿Lo usaría?</b><span>Tiene el tono, el formato y el nivel que necesita quien lo va a recibir.</span></div>
+    </div>
+    <h3 style="margin:26px 0 0;font-size:1.25rem">Los errores típicos en tareas de oficina</h3>
+    <div class="errs">
+      <div class="err"><b>📅 Fechas cambiadas</b><div class="bad">"La fiesta es el sábado 11 de diciembre".</div><div class="good">La transcripción dice viernes 11 de diciembre.</div></div>
+      <div class="err"><b>🔢 Cifras mal sumadas</b><div class="bad">"Octubre se mantuvo dentro del tope".</div><div class="good">Octubre sumó $1.585.000, por encima del tope de $1.200.000.</div></div>
+      <div class="err"><b>👤 Responsables inventados</b><div class="bad">"Luisa organizará el concurso de enero".</div><div class="good">Quedó pendiente, sin responsable: "Sin definir".</div></div>
+      <div class="err"><b>🤝 Promesas que nadie hizo</b><div class="bad">"Le enviaremos el certificado mañana".</div><div class="good">Carolina no controla esa fecha: no se promete.</div></div>
+      <div class="err"><b>✨ Datos de relleno</b><div class="bad">"El restaurante B tiene parqueadero gratis".</div><div class="good">Nadie dio ese dato. Se borra.</div></div>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="sec m" id="cuando-no" data-title="Cuándo no">
+    <div class="sec-head"><div class="num">08</div><div><div class="eyebrow">Límites y riesgos</div><h2>Cuándo NO usar la IA en el trabajo</h2><p class="lead">La IA ahorra tiempo, pero hay situaciones en las que el riesgo es mayor que el beneficio, sobre todo con cuentas personales y herramientas gratuitas.</p></div></div>
+    <div class="grid">
+      <div class="card m"><span class="tag">Datos personales</span><h3>Clientes, usuarios o compañeros</h3><p>En Colombia, la <b>Ley 1581 de 2012</b> protege los datos personales: para usarlos se necesita autorización y una finalidad clara. Pegar una cédula, un teléfono o un historial en una herramienta gratuita los saca del control de la organización.</p></div>
+      <div class="card c"><span class="tag c">Confidencial</span><h3>Documentos internos</h3><p>Contratos, nóminas, estrategias o informes no publicados: solo en herramientas aprobadas por tu organización, nunca en una cuenta personal.</p></div>
+      <div class="card y"><span class="tag y">Personas</span><h3>Decisiones sobre alguien</h3><p>Contratar, evaluar, sancionar o negar un servicio: la IA puede ayudar a ordenar la información, pero la decisión la toma y la firma una persona.</p></div>
+      <div class="card g"><span class="tag g">Sesgo de automatización</span><h3>Confiar porque "suena seguro"</h3><p>Es la tendencia a aceptar lo que dice la máquina sin revisarlo. Nunca envíes ni firmes algo que no hayas leído completo.</p></div>
+    </div>
+    <h3 style="margin:26px 0 12px;font-size:1.25rem">Semáforo rápido: ¿puedo usar IA en esta tarea?</h3>
+    <div class="traffic">
+      <div class="panel" id="sqs" style="padding:8px 20px"></div>
+      <div class="light" id="slight" data-v="amarillo"><div class="lamps" aria-hidden="true"><i></i><i></i><i></i></div><h3 id="slightTitle"></h3><p id="slightText" style="margin-top:6px"></p><ul id="slightWhy"></ul></div>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="sec y" id="vale-la-pena" data-title="¿Vale la pena?">
+    <div class="sec-head"><div class="num">09</div><div><div class="eyebrow">Calculadora</div><h2>¿Vale la pena usar IA en esta tarea?</h2><p class="lead">El ahorro real es el tiempo a mano menos el tiempo con IA <mark>y menos el tiempo de revisión</mark>. Si la revisión toma más de lo que ahorras, la IA no está ayudando en esa tarea.</p></div></div>
+    <div class="calc">
+      <form id="calcForm" onsubmit="return false">
+        <label for="cTask">Tarea<select id="cTask"></select></label>
+        <label for="cHand">Minutos haciéndola a mano<input id="cHand" type="number" min="0" max="600" step="1" inputmode="numeric"></label>
+        <div class="pair">
+          <label for="cAi">Minutos con IA<small>Pedir y esperar</small><input id="cAi" type="number" min="0" max="600" step="1" inputmode="numeric"></label>
+          <label for="cRev">Minutos revisando<small>Leer, corregir, comprobar</small><input id="cRev" type="number" min="0" max="600" step="1" inputmode="numeric"></label>
+        </div>
+        <label for="cFreq">Veces por semana<input id="cFreq" type="number" min="0" max="100" step="1" inputmode="numeric"></label>
+      </form>
+      <div class="result" id="cResult" aria-live="polite">
+        <span style="color:#c9cee6;font-weight:700">Ahorro por semana</span>
+        <div class="big" id="cWeek"></div>
+        <div class="row"><span>Ahorro cada vez</span><b id="cOnce"></b></div>
+        <div class="row"><span>Ahorro al año (46 semanas laborales)</span><b id="cYear"></b></div>
+        <p id="cMsg"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="sec c" id="caja" data-title="Caja de herramientas">
+    <div class="sec-head"><div class="num">10</div><div><div class="eyebrow">Lo que te llevas</div><h2>Tu caja de herramientas personal</h2><p class="lead">Es una tabla corta con las tareas de <b>tu</b> trabajo o de tu vida en las que usarías IA: con qué herramienta, con qué prompt o botón, quién revisa qué, y cuánto tiempo crees que ahorras. Así la IA deja de ser una curiosidad y se vuelve un hábito con control. Este es el ejemplo de Carolina:</p></div></div>
+    <div class="boxcard"><div class="tbl"><table>
+      <thead><tr><th>Tarea</th><th>Herramienta</th><th>Prompt o botón</th><th>Quién revisa y qué</th><th>Ahorro</th></tr></thead>
+      <tbody>
+        <tr><td>Responder reclamos por correo</td><td>Goblin Formalizer y Gemini</td><td>"Más profesional", o la plantilla de correo difícil</td><td>Yo: que no prometa fechas. Si es delicado, lo lee mi jefe.</td><td class="min">10 min</td></tr>
+        <tr><td>Actas del comité</td><td>Gemini</td><td>Plantilla de acta con "Sin definir" para lo que falta</td><td>Yo: compromisos y fechas contra mis notas.</td><td class="min">25 min</td></tr>
+        <tr><td>Informe mensual de caja menor</td><td>Gemini con el archivo</td><td>Plantilla de análisis de tabla</td><td>Yo: dos cifras a mano antes de enviarlo.</td><td class="min">30 min</td></tr>
+        <tr><td>Planear la semana</td><td>Goblin Magic ToDo</td><td>Picante 🌶️🌶️ para el detalle</td><td>Yo decido el orden final.</td><td class="min">10 min</td></tr>
+      </tbody>
+    </table></div></div>
+    <p class="note">En el laboratorio armas la tuya con al menos 3 filas. Queda en el informe PDF que puedes descargar al final.</p>
+  </section>
+
+  <!-- 11 -->
+  <section class="sec m" id="glosario" data-title="Glosario">
+    <div class="sec-head"><div class="num">11</div><div><div class="eyebrow">Palabras clave</div><h2>Glosario</h2></div></div>
+    <dl class="gloss">
+      <div><dt>Asistente</dt><dd>Una herramienta de IA que ayuda con una tarea; la persona sigue decidiendo.</dd></div>
+      <div><dt>Prompt</dt><dd>La instrucción que le escribes a la IA.</dd></div>
+      <div><dt>TAREA</dt><dd>Marco para escribir prompts: Tarea principal, Acción esperada, Rol del modelo, Ejemplo de salida y Aclaraciones.</dd></div>
+      <div><dt>Tono</dt><dd>La forma en que suena un texto: formal, cercano, molesto, cordial.</dd></div>
+      <div><dt>Desglosar</dt><dd>Partir una tarea grande en pasos pequeños y concretos.</dd></div>
+      <div><dt>CSV</dt><dd>Un archivo de tabla en texto plano, con columnas separadas por comas. Lo abren Excel, Sheets y Gemini.</dd></div>
+      <div><dt>SUMAR.SI</dt><dd>Fórmula de Sheets y Excel (SUMIF en inglés) que suma solo las filas que cumplen una condición, por ejemplo "Cafetería".</dd></div>
+      <div><dt>Canvas</dt><dd>El espacio de Gemini para crear documentos, páginas web y presentaciones.</dd></div>
+      <div><dt>Exportar</dt><dd>Llevar un resultado a otro programa, por ejemplo una presentación de Canvas a Google Slides.</dd></div>
+      <div><dt>Sesgo de automatización</dt><dd>La tendencia a creer en lo que dice una máquina sin revisarlo.</dd></div>
+      <div><dt>Verificación humana</dt><dd>La revisión que hace una persona antes de usar o enviar un resultado de la IA.</dd></div>
+    </dl>
+  </section>
+
+  <!-- 12 -->
+  <section class="sec y" id="fuentes" data-title="Fuentes">
+    <div class="sec-head"><div class="num">12</div><div><div class="eyebrow">Para verificar</div><h2>Fuentes</h2><p class="lead">Las funciones y los planes gratuitos cambian con frecuencia. Información revisada en noviembre de 2026.</p></div></div>
+    <ul class="sources">
+      <li><a href="https://goblin.tools/About" target="_blank" rel="noopener">Goblin.tools: Acerca de (misión, gratuidad y advertencia sobre los resultados)</a></li>
+      <li><a href="https://goblin.tools/" target="_blank" rel="noopener">Goblin.tools: lista de herramientas</a></li>
+      <li><a href="https://support.google.com/gemini/answer/14903178" target="_blank" rel="noopener">Ayuda de Google: subir y analizar archivos en Gemini</a></li>
+      <li><a href="https://gemini.google/overview/canvas/" target="_blank" rel="noopener">Google: Canvas en Gemini</a></li>
+      <li><a href="https://engadget.com/ai/googles-gemini-will-now-generate-presentations-for-you-010040637.html" target="_blank" rel="noopener">Engadget (26 de octubre de 2025): Gemini genera presentaciones en Canvas</a></li>
+      <li><a href="https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=49981" target="_blank" rel="noopener">Ley 1581 de 2012, protección de datos personales (Función Pública)</a></li>
+      <li><a href="https://waariaso.github.io/TAREA/" target="_blank" rel="noopener">Laboratorio TAREA (guía de prompting del curso)</a></li>
+    </ul>
+  </section>
+
+  <section class="journey" aria-labelledby="t-journey">
+    <div class="eyebrow">El recorrido completo</div>
+    <h2 id="t-journey">Tres temas, una misma forma de trabajar</h2>
+    <p class="lead">Cada tema usó herramientas distintas, pero el método fue el mismo: pedir bien y revisar antes de usar.</p>
+    <div class="jcards">
+      <a class="jcard" href="../contenido-visual/" style="--jc:var(--cyan-dark)"><span class="k">Crear</span><b>Contenido visual y audiovisual</b><span>Imágenes, infografías, audio y video con IA.</span><em>Ir al tema →</em></a>
+      <a class="jcard" href="../flujos-automatizacion/" style="--jc:var(--magenta-dark)"><span class="k">Responder con tus documentos</span><b>Flujos y RAG</b><span>Un asistente que cita tus fuentes y se vuelve parte de un flujo.</span><em>Ir al tema →</em></a>
+      <div class="jcard here" style="--jc:#7a5600"><span class="k">Trabajar mejor</span><b>Herramientas laborales</b><span>La IA como asistente de oficina, con control humano.</span><em>Estás aquí</em></div>
+    </div>
+    <div class="thread">El hilo común: <mark>TAREA + verificación humana</mark></div>
+  </section>
+
+  <section class="finale">
+    <div><h2>Ahora, al laboratorio: un día de oficina con IA.</h2><p>Seis momentos del día de Carolina, paso a paso y todos juntos, con Gemini y Goblin.tools.</p></div>
+    <a class="btn xlink" data-target="lab" href="laboratorio-oficina.html">Ahora, al laboratorio →</a>
+  </section>
+
+  <footer><a href="../index.html">← Inicio del curso</a><br>Teoría · Herramientas de IA para el trabajo · Curso de IA generativa · El caso de Carolina Pérez y la Organización Altamira es ficticio, con fines educativos.</footer>
+</div></main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2400)}
+async function copy(text){try{await navigator.clipboard.writeText(text);toast('Copiado al portapapeles')}catch(e){const a=document.createElement('textarea');a.value=text;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand('copy')}catch(x){}a.remove();toast(ok?'Copiado al portapapeles':'No se pudo copiar: selecciona el texto y usa Ctrl+C')}}
+/* Enlaces al laboratorio cuando la página está embebida */
+const LAB_URL='https://claude.ai/artifact/DbfvaRp4wjNCRAMXpiofco';
+let embedded=true;try{embedded=window.self!==window.top}catch(e){}
+if(embedded&&LAB_URL)$$('.xlink[data-target=lab]').forEach(a=>{a.href=LAB_URL;a.target='_blank';a.rel='noopener'});
+/* Índice y sección activa */
+const secs=$$('.sec');
+$('#toc').innerHTML=secs.map((s,i)=>`<a href="#${s.id}" data-id="${s.id}"><span>${String(i+1).padStart(2,'0')}</span>${esc(s.dataset.title)}</a>`).join('');
+$('#mnav').innerHTML=secs.map(s=>`<a href="#${s.id}" data-id="${s.id}">${esc(s.dataset.title)}</a>`).join('');
+function setActive(id){$$('[data-id]').forEach(a=>a.setAttribute('aria-current',String(a.dataset.id===id)));const m=$(`#mnav a[data-id="${id}"]`);if(m&&window.innerWidth<=1020){const nav=$('#mnav');nav.scrollTo({left:m.offsetLeft-16,behavior:reduce?'auto':'smooth'})}}
+if('IntersectionObserver' in window){const vis=new Map();const io=new IntersectionObserver(es=>{es.forEach(e=>vis.set(e.target.id,e.isIntersecting?e.boundingClientRect.top:null));const cur=[...vis].filter(([,v])=>v!==null).sort((a,b)=>Math.abs(a[1])-Math.abs(b[1]))[0];if(cur)setActive(cur[0])},{rootMargin:'-15% 0px -60% 0px'});secs.forEach(s=>io.observe(s))}
+setActive('ruta');
+/* Modo proyector (compartido con las otras guías) */
+const pj=$('#projector');function applyPj(on){document.documentElement.classList.toggle('projector',on);pj.setAttribute('aria-pressed',String(on))}
+let pjOn=false;try{pjOn=localStorage.getItem('teoria-proyector')==='1'}catch(e){}applyPj(pjOn);
+pj.addEventListener('click',()=>{pjOn=!pjOn;applyPj(pjOn);try{localStorage.setItem('teoria-proyector',pjOn?'1':'0')}catch(e){}toast(pjOn?'Modo proyector activado':'Modo proyector desactivado')});
+
+/* ===== Familias de tareas ===== */
+const FAMS=[
+ {ico:'✍️',name:'Redactar y transformar',short:'Escribir, reescribir, cambiar el tono',fc:'var(--cyan)',fs:'var(--cyan-soft)',work:'Responder un reclamo de un contratista con un tono profesional y empático.',life:'Escribir un mensaje para el grupo de WhatsApp del conjunto sin que suene a regaño.',tool:'Gemini, o Goblin Formalizer para el tono',prompt:'Reescribe este mensaje para que suene profesional y empático, sin perder la idea principal. No agregues promesas ni fechas que no estén en el texto. Máximo 100 palabras.\n\n[pega aquí tu mensaje]'},
+ {ico:'📖',name:'Resumir y entender',short:'Documentos largos, reuniones, normas',fc:'var(--magenta)',fs:'var(--magenta-soft)',work:'Convertir la transcripción de una reunión en un acta con decisiones y pendientes.',life:'Entender la letra pequeña del contrato de un plan de celular antes de firmarlo.',tool:'Gemini, o Goblin Profesor para explicar un concepto',prompt:'Resume este documento en 5 puntos para alguien que no lo ha leído. Luego lista 3 cosas que debo revisar con cuidado antes de aceptarlo. Usa solo lo que dice el documento.\n\n[adjunta o pega el documento]'},
+ {ico:'🗂️',name:'Extraer y ordenar',short:'Sacar datos, listas y tablas',fc:'var(--yellow)',fs:'var(--yellow-soft)',work:'Sacar de un correo largo los compromisos con responsable y fecha.',life:'Ordenar una lista de pendientes de la casa por urgencia.',tool:'Gemini, o Goblin Compilador',prompt:'De este texto, extrae todos los compromisos en una tabla con tres columnas: qué, quién y para cuándo. Si falta el responsable o la fecha, escribe "Sin definir". No inventes datos.\n\n[pega el texto]'},
+ {ico:'📊',name:'Analizar datos',short:'Totales, tendencias, gráficos, fórmulas',fc:'var(--green)',fs:'var(--green-soft)',work:'Revisar la caja menor de cuatro meses y ver qué mes se pasó del tope.',life:'Ver en qué se fue la plata del mes a partir del extracto del banco (sin datos de la cuenta).',tool:'Gemini con el archivo',prompt:'Analiza el archivo adjunto. Dame el total por mes y por categoría en una tabla, un gráfico de barras por mes y 3 conclusiones de una línea. Muestra cómo calculaste cada total.\n\n[adjunta el archivo CSV o Excel]'},
+ {ico:'🧭',name:'Planear y decidir',short:'Proyectos, pasos, opciones',fc:'var(--ink)',fs:'var(--bg)',work:'Partir la organización de la fiesta de fin de año en tareas con fechas.',life:'Decidir entre dos opciones de viaje familiar según precio, distancia y comodidad.',tool:'Goblin Magic ToDo y Consultor, o Gemini',prompt:'Tengo que decidir entre dos opciones. Compáralas en una tabla según costo, tiempo y comodidad, dime qué preguntas debería hacerme antes de elegir y no decidas por mí.\n\nOpción A: [...]\nOpción B: [...]'}];
+let fi=0;
+function famRender(){$('#fams').innerHTML=FAMS.map((f,i)=>`<button type="button" class="fam" data-fam="${i}" aria-pressed="${i===fi}" style="--fc:${f.fc};--fs:${f.fs}"><span class="ico" aria-hidden="true">${f.ico}</span><b>${esc(f.name)}</b><small>${esc(f.short)}</small></button>`).join('');
+ const f=FAMS[fi];const d=$('#famdetail');d.style.setProperty('--fc',f.fc);
+ d.innerHTML=`<div><h3>${f.ico} ${esc(f.name)}</h3><dl><div><dt>En el trabajo</dt><dd>${esc(f.work)}</dd></div><div><dt>En la vida diaria</dt><dd>${esc(f.life)}</dd></div><div><dt>Herramienta sugerida</dt><dd>${esc(f.tool)}</dd></div></dl></div><div class="promptbox"><div class="row"><b>Prompt para copiar</b><button class="btn sm" type="button" data-copyfam="${fi}">Copiar</button></div><pre>${esc(f.prompt)}</pre></div>`}
+$('#fams').addEventListener('click',e=>{const b=e.target.closest('[data-fam]');if(!b)return;fi=+b.dataset.fam;famRender()});
+$('#famdetail').addEventListener('click',e=>{const b=e.target.closest('[data-copyfam]');if(b)copy(FAMS[+b.dataset.copyfam].prompt)});
+famRender();
+
+/* ===== Goblin.tools ===== */
+const GOB=[
+ ['✅','Magic ToDo','Desglosa una tarea grande en pasos. El picante 🌶️ da más o menos detalle, y cada paso se puede desglosar otra vez.','Organizar la fiesta de fin de año del área.'],
+ ['✍️','Formalizer','Cambia el tono de un texto: más profesional, más sociable y otras opciones.','El correo escrito a la carrera, antes de enviarlo.'],
+ ['⚖️','Judge','Lee un texto y te dice qué emociones o qué tono transmite.','¿Este correo del contratista está molesto o amenazando?'],
+ ['⏯️','Taskmaster','Te acompaña a enfocarte en una tarea a la vez.','Días con muchas interrupciones.'],
+ ['🎓','Profesor','Explica cualquier tema de forma sencilla.','"¿Qué es un certificado de retenciones?"'],
+ ['💡','Consultor','Te ayuda a decidir entre opciones.','Restaurante A o B para la fiesta.'],
+ ['⏱️','Estimador','Estima cuánto tiempo toma una actividad.','"Cotizar con 3 restaurantes y comparar".'],
+ ['🧠','Compilador','Convierte un volcado de ideas sueltas en una lista de acciones.','Los pendientes desordenados del final del día.'],
+ ['👨‍🍳','Chef','Propone una receta con los ingredientes que tienes.','Fuera de la oficina: ¿qué cocino con lo que hay en la nevera?']];
+$('#goblinCards').innerHTML=GOB.map(([e,n,d,o],i)=>`<div class="gcard ${i===8?'out':''}"><div class="emo" aria-hidden="true">${e}</div><h4>${esc(n)}</h4><p>${esc(d)}</p><div class="office"><b>${i===8?'En la casa:':'En la oficina:'}</b> ${esc(o)}</div></div>`).join('');
+
+/* ===== Plantillas TAREA ===== */
+const TPL=[
+ {label:'Correo difícil',weak:'Responde este correo.',wt:['No dice a quién ni por qué','No pone límites','Puede prometer cosas'],
+  strong:`T — Tarea: Redacta una respuesta al correo de Jorge Medina, contratista, que reclama por tercera vez su certificado de retenciones.
+A — Acción: Reconoce su molestia, explica sin culpar a nadie que el certificado depende de contabilidad y ofrece un siguiente paso concreto.
+R — Rol: Actúa como coordinadora administrativa con experiencia en servicio al cliente.
+E — Ejemplo de salida: Un correo de máximo 120 palabras, con saludo, tres párrafos cortos y una despedida cordial.
+A — Aclaraciones: No prometas una fecha exacta de entrega. Evita frases como "lamentamos los inconvenientes". Tono cercano y profesional.`},
+ {label:'Acta de reunión',weak:'Resume esta reunión.',wt:['Sin formato','Mezcla decisiones y comentarios','Inventa responsables'],
+  strong:`T — Tarea: Convierte la transcripción de la reunión del comité de bienestar en un acta.
+A — Acción: Identifica asistentes, decisiones, compromisos con responsable y fecha, y temas pendientes.
+R — Rol: Actúa como secretaria de comité con experiencia en redactar actas claras.
+E — Ejemplo de salida: Encabezado con asistentes; una lista de decisiones; una tabla de compromisos (qué, quién, cuándo) y una lista de pendientes.
+A — Aclaraciones: Si un compromiso no tiene responsable o fecha, escribe "Sin definir"; no lo inventes. Usa solo lo que dice la transcripción.`},
+ {label:'Análisis de tabla',weak:'Analiza este archivo.',wt:['No dice qué buscar','No pide cómo calculó','Sin formato de salida'],
+  strong:`T — Tarea: Analiza el archivo de caja menor de julio a octubre de 2026.
+A — Acción: Calcula el total por mes y por categoría, compara cada mes con el tope de $1.200.000 y lista los gastos sin soporte.
+R — Rol: Actúa como analista administrativo y financiero.
+E — Ejemplo de salida: Dos tablas cortas, un gráfico de barras por mes con la línea del tope y 3 conclusiones de una línea.
+A — Aclaraciones: Muestra cómo calculaste cada total. Si hay registros que parezcan duplicados, señálalos sin borrarlos. Dame también la fórmula de Sheets para sumar por categoría.`},
+ {label:'Plan de proyecto',weak:'Ayúdame con la fiesta.',wt:['Sin fecha ni presupuesto','No dice cuántas personas','Respuesta genérica'],
+  strong:`T — Tarea: Arma el plan para la celebración de fin de año del área: 40 personas, viernes 11 de diciembre, presupuesto de $2.400.000 con almuerzo incluido.
+A — Acción: Divide el trabajo en tareas, ordénalas desde hoy hasta el evento y estima cuánto toma cada una.
+R — Rol: Actúa como organizador de eventos corporativos.
+E — Ejemplo de salida: Una tabla con tarea, responsable sugerido, fecha límite y tiempo estimado.
+A — Aclaraciones: Deja al menos 3 semanas para cotizar y confirmar el lugar. Marca qué decisiones necesitan aprobación del comité.`},
+ {label:'Presentación',weak:'Haz una presentación sobre la caja menor.',wt:['Sin público ni extensión','Puede inventar cifras','Sin estructura'],
+  strong:`T — Tarea: Crea una presentación de 6 diapositivas para el comité de bienestar.
+A — Acción: Resume los resultados de la caja menor, presenta la nueva regla de soportes y el plan de la fiesta de fin de año.
+R — Rol: Actúa como diseñador de presentaciones ejecutivas.
+E — Ejemplo de salida: Una idea por diapositiva, título corto, máximo 3 viñetas, un gráfico en la de caja menor y una diapositiva final con las decisiones pendientes.
+A — Aclaraciones: Usa solo estas cifras: total de $4.064.000; octubre con $1.585.000 frente a un tope de $1.200.000; 12 gastos sin soporte por $1.123.000. No inventes datos.`}];
+let ti=0;
+function tplRender(){$('#tplTabs').innerHTML=TPL.map((t,i)=>`<button class="tab" role="tab" type="button" aria-selected="${i===ti}" data-tpl="${i}">${esc(t.label)}</button>`).join('');
+ const t=TPL[ti];$('#tplBody').innerHTML=`<div class="pbox weak"><h3>Prompt flojo</h3><pre>${esc(t.weak)}</pre><div class="why">${t.wt.map(w=>`<span class="tag">${esc(w)}</span>`).join('')}</div></div><div class="pbox strong"><h3>Prompt TAREA <button class="btn sm" type="button" data-copytpl="${ti}">Copiar</button></h3><pre>${esc(t.strong)}</pre></div>`}
+$('#tplTabs').addEventListener('click',e=>{const b=e.target.closest('[data-tpl]');if(!b)return;ti=+b.dataset.tpl;tplRender()});
+$('#tplBody').addEventListener('click',e=>{const b=e.target.closest('[data-copytpl]');if(b)copy(TPL[+b.dataset.copytpl].strong)});
+tplRender();
+
+/* ===== Semáforo ===== */
+const SQ=[
+ {id:'personal',t:'¿Incluye datos personales de clientes, usuarios o compañeros (nombres con cédula, teléfonos, historiales)?'},
+ {id:'conf',t:'¿Es un documento confidencial o interno de la organización?'},
+ {id:'persona',t:'¿El resultado decide algo sobre una persona (contratar, evaluar, sancionar)?'},
+ {id:'sinleer',t:'¿Lo vas a enviar o firmar sin leerlo completo?'},
+ {id:'cuenta',t:'¿Vas a usar una cuenta personal y no una herramienta aprobada por tu organización?'}];
+const sans={personal:'no',conf:'no',persona:'no',sinleer:'no',cuenta:'si'};
+function sRender(){$('#sqs').innerHTML=SQ.map(q=>`<div class="q"><p>${esc(q.t)}</p><div class="yn" role="group" aria-label="${esc(q.t)}"><button type="button" data-sq="${q.id}" data-v="si" aria-pressed="${sans[q.id]==='si'}">Sí</button><button type="button" data-sq="${q.id}" data-v="no" aria-pressed="${sans[q.id]==='no'}">No</button></div></div>`).join('');sEval()}
+function sEval(){const why=[];let v='verde';
+ if(sans.personal==='si'){v='rojo';why.push('Quita los datos personales o cámbialos por datos inventados antes de usar la IA.')}
+ if(sans.persona==='si'){v='rojo';why.push('Una decisión sobre una persona la toma y la firma una persona. La IA solo puede ayudar a ordenar la información.')}
+ if(sans.sinleer==='si'){v='rojo';why.push('Nunca envíes ni firmes algo que no hayas leído completo: ese es el sesgo de automatización.')}
+ if(sans.conf==='si'){if(sans.cuenta==='si'){v='rojo';why.push('Un documento confidencial no va en una cuenta personal ni en herramientas gratuitas.')}else if(v!=='rojo'){v='amarillo';why.push('Usa solo la herramienta que aprobó tu organización y revisa con quién se comparte.')}}
+ if(v==='verde'&&sans.cuenta==='si'){v='amarillo';why.push('Con una cuenta personal, usa solo información pública, inventada o que no identifique a nadie.')}
+ if(v==='verde')why.push('Adelante. Aun así, aplica la regla de las 3 preguntas antes de usar el resultado.');
+ const L=$('#slight');L.dataset.v=v;$('#slightTitle').textContent={verde:'Verde: adelante',amarillo:'Amarillo: con cuidado',rojo:'Rojo: así no'}[v];
+ $('#slightText').textContent={verde:'Es una tarea adecuada para usar IA.',amarillo:'Se puede, cumpliendo lo que se indica abajo.',rojo:'No uses IA de esta forma. Cambia lo que se indica primero.'}[v];
+ $('#slightWhy').innerHTML=why.map(w=>`<li>${esc(w)}</li>`).join('')}
+$('#sqs').addEventListener('click',e=>{const b=e.target.closest('[data-sq]');if(!b)return;sans[b.dataset.sq]=b.dataset.v;sRender()});sRender();
+
+/* ===== Calculadora ===== */
+const CT=[
+ {n:'Responder un correo difícil',h:20,a:3,r:4,f:5},
+ {n:'Escribir el acta de una reunión',h:45,a:5,r:12,f:2},
+ {n:'Informe mensual de una tabla',h:90,a:10,r:20,f:0.25},
+ {n:'Preparar una presentación',h:120,a:10,r:30,f:0.5},
+ {n:'Organizar los pendientes de la semana',h:20,a:2,r:5,f:1},
+ {n:'Otra tarea (escribe tus minutos)',h:30,a:5,r:10,f:1}];
+$('#cTask').innerHTML=CT.map((t,i)=>`<option value="${i}">${esc(t.n)}</option>`).join('');
+const num=id=>{const v=parseFloat($(id).value);return isFinite(v)&&v>=0?v:0};
+const fmtMin=m=>{const s=m<0?'−':'';m=Math.abs(Math.round(m));if(m<60)return s+m+' min';const h=Math.floor(m/60),r=m%60;return s+h+' h'+(r?' '+r+' min':'')};
+function cLoad(i){const t=CT[i];$('#cHand').value=t.h;$('#cAi').value=t.a;$('#cRev').value=t.r;$('#cFreq').value=t.f;cCalc()}
+function cCalc(){const h=num('#cHand'),a=num('#cAi'),r=num('#cRev'),f=num('#cFreq');const once=h-a-r,week=once*f,year=week*46;
+ $('#cOnce').textContent=fmtMin(once);$('#cWeek').textContent=fmtMin(week);$('#cYear').textContent=(year/60).toLocaleString('es-CO',{maximumFractionDigits:1})+' horas';
+ $('#cResult').classList.toggle('neg',once<0);
+ $('#cMsg').textContent=once<0?'La revisión toma más de lo que ahorras: en esta tarea la IA no está ayudando. Mejora el prompt o hazla a mano.':once===0?'No hay ahorro: revisa si vale la pena.':(once/h<0.25?'Ahorro pequeño: úsala si además mejora la calidad.':'Buen candidato para tu caja de herramientas.')}
+$('#cTask').addEventListener('change',e=>cLoad(+e.target.value));
+['#cHand','#cAi','#cRev','#cFreq'].forEach(id=>$(id).addEventListener('input',cCalc));
+cLoad(0);
+})();
+</script>
+</body>
+</html>

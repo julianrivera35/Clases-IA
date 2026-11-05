@@ -366,6 +366,34 @@ a.jcard:hover{border-color:var(--jc)}
 .thread mark{color:var(--ink)}
 @media (max-width:1020px){.fams{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:760px){.trio,.famdetail,.calc,.jcards{grid-template-columns:1fr}.fams{grid-template-columns:repeat(2,minmax(0,1fr))}.calc .pair{grid-template-columns:1fr}.journey{padding:22px}}
+
+/* ===== Dos caminos, etapas y reuniones ===== */
+.paths{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0 0 18px}
+.pathcard{background:var(--paper);border:1px solid var(--line);border-top:6px solid var(--cyan);border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.pathcard.m{border-top-color:var(--magenta)}.pathcard h3{font-size:1.2rem}.pathcard p{margin:0;color:var(--muted);font-size:.95rem}
+.stages{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;position:relative}
+.stages li{min-width:0}
+.stage{width:100%;border:2px solid var(--line);background:var(--paper);border-radius:14px;padding:12px 10px;text-align:left;cursor:pointer;font:inherit;color:var(--ink);display:flex;flex-direction:column;gap:6px;border-top:6px solid var(--sc);min-height:100%}
+.stage .n{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--sc);color:#fff;font:800 .9rem var(--display)}
+.stage b{font-family:var(--display);font-size:.98rem;line-height:1.2}
+.stage[aria-pressed="true"]{border-color:var(--sc);background:var(--ss);box-shadow:0 8px 20px #1b1e3c14}
+.stagedetail .alv{background:var(--yellow-soft);border-radius:12px;padding:12px 14px;margin-top:2px}
+.stagedetail .alv b{display:block;font:800 .72rem var(--body);letter-spacing:.12em;text-transform:uppercase;color:#7a5600;margin-bottom:3px}
+.retiro{margin-top:18px;background:var(--paper);border:1px solid var(--line);border-left:8px solid var(--yellow);border-radius:16px;padding:20px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:18px}
+.retiro h3{font-size:1.25rem;margin:8px 0}.retiro p{margin:0 0 10px}
+.retiro .warnline{background:var(--magenta-soft);border-radius:10px;padding:10px 12px;font-size:.93rem}
+.reu{margin-top:24px;background:var(--paper);border:2px solid var(--cyan);border-radius:20px;padding:22px}
+.reuhead{display:flex;gap:14px;align-items:center;margin-bottom:14px}.reuhead h3{font-size:1.3rem;margin-top:4px}
+.reuhead .logo{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:var(--cyan-soft);font-size:1.4rem;flex-shrink:0}
+.reugrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.reucard{border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.reucard h4{font-family:var(--display);font-size:1.1rem;margin:0}.reucard p{margin:0;font-size:.95rem}
+.reucard ul{margin:0;padding-left:20px;font-size:.93rem}.reucard li{margin:3px 0}
+.reucard a{font-size:.85rem;font-weight:700;text-decoration:none}.reucard .vfy{color:var(--muted);font-size:.8rem}
+.ethics{margin-top:14px;background:var(--yellow-soft);border:1px solid #f3dc97;border-radius:12px;padding:12px 16px;font-size:.95rem}
+.tagline{color:var(--muted);font-weight:400}
+@media (max-width:1020px){.stages{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:760px){.paths,.retiro,.reugrid{grid-template-columns:1fr}.stages{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -396,18 +424,22 @@ a.jcard:hover{border-color:var(--jc)}
 
   <!-- 1 -->
   <section class="sec c" id="ruta" data-title="Ruta de la clase">
-    <div class="sec-head"><div class="num">01</div><div><div class="eyebrow">2 horas · Todos juntos, paso a paso</div><h2>Ruta de la clase</h2><p class="lead">Acompañamos un día de trabajo de <b>Carolina Pérez</b>, coordinadora administrativa de la Organización Altamira, una empresa ficticia. Cada momento de su día es una tarea real de oficina que resolvemos con Gemini o con Goblin.tools.</p></div></div>
+    <div class="sec-head"><div class="num">01</div><div><div class="eyebrow">2 horas · Todos juntos, paso a paso</div><h2>Ruta de la clase</h2><p class="lead">El laboratorio tiene <mark>dos caminos con los mismos 6 momentos</mark>, las mismas herramientas y los mismos pasos. Cada quien elige el suyo al empezar, y avanzamos todos juntos.</p></div></div>
+    <div class="paths">
+      <div class="pathcard c"><span class="tag c">Camino 1 · Oficina</span><h3>Un día de Carolina</h3><p>Carolina Pérez es coordinadora administrativa de la Organización Altamira, una empresa ficticia. Cada momento de su día es una tarea real de oficina.</p></div>
+      <div class="pathcard m"><span class="tag">Camino 2 · Emprendimiento</span><h3>Las etapas de Don Álvaro</h3><p>Don Álvaro, de 67 años y pensionado, saca adelante Miel La Esperanza, su emprendimiento ficticio. Cada momento es una etapa de su negocio. <a class="chiplink" href="#emprendimiento">Ver las etapas</a></p></div>
+    </div>
     <div class="route">
-      <div class="stop c"><time>4:00–4:10</time><div><b>Apertura</b><small>¿Qué tareas de tu semana te roban más tiempo? Conocemos el día de Carolina.</small></div><div class="where"><a class="chiplink" href="#ia-en-el-trabajo">La IA en el trabajo</a></div></div>
-      <div class="stop m"><time>4:10–4:25</time><div><b>Teoría corta</b><small>Los cinco tipos de tareas, las dos herramientas de hoy y la regla de las 3 preguntas.</small></div><div class="where"><a class="chiplink" href="#tipos-de-tareas">Tipos de tareas</a><a class="chiplink" href="#herramientas">Herramientas</a></div></div>
-      <div class="stop y"><time>4:25–4:38</time><div><b>Momento 1 · Organizar el día</b><small>Desglosar la fiesta de fin de año con Magic ToDo y el Estimador, y comparar con Gemini.</small></div><div class="where"><a class="chiplink" href="#goblin">Goblin.tools</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-oficina.html">Momento 1 ↗</a></div></div>
-      <div class="stop c"><time>4:38–4:53</time><div><b>Momento 2 · Un correo difícil</b><small>Leer el tono con Judge, mejorar la respuesta con Formalizer y con un prompt TAREA en Gemini.</small></div><div class="where"><a class="chiplink" href="#prompts-oficina">Prompts de oficina</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-oficina.html">Momento 2 ↗</a></div></div>
-      <div class="stop m"><time>4:53–5:08</time><div><b>Momento 3 · De la reunión al acta</b><small>Una transcripción desordenada se vuelve un acta con decisiones, compromisos y pendientes.</small></div><div class="where"><a class="chiplink" href="#revisar">Revisar</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-oficina.html">Momento 3 ↗</a></div></div>
-      <div class="stop y"><time>5:08–5:23</time><div><b>Momento 4 · Entender una tabla</b><small>La caja menor de cuatro meses en Gemini: totales, el tope, gastos sin soporte y un gráfico.</small></div><div class="where"><a class="chiplink" href="#gemini">Gemini</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-oficina.html">Momento 4 ↗</a></div></div>
-      <div class="stop c"><time>5:23–5:35</time><div><b>Momento 5 · Preparar la presentación</b><small>Canvas de Gemini arma las diapositivas para el comité. Revisamos que las cifras coincidan.</small></div><div class="where"><a class="chiplink" href="#gemini">Canvas</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-oficina.html">Momento 5 ↗</a></div></div>
-      <div class="stop m"><time>5:35–5:43</time><div><b>Momento 6 · Decidir y cerrar el día</b><small>El Consultor ayuda a elegir restaurante y el Compilador ordena los pendientes.</small></div><div class="where"><a class="chiplink" href="#goblin">Consultor y Compilador</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-oficina.html">Momento 6 ↗</a></div></div>
-      <div class="stop y"><time>5:43–5:53</time><div><b>Galería: compartimos resultados</b><small>Tres o cuatro personas muestran su mejor resultado y cuánto tiempo creen que se ahorraron.</small></div><div class="where"><a class="chiplink" href="#vale-la-pena">¿Vale la pena?</a></div></div>
-      <div class="stop c"><time>5:53–6:00</time><div><b>Caja de herramientas y cierre</b><small>Cada persona define qué usaría, para qué tarea suya y quién lo revisa.</small></div><div class="where"><a class="chiplink" href="#caja">Caja de herramientas</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-oficina.html">Cierre ↗</a></div></div>
+      <div class="stop c"><time>4:00–4:10</time><div><b>Apertura</b><small>¿Qué tareas de tu semana o de tu negocio te roban más tiempo? Conocemos a Carolina y a Don Álvaro, y cada quien elige su camino.</small></div><div class="where"><a class="chiplink" href="#ia-en-el-trabajo">La IA en el trabajo</a></div></div>
+      <div class="stop m"><time>4:10–4:25</time><div><b>Teoría corta</b><small>Los cinco tipos de tareas, las etapas de un emprendimiento, las dos herramientas de hoy y la regla de las 3 preguntas.</small></div><div class="where"><a class="chiplink" href="#tipos-de-tareas">Tipos de tareas</a><a class="chiplink" href="#emprendimiento">Emprendimiento</a><a class="chiplink" href="#herramientas">Herramientas</a></div></div>
+      <div class="stop y"><time>4:25–4:38</time><div><b>Momento 1 · Organizar el día / La idea y el plan</b><small>Carolina: la fiesta de fin de año. Don Álvaro: la venta de 60 kits de Navidad. Magic ToDo y Estimador, comparados con Gemini.</small></div><div class="where"><a class="chiplink" href="#goblin">Goblin.tools</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-oficina.html">Momento 1 ↗</a></div></div>
+      <div class="stop c"><time>4:38–4:53</time><div><b>Momento 2 · Un mensaje difícil</b><small>Carolina: el correo de un contratista. Don Álvaro: una clienta molesta por WhatsApp. Judge, Formalizer y un prompt TAREA.</small></div><div class="where"><a class="chiplink" href="#prompts-oficina">Prompts de oficina</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-oficina.html">Momento 2 ↗</a></div></div>
+      <div class="stop m"><time>4:53–5:08</time><div><b>Momento 3 · De la conversación a los acuerdos</b><small>Carolina: el acta del comité. Don Álvaro: los acuerdos de una llamada con su apicultor. Gemini, y Granola para conocer.</small></div><div class="where"><a class="chiplink" href="#reuniones">Reuniones</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-oficina.html">Momento 3 ↗</a></div></div>
+      <div class="stop y"><time>5:08–5:23</time><div><b>Momento 4 · Entender una tabla / Revisar ganancias</b><small>Carolina: la caja menor y su tope. Don Álvaro: la ganancia por canal y por producto, descontando la comisión de la tienda.</small></div><div class="where"><a class="chiplink" href="#gemini">Gemini</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-oficina.html">Momento 4 ↗</a></div></div>
+      <div class="stop c"><time>5:23–5:35</time><div><b>Momento 5 · Preparar la presentación</b><small>Canvas de Gemini arma las diapositivas: para el comité o para un socio o una cooperativa. Revisamos que las cifras coincidan.</small></div><div class="where"><a class="chiplink" href="#gemini">Canvas</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-oficina.html">Momento 5 ↗</a></div></div>
+      <div class="stop m"><time>5:35–5:43</time><div><b>Momento 6 · Decidir y cerrar / Decidir y crecer</b><small>El Consultor ayuda a decidir (restaurante, o feria frente a tienda) y el Compilador ordena los pendientes del día.</small></div><div class="where"><a class="chiplink" href="#goblin">Consultor y Compilador</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-oficina.html">Momento 6 ↗</a></div></div>
+      <div class="stop y"><time>5:43–5:53</time><div><b>Galería: compartimos resultados</b><small>Resultados de los dos caminos: ¿qué de lo que hizo el otro camino te serviría a ti?</small></div><div class="where"><a class="chiplink" href="#vale-la-pena">¿Vale la pena?</a></div></div>
+      <div class="stop c"><time>5:53–6:00</time><div><b>Caja de herramientas y cierre</b><small>Cada persona define qué usaría, para qué tarea de su trabajo, su negocio o su vida, y quién lo revisa.</small></div><div class="where"><a class="chiplink" href="#caja">Caja de herramientas</a><a class="chiplink lab xlink" data-target="lab" href="laboratorio-oficina.html">Cierre ↗</a></div></div>
     </div>
     <p class="note">Cada momento del laboratorio trae un <b>Nivel 2</b> para quien termina antes. Si el tiempo se acorta, el momento 5 lo muestra el profesor y el momento 6 queda de tarea.</p>
   </section>
@@ -434,9 +466,22 @@ a.jcard:hover{border-color:var(--jc)}
     <div class="famdetail" id="famdetail" aria-live="polite"></div>
   </section>
 
+  <!-- emprendimiento -->
+  <section class="sec c" id="emprendimiento" data-title="Emprendimiento">
+    <div class="sec-head"><div class="num">04</div><div><div class="eyebrow">Camino 2 · Don Álvaro</div><h2>La IA en las etapas de un emprendimiento</h2><p class="lead">Un negocio pequeño pasa por etapas, y en cada una la IA puede ayudar a pensar, ordenar o redactar. Pero hay algo que nunca delega: <mark>las decisiones del dueño</mark>. Toca cada etapa para ver qué hace la IA, con qué herramienta gratuita y cómo lo vive Don Álvaro con Miel La Esperanza.</p></div></div>
+    <ol class="stages" id="stages" aria-label="Etapas de un emprendimiento"></ol>
+    <div class="famdetail stagedetail" id="stagedetail" aria-live="polite"></div>
+    <div class="retiro">
+      <div><span class="tag y">Para quienes ya se pensionaron</span><h3>Emprender después de pensionarse: la IA como socia para pensar</h3>
+      <p>La experiencia de toda una vida vale mucho: oficios, contactos y lo que sabes hacer bien. La IA ayuda a convertir eso en ideas concretas, a ver riesgos y a encontrar un primer paso barato. No reemplaza conversar con clientes reales.</p>
+      <p class="warnline"><b>Antes de invertir un peso:</b> valida la idea con al menos 5 a 10 personas que podrían comprarte. Pregúntales si pagarían y cuánto. Que la IA diga que una idea es buena no significa que alguien la vaya a comprar.</p></div>
+      <div class="promptbox"><div class="row"><b>Prompt TAREA · Ideas de negocio con mi experiencia</b><button class="btn sm" type="button" id="copyRetiro">Copiar</button></div><pre id="retiroPrompt"></pre></div>
+    </div>
+  </section>
+
   <!-- 4 -->
-  <section class="sec c" id="herramientas" data-title="Herramientas">
-    <div class="sec-head"><div class="num">04</div><div><div class="eyebrow">Las dos de hoy</div><h2>Gemini y Goblin.tools</h2><p class="lead">Gemini es el asistente completo: entiende contexto, lee archivos y arma tablas, gráficos y presentaciones. Goblin.tools es una caja de botones simples: una herramienta para cada cosa, sin crear cuenta.</p></div></div>
+  <section class="sec m" id="herramientas" data-title="Herramientas">
+    <div class="sec-head"><div class="num">05</div><div><div class="eyebrow">Las dos de hoy</div><h2>Gemini y Goblin.tools</h2><p class="lead">Gemini es el asistente completo: entiende contexto, lee archivos y arma tablas, gráficos y presentaciones. Goblin.tools es una caja de botones simples: una herramienta para cada cosa, sin crear cuenta.</p></div></div>
 
     <div class="toolhead" id="gemini"><div class="logo" style="background:var(--cyan-dark)">G</div><h3>Gemini</h3><span class="tag c">gemini.google.com · cuenta de Google · gratis</span></div>
     <div class="gcards">
@@ -470,8 +515,8 @@ a.jcard:hover{border-color:var(--jc)}
   </section>
 
   <!-- 5 -->
-  <section class="sec m" id="otras-herramientas" data-title="Otras herramientas">
-    <div class="sec-head"><div class="num">05</div><div><div class="eyebrow">Para explorar después</div><h2>Otras herramientas útiles</h2><p class="lead">Cada una hace muy bien una sola cosa. Sus planes gratuitos tienen <mark>pocos usos al día</mark>, así que sirven para probar con calma, no para un taller de muchas personas a la vez.</p></div></div>
+  <section class="sec y" id="otras-herramientas" data-title="Otras herramientas">
+    <div class="sec-head"><div class="num">06</div><div><div class="eyebrow">Para explorar después</div><h2>Otras herramientas útiles</h2><p class="lead">Cada una hace muy bien una sola cosa. Sus planes gratuitos tienen <mark>pocos usos al día</mark>, así que sirven para probar con calma, no para un taller de muchas personas a la vez.</p></div></div>
     <div class="ocards">
       <div class="ocard c"><b>Napkin</b><span>Convierte un texto en diagrama o infografía.</span><a href="https://www.napkin.ai/" target="_blank" rel="noopener">napkin.ai ↗</a></div>
       <div class="ocard m"><b>Microsoft Designer</b><span>Imágenes y piezas gráficas a partir de una descripción.</span><a href="https://designer.microsoft.com/" target="_blank" rel="noopener">designer.microsoft.com ↗</a></div>
@@ -481,18 +526,36 @@ a.jcard:hover{border-color:var(--jc)}
       <div class="ocard y"><b>ElevenLabs</b><span>Convierte texto en voz natural, en español.</span><a href="https://elevenlabs.io/" target="_blank" rel="noopener">elevenlabs.io ↗</a></div>
       <div class="ocard c"><b>Fliki</b><span>Convierte un texto en un video corto con voz.</span><a href="https://fliki.ai/es" target="_blank" rel="noopener">fliki.ai ↗</a></div>
     </div>
+
+    <div class="reu" id="reuniones">
+      <div class="reuhead"><div class="logo" aria-hidden="true">🎙️</div><div><span class="tag c">Destacado</span><h3>Reuniones y llamadas: transcribir y sacar acuerdos</h3></div></div>
+      <div class="reugrid">
+        <div class="reucard"><h4>Granola</h4><p>Toma notas de reuniones con IA <b>sin meter ningún bot a la llamada</b>: escucha el audio del propio computador o celular, transcribe y arma las notas. Borra el audio después de transcribir.</p>
+          <ul>
+            <li>Plan <b>Basic gratis</b>, pero solo guarda el historial de los últimos <b>30 días</b>.</li>
+            <li>Plan <b>Business</b>: USD 14 al mes por persona, con historial ilimitado.</li>
+            <li>App de escritorio (Mac y Windows), iOS y Android. Soporta varios idiomas.</li>
+            <li>Sirve para comités, reuniones con clientes y llamadas con proveedores.</li>
+          </ul>
+          <a href="https://www.granola.ai/pricing" target="_blank" rel="noopener">granola.ai ↗</a><small class="vfy">Verificado el 5 de noviembre de 2026. Hay que instalarla: en clase solo la conocemos.</small></div>
+        <div class="reucard"><h4>Alternativa gratuita en clase: una nota de voz a Gemini</h4><p>Graba con el celular una nota de voz corta, súbela a Gemini y pídele los acuerdos, los compromisos con responsable y los pendientes. Gemini acepta archivos de audio de hasta <b>10 minutos</b>.</p>
+          <div class="promptbox"><div class="row"><b>Prompt para la nota de voz</b><button class="btn sm" type="button" id="copyVoz">Copiar</button></div><pre id="vozPrompt"></pre></div>
+          <a href="https://support.google.com/gemini/answer/14903178" target="_blank" rel="noopener">Ayuda de Google sobre archivos en Gemini ↗</a></div>
+      </div>
+      <div class="ethics"><b>Primero, pide permiso.</b> Antes de grabar o transcribir una reunión o una llamada, avísale a las demás personas y pregúntales si están de acuerdo. Es una cuestión de respeto y de confianza. La propia Granola lo recomienda, y tiene una opción para avisar automáticamente. Si alguien no quiere, toma notas a mano y después pídele a la IA que las ordene.</div>
+    </div>
   </section>
 
   <!-- 6 -->
-  <section class="sec y" id="prompts-oficina" data-title="Prompts de oficina">
-    <div class="sec-head"><div class="num">06</div><div><div class="eyebrow">El marco TAREA en la oficina</div><h2>Cinco plantillas para el día a día</h2><p class="lead">Las mismas cinco partes de siempre: <b>T</b>area principal, <b>A</b>cción esperada, <b>R</b>ol del modelo, <b>E</b>jemplo de salida y <b>A</b>claraciones. Cada plantilla usa el caso de Carolina; cámbiale los datos por los tuyos.</p></div></div>
+  <section class="sec c" id="prompts-oficina" data-title="Prompts de oficina">
+    <div class="sec-head"><div class="num">07</div><div><div class="eyebrow">El marco TAREA en la oficina</div><h2>Siete plantillas para el día a día</h2><p class="lead">Las mismas cinco partes de siempre: <b>T</b>area principal, <b>A</b>cción esperada, <b>R</b>ol del modelo, <b>E</b>jemplo de salida y <b>A</b>claraciones. Hay plantillas de los dos caminos, Carolina y Don Álvaro; cámbiales los datos por los tuyos.</p></div></div>
     <div class="tabs" id="tplTabs" role="tablist" aria-label="Plantillas"></div>
     <div class="compare" id="tplBody"></div>
   </section>
 
   <!-- 7 -->
-  <section class="sec c" id="revisar" data-title="Revisar">
-    <div class="sec-head"><div class="num">07</div><div><div class="eyebrow">Verificación humana</div><h2>La regla de las 3 preguntas</h2><p class="lead">Antes de usar cualquier resultado de la IA en el trabajo, hazle tres preguntas. Si alguna da "no", se corrige o se descarta.</p></div></div>
+  <section class="sec m" id="revisar" data-title="Revisar">
+    <div class="sec-head"><div class="num">08</div><div><div class="eyebrow">Verificación humana</div><h2>La regla de las 3 preguntas</h2><p class="lead">Antes de usar cualquier resultado de la IA en el trabajo, hazle tres preguntas. Si alguna da "no", se corrige o se descarta.</p></div></div>
     <div class="rules">
       <div class="rule"><b>1. ¿Es correcto?</b><span>Fechas, cifras, nombres y responsables coinciden con la fuente. Nada inventado.</span></div>
       <div class="rule"><b>2. ¿Ahorró tiempo?</b><span>Pedir más revisar tomó menos que hacerlo a mano. Si no, no vale la pena.</span></div>
@@ -509,8 +572,8 @@ a.jcard:hover{border-color:var(--jc)}
   </section>
 
   <!-- 8 -->
-  <section class="sec m" id="cuando-no" data-title="Cuándo no">
-    <div class="sec-head"><div class="num">08</div><div><div class="eyebrow">Límites y riesgos</div><h2>Cuándo NO usar la IA en el trabajo</h2><p class="lead">La IA ahorra tiempo, pero hay situaciones en las que el riesgo es mayor que el beneficio, sobre todo con cuentas personales y herramientas gratuitas.</p></div></div>
+  <section class="sec y" id="cuando-no" data-title="Cuándo no">
+    <div class="sec-head"><div class="num">09</div><div><div class="eyebrow">Límites y riesgos</div><h2>Cuándo NO usar la IA en el trabajo</h2><p class="lead">La IA ahorra tiempo, pero hay situaciones en las que el riesgo es mayor que el beneficio, sobre todo con cuentas personales y herramientas gratuitas.</p></div></div>
     <div class="grid">
       <div class="card m"><span class="tag">Datos personales</span><h3>Clientes, usuarios o compañeros</h3><p>En Colombia, la <b>Ley 1581 de 2012</b> protege los datos personales: para usarlos se necesita autorización y una finalidad clara. Pegar una cédula, un teléfono o un historial en una herramienta gratuita los saca del control de la organización.</p></div>
       <div class="card c"><span class="tag c">Confidencial</span><h3>Documentos internos</h3><p>Contratos, nóminas, estrategias o informes no publicados: solo en herramientas aprobadas por tu organización, nunca en una cuenta personal.</p></div>
@@ -525,8 +588,8 @@ a.jcard:hover{border-color:var(--jc)}
   </section>
 
   <!-- 9 -->
-  <section class="sec y" id="vale-la-pena" data-title="¿Vale la pena?">
-    <div class="sec-head"><div class="num">09</div><div><div class="eyebrow">Calculadora</div><h2>¿Vale la pena usar IA en esta tarea?</h2><p class="lead">El ahorro real es el tiempo a mano menos el tiempo con IA <mark>y menos el tiempo de revisión</mark>. Si la revisión toma más de lo que ahorras, la IA no está ayudando en esa tarea.</p></div></div>
+  <section class="sec c" id="vale-la-pena" data-title="¿Vale la pena?">
+    <div class="sec-head"><div class="num">10</div><div><div class="eyebrow">Calculadora</div><h2>¿Vale la pena usar IA en esta tarea?</h2><p class="lead">El ahorro real es el tiempo a mano menos el tiempo con IA <mark>y menos el tiempo de revisión</mark>. Si la revisión toma más de lo que ahorras, la IA no está ayudando en esa tarea.</p></div></div>
     <div class="calc">
       <form id="calcForm" onsubmit="return false">
         <label for="cTask">Tarea<select id="cTask"></select></label>
@@ -548,23 +611,24 @@ a.jcard:hover{border-color:var(--jc)}
   </section>
 
   <!-- 10 -->
-  <section class="sec c" id="caja" data-title="Caja de herramientas">
-    <div class="sec-head"><div class="num">10</div><div><div class="eyebrow">Lo que te llevas</div><h2>Tu caja de herramientas personal</h2><p class="lead">Es una tabla corta con las tareas de <b>tu</b> trabajo o de tu vida en las que usarías IA: con qué herramienta, con qué prompt o botón, quién revisa qué, y cuánto tiempo crees que ahorras. Así la IA deja de ser una curiosidad y se vuelve un hábito con control. Este es el ejemplo de Carolina:</p></div></div>
+  <section class="sec m" id="caja" data-title="Caja de herramientas">
+    <div class="sec-head"><div class="num">11</div><div><div class="eyebrow">Lo que te llevas</div><h2>Tu caja de herramientas personal</h2><p class="lead">Es una tabla corta con las tareas de <b>tu</b> trabajo o de tu vida en las que usarías IA: con qué herramienta, con qué prompt o botón, quién revisa qué, y cuánto tiempo crees que ahorras. Así la IA deja de ser una curiosidad y se vuelve un hábito con control. Este ejemplo mezcla tareas de Carolina y de Don Álvaro:</p></div></div>
     <div class="boxcard"><div class="tbl"><table>
       <thead><tr><th>Tarea</th><th>Herramienta</th><th>Prompt o botón</th><th>Quién revisa y qué</th><th>Ahorro</th></tr></thead>
       <tbody>
         <tr><td>Responder reclamos por correo</td><td>Goblin Formalizer y Gemini</td><td>"Más profesional", o la plantilla de correo difícil</td><td>Yo: que no prometa fechas. Si es delicado, lo lee mi jefe.</td><td class="min">10 min</td></tr>
         <tr><td>Actas del comité</td><td>Gemini</td><td>Plantilla de acta con "Sin definir" para lo que falta</td><td>Yo: compromisos y fechas contra mis notas.</td><td class="min">25 min</td></tr>
         <tr><td>Informe mensual de caja menor</td><td>Gemini con el archivo</td><td>Plantilla de análisis de tabla</td><td>Yo: dos cifras a mano antes de enviarlo.</td><td class="min">30 min</td></tr>
-        <tr><td>Planear la semana</td><td>Goblin Magic ToDo</td><td>Picante 🌶️🌶️ para el detalle</td><td>Yo decido el orden final.</td><td class="min">10 min</td></tr>
+        <tr><td>Contestar reclamos de clientes por WhatsApp <small class="tagline">(negocio)</small></td><td>Gemini</td><td>Plantilla de clienta molesta</td><td>Yo decido cómo compensar; la IA solo redacta.</td><td class="min">10 min</td></tr>
+        <tr><td>Revisar la ganancia del mes <small class="tagline">(negocio)</small></td><td>Gemini con el archivo de ventas</td><td>Plantilla de ganancias por canal</td><td>Yo: una cuenta a mano, con la comisión de la tienda.</td><td class="min">40 min</td></tr>
       </tbody>
     </table></div></div>
-    <p class="note">En el laboratorio armas la tuya con al menos 3 filas. Queda en el informe PDF que puedes descargar al final.</p>
+    <p class="note">En el laboratorio armas la tuya con al menos 3 filas, con tareas de tu trabajo, tu negocio o tu vida. Queda en el informe PDF que puedes descargar al final.</p>
   </section>
 
   <!-- 11 -->
-  <section class="sec m" id="glosario" data-title="Glosario">
-    <div class="sec-head"><div class="num">11</div><div><div class="eyebrow">Palabras clave</div><h2>Glosario</h2></div></div>
+  <section class="sec y" id="glosario" data-title="Glosario">
+    <div class="sec-head"><div class="num">12</div><div><div class="eyebrow">Palabras clave</div><h2>Glosario</h2></div></div>
     <dl class="gloss">
       <div><dt>Asistente</dt><dd>Una herramienta de IA que ayuda con una tarea; la persona sigue decidiendo.</dd></div>
       <div><dt>Prompt</dt><dd>La instrucción que le escribes a la IA.</dd></div>
@@ -576,13 +640,17 @@ a.jcard:hover{border-color:var(--jc)}
       <div><dt>Canvas</dt><dd>El espacio de Gemini para crear documentos, páginas web y presentaciones.</dd></div>
       <div><dt>Exportar</dt><dd>Llevar un resultado a otro programa, por ejemplo una presentación de Canvas a Google Slides.</dd></div>
       <div><dt>Sesgo de automatización</dt><dd>La tendencia a creer en lo que dice una máquina sin revisarlo.</dd></div>
+      <div><dt>Consignación</dt><dd>Dejar productos en una tienda que los vende y te paga lo vendido, quedándose con una comisión.</dd></div>
+      <div><dt>Margen y ganancia por unidad</dt><dd>Lo que queda de cada venta después de restar lo que cuesta producirla. Ejemplo: un frasco de $32.000 que cuesta $15.100 deja $16.900.</dd></div>
+      <div><dt>Validar una idea</dt><dd>Comprobar con clientes reales, antes de invertir, que alguien pagaría por lo que quieres vender.</dd></div>
+      <div><dt>Transcripción</dt><dd>Pasar a texto lo que se dijo en una reunión, una llamada o una nota de voz.</dd></div>
       <div><dt>Verificación humana</dt><dd>La revisión que hace una persona antes de usar o enviar un resultado de la IA.</dd></div>
     </dl>
   </section>
 
   <!-- 12 -->
-  <section class="sec y" id="fuentes" data-title="Fuentes">
-    <div class="sec-head"><div class="num">12</div><div><div class="eyebrow">Para verificar</div><h2>Fuentes</h2><p class="lead">Las funciones y los planes gratuitos cambian con frecuencia. Información revisada en noviembre de 2026.</p></div></div>
+  <section class="sec c" id="fuentes" data-title="Fuentes">
+    <div class="sec-head"><div class="num">13</div><div><div class="eyebrow">Para verificar</div><h2>Fuentes</h2><p class="lead">Las funciones y los planes gratuitos cambian con frecuencia. Información revisada en noviembre de 2026.</p></div></div>
     <ul class="sources">
       <li><a href="https://goblin.tools/About" target="_blank" rel="noopener">Goblin.tools: Acerca de (misión, gratuidad y advertencia sobre los resultados)</a></li>
       <li><a href="https://goblin.tools/" target="_blank" rel="noopener">Goblin.tools: lista de herramientas</a></li>
@@ -590,6 +658,7 @@ a.jcard:hover{border-color:var(--jc)}
       <li><a href="https://gemini.google/overview/canvas/" target="_blank" rel="noopener">Google: Canvas en Gemini</a></li>
       <li><a href="https://engadget.com/ai/googles-gemini-will-now-generate-presentations-for-you-010040637.html" target="_blank" rel="noopener">Engadget (26 de octubre de 2025): Gemini genera presentaciones en Canvas</a></li>
       <li><a href="https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=49981" target="_blank" rel="noopener">Ley 1581 de 2012, protección de datos personales (Función Pública)</a></li>
+      <li><a href="https://www.granola.ai/pricing" target="_blank" rel="noopener">Granola: planes y precios (verificado el 5 de noviembre de 2026)</a></li>
       <li><a href="https://waariaso.github.io/TAREA/" target="_blank" rel="noopener">Laboratorio TAREA (guía de prompting del curso)</a></li>
     </ul>
   </section>
@@ -698,7 +767,19 @@ A — Aclaraciones: Deja al menos 3 semanas para cotizar y confirmar el lugar. M
 A — Acción: Resume los resultados de la caja menor, presenta la nueva regla de soportes y el plan de la fiesta de fin de año.
 R — Rol: Actúa como diseñador de presentaciones ejecutivas.
 E — Ejemplo de salida: Una idea por diapositiva, título corto, máximo 3 viñetas, un gráfico en la de caja menor y una diapositiva final con las decisiones pendientes.
-A — Aclaraciones: Usa solo estas cifras: total de $4.064.000; octubre con $1.585.000 frente a un tope de $1.200.000; 12 gastos sin soporte por $1.123.000. No inventes datos.`}];
+A — Aclaraciones: Usa solo estas cifras: total de $4.064.000; octubre con $1.585.000 frente a un tope de $1.200.000; 12 gastos sin soporte por $1.123.000. No inventes datos.`},
+ {label:'Clienta molesta (WhatsApp)',weak:'Contéstale a la clienta.',wt:['No dice qué pasó','Puede culpar a otros','No ofrece solución'],
+  strong:`T — Tarea: Redacta una respuesta por WhatsApp para Sandra Rojas, clienta fiel de Miel La Esperanza, cuyo frasco de 500 g llegó dos días tarde y con la tapa floja.
+A — Acción: Pide disculpas de verdad, sin culpar a la transportadora, y ofrécele dos opciones para que ella elija: reponerle el frasco con el envío por cuenta del negocio, o un descuento en su próximo pedido.
+R — Rol: Actúa como el dueño de un emprendimiento familiar que cuida mucho a sus clientes.
+E — Ejemplo de salida: Un mensaje de WhatsApp de máximo 70 palabras, cálido y cercano, sin lenguaje de empresa grande.
+A — Aclaraciones: No prometas fechas exactas de entrega. No uses frases como "lamentamos los inconvenientes". Firma como Álvaro.`},
+ {label:'Ganancias por canal',weak:'¿Cuánto gané?',wt:['No da precios ni costos','Ignora la comisión de la tienda','No pide cómo calculó'],
+  strong:`T — Tarea: Analiza el archivo de ventas de Miel La Esperanza de septiembre y octubre de 2026.
+A — Acción: Calcula ventas y ganancia por canal y por producto. Ganancia = precio menos costo, pero en la Tienda Doña Marta usa solo el 75 % del precio, porque la tienda se queda con el 25 %.
+R — Rol: Actúa como asesor financiero de pequeños negocios que explica en lenguaje sencillo.
+E — Ejemplo de salida: Dos tablas cortas (por canal y por producto), un gráfico de barras de ganancia por canal y 3 conclusiones de una línea.
+A — Aclaraciones: Costos por unidad: frasco de 250 g $8.700, frasco de 500 g $15.100, kit de regalo $21.500. Muestra cómo calculaste cada total y no inventes datos.`}];
 let ti=0;
 function tplRender(){$('#tplTabs').innerHTML=TPL.map((t,i)=>`<button class="tab" role="tab" type="button" aria-selected="${i===ti}" data-tpl="${i}">${esc(t.label)}</button>`).join('');
  const t=TPL[ti];$('#tplBody').innerHTML=`<div class="pbox weak"><h3>Prompt flojo</h3><pre>${esc(t.weak)}</pre><div class="why">${t.wt.map(w=>`<span class="tag">${esc(w)}</span>`).join('')}</div></div><div class="pbox strong"><h3>Prompt TAREA <button class="btn sm" type="button" data-copytpl="${ti}">Copiar</button></h3><pre>${esc(t.strong)}</pre></div>`}
@@ -746,7 +827,32 @@ function cCalc(){const h=num('#cHand'),a=num('#cAi'),r=num('#cRev'),f=num('#cFre
 $('#cTask').addEventListener('change',e=>cLoad(+e.target.value));
 ['#cHand','#cAi','#cRev','#cFreq'].forEach(id=>$(id).addEventListener('input',cCalc));
 cLoad(0);
+/* ===== Etapas del emprendimiento ===== */
+const ST=[
+ {n:'Idea',c:'var(--cyan)',s:'var(--cyan-soft)',ia:'Proponer ideas a partir de lo que sabes hacer, y criticarlas: riesgos, costos y competencia.',tool:'Gemini (lluvia de ideas con TAREA), Goblin Consultor para elegir',dec:'Qué idea vale la pena probar, según tu tiempo, tu plata y tus ganas.',alv:'Don Álvaro le pidió a Gemini 5 ideas de producto navideño con miel y luego le pidió que las criticara. Escogió el kit de regalo.'},
+ {n:'Validar',c:'var(--magenta)',s:'var(--magenta-soft)',ia:'Preparar las preguntas para conversar con posibles clientes y ordenar lo que respondieron.',tool:'Gemini; Goblin Compilador para ordenar notas',dec:'Si la idea sigue o se ajusta. Eso lo deciden los clientes reales, no la IA.',alv:'Antes de lanzar el kit, preguntó a 10 clientes fijos por WhatsApp si lo comprarían a $45.000. Siete dijeron que sí.'},
+ {n:'Organizar',c:'var(--yellow)',s:'var(--yellow-soft)',ia:'Partir el proyecto en pasos, estimar tiempos y armar un plan hacia atrás desde la fecha clave.',tool:'Goblin Magic ToDo y Estimador; Gemini para el plan con fechas',dec:'El orden real, qué hace cada persona y qué se queda por fuera.',alv:'La venta de Navidad: 60 kits antes del 20 de diciembre, con miel, cajas, cucharas, moños y las fotos de Laura.'},
+ {n:'Vender y atender',c:'var(--green)',s:'var(--green-soft)',ia:'Redactar mensajes, catálogos y respuestas a reclamos, con el tono adecuado.',tool:'Goblin Judge y Formalizer; Gemini',dec:'Cómo compensar a un cliente y qué promesas puede cumplir el negocio.',alv:'Sandra, una clienta fiel, recibió tarde un frasco con la tapa floja. La IA redactó la disculpa; Álvaro decidió reponerle el frasco.'},
+ {n:'Números',c:'var(--cyan-dark)',s:'var(--cyan-soft)',ia:'Calcular ventas, costos y ganancia por producto y por canal, con tablas y gráficos.',tool:'Gemini con el archivo de ventas (CSV o Excel)',dec:'Revisar una cuenta a mano y decidir precios y canales.',alv:'Descubrió que la tienda de Doña Marta vende el 30 % de las unidades, pero deja solo cerca del 17 % de la ganancia, por su comisión del 25 %.'},
+ {n:'Presentar y financiar',c:'var(--magenta-dark)',s:'var(--magenta-soft)',ia:'Armar una presentación clara del negocio con sus cifras.',tool:'Canvas de Gemini (presentaciones exportables a Google Slides)',dec:'Cuánto pedir, a quién, y que cada cifra sea verdadera.',alv:'Preparó 6 diapositivas para una cooperativa: productos, ventas de septiembre y octubre, el plan de Navidad y qué necesita.'},
+ {n:'Decidir y crecer',c:'var(--ink)',s:'var(--bg)',ia:'Comparar opciones con criterios, hacer las cuentas y ordenar los pendientes.',tool:'Goblin Consultor y Compilador; Gemini para las cuentas',dec:'La decisión final y el riesgo que se está dispuesto a correr.',alv:'¿Feria navideña con stand de $250.000 o 30 kits en consignación en la tienda? Hizo las cuentas antes de elegir.'}];
+let sti=0;
+function stRender(){$('#stages').innerHTML=ST.map((t,i)=>`<li><button type="button" class="stage" data-st="${i}" aria-pressed="${i===sti}" style="--sc:${t.c};--ss:${t.s}"><span class="n">${i+1}</span><b>${esc(t.n)}</b></button></li>`).join('');
+ const t=ST[sti];const d=$('#stagedetail');d.style.setProperty('--fc',t.c);
+ d.innerHTML=`<div><h3>${sti+1} · ${esc(t.n)}</h3><dl><div><dt>Qué hace la IA</dt><dd>${esc(t.ia)}</dd></div><div><dt>Herramienta gratuita</dt><dd>${esc(t.tool)}</dd></div><div><dt>Lo que decide siempre la persona</dt><dd>${esc(t.dec)}</dd></div></dl></div><div class="alv"><b>Así lo vivió Don Álvaro</b>${esc(t.alv)}</div>`}
+$('#stages').addEventListener('click',e=>{const b=e.target.closest('[data-st]');if(!b)return;sti=+b.dataset.st;stRender()});
+stRender();
+const RETIRO=`T — Tarea: Ayúdame a encontrar 5 ideas de negocio pequeño que pueda empezar después de pensionarme.
+A — Acción: Propón ideas basadas en mi experiencia. Para cada una: qué vendería, a quién, cuánto tendría que invertir para empezar, el riesgo principal y un primer paso barato para probarla en menos de un mes.
+R — Rol: Actúa como asesor de emprendimiento que trabaja con personas mayores de 60 años.
+E — Ejemplo de salida: Una tabla con las 5 ideas y, al final, las 3 preguntas que debería hacerles a posibles clientes antes de invertir.
+A — Aclaraciones: Mi experiencia: [tu oficio o profesión y lo que sabes hacer bien]. Puedo invertir hasta: [monto]. Tengo disponible: [horas por semana]. Vivo en: [ciudad o municipio]. Sé realista y no me prometas ganancias.`;
+$('#retiroPrompt').textContent=RETIRO;$('#copyRetiro').addEventListener('click',()=>copy(RETIRO));
+const VOZ=`Escucha esta nota de voz de una llamada o una reunión. Escribe: 1) los acuerdos; 2) una tabla de compromisos con qué, quién y para cuándo; 3) los temas pendientes. Si falta un responsable o una fecha, escribe "Sin definir". Usa solo lo que se dice en el audio; no inventes nada.`;
+$('#vozPrompt').textContent=VOZ;$('#copyVoz').addEventListener('click',()=>copy(VOZ));
+
 })();
+
 </script>
 </body>
 </html>

@@ -427,7 +427,7 @@ a.jcard:hover{border-color:var(--jc)}
     <div class="sec-head"><div class="num">01</div><div><div class="eyebrow">2 horas · Todos juntos, paso a paso</div><h2>Ruta de la clase</h2><p class="lead">El laboratorio tiene <mark>dos caminos con los mismos 6 momentos</mark>, las mismas herramientas y los mismos pasos. Cada quien elige el suyo al empezar, y avanzamos todos juntos.</p></div></div>
     <div class="paths">
       <div class="pathcard c"><span class="tag c">Camino 1 · Oficina</span><h3>Un día de Carolina</h3><p>Carolina Pérez es coordinadora administrativa de la Organización Altamira, una empresa ficticia. Cada momento de su día es una tarea real de oficina.</p></div>
-      <div class="pathcard m"><span class="tag">Camino 2 · Emprendimiento</span><h3>Las etapas de Don Álvaro</h3><p>Don Álvaro, de 67 años y pensionado, saca adelante Miel La Esperanza, su emprendimiento ficticio. Cada momento es una etapa de su negocio. <a class="chiplink" href="#emprendimiento">Ver las etapas</a></p></div>
+      <div class="pathcard m"><span class="tag">Camino 2 · Emprendimiento</span><h3>Las etapas de Don Álvaro</h3><p>Don Álvaro saca adelante Miel La Esperanza, su emprendimiento ficticio. Cada momento es una etapa de su negocio. <a class="chiplink" href="#emprendimiento">Ver las etapas</a></p></div>
     </div>
     <div class="route">
       <div class="stop c"><time>4:00–4:10</time><div><b>Apertura</b><small>¿Qué tareas de tu semana o de tu negocio te roban más tiempo? Conocemos a Carolina y a Don Álvaro, y cada quien elige su camino.</small></div><div class="where"><a class="chiplink" href="#ia-en-el-trabajo">La IA en el trabajo</a></div></div>
@@ -472,8 +472,8 @@ a.jcard:hover{border-color:var(--jc)}
     <ol class="stages" id="stages" aria-label="Etapas de un emprendimiento"></ol>
     <div class="famdetail stagedetail" id="stagedetail" aria-live="polite"></div>
     <div class="retiro">
-      <div><span class="tag y">Para quienes ya se pensionaron</span><h3>Emprender después de pensionarse: la IA como socia para pensar</h3>
-      <p>La experiencia de toda una vida vale mucho: oficios, contactos y lo que sabes hacer bien. La IA ayuda a convertir eso en ideas concretas, a ver riesgos y a encontrar un primer paso barato. No reemplaza conversar con clientes reales.</p>
+      <div><span class="tag y">Ideas de negocio</span><h3>Emprender a partir de tu experiencia: la IA como socia para pensar</h3>
+      <p>Tu experiencia vale mucho: oficios, contactos y lo que sabes hacer bien. La IA ayuda a convertir eso en ideas concretas, a ver riesgos y a encontrar un primer paso barato. No reemplaza conversar con clientes reales.</p>
       <p class="warnline"><b>Antes de invertir un peso:</b> valida la idea con al menos 5 a 10 personas que podrían comprarte. Pregúntales si pagarían y cuánto. Que la IA diga que una idea es buena no significa que alguien la vaya a comprar.</p></div>
       <div class="promptbox"><div class="row"><b>Prompt TAREA · Ideas de negocio con mi experiencia</b><button class="btn sm" type="button" id="copyRetiro">Copiar</button></div><pre id="retiroPrompt"></pre></div>
     </div>
@@ -842,9 +842,9 @@ function stRender(){$('#stages').innerHTML=ST.map((t,i)=>`<li><button type="butt
  d.innerHTML=`<div><h3>${sti+1} · ${esc(t.n)}</h3><dl><div><dt>Qué hace la IA</dt><dd>${esc(t.ia)}</dd></div><div><dt>Herramienta gratuita</dt><dd>${esc(t.tool)}</dd></div><div><dt>Lo que decide siempre la persona</dt><dd>${esc(t.dec)}</dd></div></dl></div><div class="alv"><b>Así lo vivió Don Álvaro</b>${esc(t.alv)}</div>`}
 $('#stages').addEventListener('click',e=>{const b=e.target.closest('[data-st]');if(!b)return;sti=+b.dataset.st;stRender()});
 stRender();
-const RETIRO=`T — Tarea: Ayúdame a encontrar 5 ideas de negocio pequeño que pueda empezar después de pensionarme.
+const RETIRO=`T — Tarea: Ayúdame a encontrar 5 ideas de negocio pequeño que pueda empezar a partir de mi experiencia.
 A — Acción: Propón ideas basadas en mi experiencia. Para cada una: qué vendería, a quién, cuánto tendría que invertir para empezar, el riesgo principal y un primer paso barato para probarla en menos de un mes.
-R — Rol: Actúa como asesor de emprendimiento que trabaja con personas mayores de 60 años.
+R — Rol: Actúa como asesor de emprendimiento realista y prudente.
 E — Ejemplo de salida: Una tabla con las 5 ideas y, al final, las 3 preguntas que debería hacerles a posibles clientes antes de invertir.
 A — Aclaraciones: Mi experiencia: [tu oficio o profesión y lo que sabes hacer bien]. Puedo invertir hasta: [monto]. Tengo disponible: [horas por semana]. Vivo en: [ciudad o municipio]. Sé realista y no me prometas ganancias.`;
 $('#retiroPrompt').textContent=RETIRO;$('#copyRetiro').addEventListener('click',()=>copy(RETIRO));

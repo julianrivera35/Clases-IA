@@ -1,0 +1,62 @@
+﻿id,fecha_radicacion,solicitante,area,tipo,descripcion,prioridad,estado,responsable,fecha_limite,fecha_cierre,canal
+SOL-2026-0001,2026-10-29 10:00,Julio Herrera,Admisiones,Préstamo de equipo,Videobeam para reunión con proveedores,Media,Resuelta,Yolanda Ospina,2026-11-03,2026-11-05 15:30,Formulario
+SOL-2026-0002,2026-11-03 10:12,Valentina Rueda,Talento Humano,Préstamo de equipo,Videobeam para reunión con proveedores,Media,En gestión,Mauricio Fajardo,2026-11-05,,Formulario
+SOL-2026-0003,2026-11-03 11:48,Sandra Pineda,Jurídica,Mantenimiento locativo,Aire acondicionado de la sala 2 no enfría,Media,Resuelta,Yolanda Ospina,2026-11-06,2026-11-05 09:15,Teams
+SOL-2026-0004,2026-11-04 16:00,Sandra Pineda,Calidad,Certificado laboral,Certificado laboral sin salario para visa de turismo,Media,Resuelta,Esteban Gil,2026-11-06,2026-11-04 19:00,Teams
+SOL-2026-0005,2026-11-05 14:33,Paola Méndez,Compras,Actualización de proveedor,Cambio de razón social de proveedor de aseo,Media,Resuelta,Ana Lucía Prieto,2026-11-12,2026-11-10 09:30,Correo
+SOL-2026-0006,2026-11-06 11:55,Julio Herrera,Servicios Generales,Actualización de proveedor,Actualizar cuenta de cobro del proveedor de cafetería,Alta,Resuelta,Esteban Gil,2026-11-13,2026-11-13 10:15,Correo
+SOL-2026-0007,2026-11-06 16:12,Catalina Mora,Compras,Compra de insumos,Marcadores y borradores para sala de juntas,Media,Resuelta,Esteban Gil,2026-11-13,2026-11-13 09:30,Teams
+SOL-2026-0008,2026-11-07 07:05,Lucía Bermúdez,Compras,Certificado laboral,Certificado laboral con salario para trámite bancario,Baja,Resuelta,Ana Lucía Prieto,2026-11-11,2026-11-10 17:45,Teams
+SOL-2026-0009,2026-11-07 17:05,Julio Herrera,Facturación,Mantenimiento locativo,Silla ergonómica dañada,Alta,Resuelta,Yolanda Ospina,2026-11-12,2026-11-13 15:15,Correo
+SOL-2026-0010,2026-11-08 13:33,Laura Gómez,Gerencia Administrativa,Viáticos y anticipos,Anticipo para congreso en Medellín,Alta,Esperando información,Yolanda Ospina,2026-11-13,,Correo
+SOL-2026-0011,2026-11-09 07:33,Diana Salazar,Jurídica,Viáticos y anticipos,Legalización de viáticos de visita a sede norte,Media,Resuelta,Mauricio Fajardo,2026-11-13,2026-11-12 10:30,Correo
+SOL-2026-0012,2026-11-09 08:55,Lucía Bermúdez,Facturación,Mantenimiento locativo,Aire acondicionado de la sala 2 no enfría,Media,Resuelta,Esteban Gil,2026-11-12,2026-11-17 14:15,Presencial
+SOL-2026-0013,2026-11-09 10:33,Ricardo Vargas,Talento Humano,Certificado laboral,Certificado laboral sin salario para visa de turismo,alta,Esperando información,Mauricio Fajardo,2026-11-11,,Presencial
+SOL-2026-0014,2026-11-09 14:48,Laura Gómez,Gerencia Administrativa,Reserva de sala,Sala de juntas para comité del jueves,Baja,Resuelta,Esteban Gil,2026-11-10,2026-11-09 17:48,Formulario
+SOL-2026-0015,2026-11-09 15:55,Camilo Ortiz,Calidad,Certificado laboral,Certificado laboral sin salario para visa de turismo,Alta,Resuelta,Esteban Gil,2026-11-11,2026-11-12 10:15,Formulario
+SOL-2026-0016,2026-11-09 16:20,Julio Herrera,Gerencia Administrativa,Reserva de sala,Sala de juntas para comité del jueves,Alta,Resuelta,Esteban Gil,2026-11-10,2026-11-11 14:00,Presencial
+SOL-2026-0017,2026-11-10 08:05,Diana Salazar,Calidad,Reserva de sala,Sala de juntas para comité del jueves,Baja,En revisión,Yolanda Ospina,2026-11-11,,Correo
+SOL-2026-0018,2026-11-10 11:20,Paola Méndez,Servicios Generales,Correspondencia,Envío de documentos originales a notaría,Media,Rechazada,Esteban Gil,2026-11-12,2026-11-13 16:00,Formulario
+SOL-2026-0019,2026-11-10 15:27,Óscar Ramírez,Comunicaciones,Viáticos y anticipos,Anticipo para congreso en Medellín,Media,Esperando información,Ana Lucía Prieto,2026-11-17,,Formulario
+SOL-2026-0020,2026-11-12 10:00,Diana Salazar,Admisiones,Mantenimiento locativo,Silla ergonómica dañada,Media,En gestión,Esteban Gil,2026-11-18,,Presencial
+SOL-2026-0021,2026-11-12 11:55,Paola Méndez,Servicios Generales,Correspondencia,"Compra de ""post-it"", clips & ganchos; urgente para cierre de mes",Baja,En gestión,Esteban Gil,2026-11-17,,Presencial
+SOL-2026-0022,2026-11-14 08:12,Camilo Ortiz,Jurídica,Correspondencia,Recoger paquete en portería y entregar en piso 5,Alta,Esperando información,Ana Lucía Prieto,2026-11-19,,Correo
+SOL-2026-0023,2026-11-14 10:55,Lucía Bermúdez,Comunicaciones,Viáticos y anticipos,Reembolso de taxi por diligencia institucional,Baja,En gestión,Esteban Gil,2026-11-23,,Formulario
+SOL-2026-0024,2026-11-14 16:12,Laura Gómez,Calidad,Reserva de sala,Sala pequeña para entrevista,Baja,Resuelta,Mauricio Fajardo,2026-11-18,2026-11-18 16:30,Presencial
+SOL-2026-0025,2026-11-14 17:20,Andrés Castillo,Jurídica,Certificado laboral,Certificado laboral con salario para trámite bancario,Alta,En gestión,Esteban Gil,2026-11-19,,Teams
+SOL-2026-0026,2026-11-15 09:27,Mónica Quintero,Comunicaciones,Viáticos y anticipos,Anticipo para congreso en Medellín,Baja,En gestión,Mauricio Fajardo,2026-11-23,,Correo
+SOL-2026-0027,2026-11-15 11:33,Sebastián Ariza,Compras,Compra de insumos,Resmas de papel carta para el área,Media,Esperando información,Ana Lucía Prieto,2026-11-24,,Formulario
+SOL-2026-0028,2026-11-15 11:55,Mónica Quintero,Calidad,Reserva de sala,Sala pequeña para entrevista,Media,Rechazada,Mauricio Fajardo,2026-11-18,2026-11-18 09:15,Presencial
+SOL-2026-0029,2026-11-15 15:05,Julio Herrera,Comunicaciones,Viáticos y anticipos,Legalización de viáticos de visita a sede norte,Media,Resuelta,Mauricio Fajardo,2026-11-23,2026-11-19 10:30,Presencial
+SOL-2026-0030,2026-11-16 09:05,Óscar Ramírez,Admisiones,Mantenimiento locativo,Puerta de la oficina no cierra bien,Baja,En gestión,Ana Lucía Prieto,2026-11-20,,Formulario
+SOL-2026-0031,2026-11-16 09:48,Marcela Rincón,Contabilidad,Reserva de sala,Auditorio para capacitación de 40 personas,Alta,Esperando información,Mauricio Fajardo,2026-11-18,,Presencial
+SOL-2026-0032,2026-11-16 11:41,Jorge Medina,Jurídica,Certificado laboral,Certificado laboral con salario para trámite bancario,Media,En gestión,Esteban Gil,2026-11-19,,Correo
+SOL-2026-0033,2026-11-16 14:00,Valentina Rueda,Gerencia Administrativa,Correspondencia,Recoger paquete en portería y entregar en piso 5,Alta,Resuelta,Yolanda Ospina,2026-11-19,2026-11-18 09:00,Teams
+SOL-2026-0034,2026-11-16 15:55,Óscar Ramírez,Compras,Correspondencia,<b>URGENTE</b> revisar la cerradura del archivo central,Media,Resuelta,Mauricio Fajardo,2026-11-19,2026-11-17 17:15,Correo
+SOL-2026-0035,2026-11-16 16:48,Laura Gómez,Calidad,Actualización de proveedor,Actualizar cuenta de cobro del proveedor de cafetería,Media,En gestión,Ana Lucía Prieto,2026-11-24,,Correo
+SOL-2026-0036,2026-11-17 16:48,Hernán Tovar,Admisiones,Correspondencia,Radicación de oficio en entidad externa,Baja,Resuelta,Esteban Gil,2026-11-19,2026-11-23 07:00,Formulario
+SOL-2026-0037,2026-11-17 16:55,Andrés Castillo,Compras,Correspondencia,Envío de documentos originales a notaría,Baja,En gestión,Yolanda Ospina,2026-11-19,,Presencial
+SOL-2026-0038,2026-11-17 17:12,Diana Salazar,Comunicaciones,Certificado laboral,Certificado de funciones para concurso,Baja,En gestión,Yolanda Ospina,2026-11-19,,Presencial
+SOL-2026-0039,2026-11-18 11:27,Catalina Mora,Gerencia Administrativa,Mantenimiento locativo,Filtración de agua en el techo del archivo,Baja,Radicada,,2026-11-23,,Presencial
+SOL-2026-0040,2026-11-18 14:00,Natalia Cifuentes,Jurídica,Reserva de sala,Sala de juntas para comité del jueves,Media,Esperando información,Esteban Gil,2026-11-19,,Formulario
+SOL-2026-0041,2026-11-18 14:33,Mónica Quintero,Admisiones,Préstamo de equipo,Cámara web y micrófono para evento híbrido,Media,Radicada,,2026-11-20,,Presencial
+SOL-2026-0042,2026-11-18 15:27,Jorge Medina,Comunicaciones,Actualización de proveedor,"Solicito acceso a la sala <img src=x onerror=""alert('Esta app es vulnerable a XSS')"">",Baja,En gestión,Yolanda Ospina,2026-11-25,,Formulario
+SOL-2026-0043,2026-11-18 16:48,Andrés Castillo,Gerencia Administrativa,Compra de insumos,Tóner para impresora del piso 3,Media,En revisión,Mauricio Fajardo,2026-11-25,,Formulario
+SOL-2026-0044,2026-11-18 17:05,Ricardo Vargas,Contabilidad,Mantenimiento locativo,Puerta de la oficina no cierra bien,Baja,En revisión,Esteban Gil,2026-11-23,,Formulario
+SOL-2026-0045,2026-11-18 17:27,Valentina Rueda,Facturación,Correspondencia,Radicación de oficio en entidad externa,Baja,En gestión,Yolanda Ospina,2026-11-20,,Presencial
+SOL-2026-0046,2026-11-19 08:48,Valentina Rueda,Compras,Mantenimiento locativo,Puerta de la oficina no cierra bien,Media,Resuelta,Yolanda Ospina,2026-11-24,2026-11-20 09:00,Teams
+SOL-2026-0047,2026-11-19 09:12,Hernán Tovar,Facturación,Compra de insumos,Pilas para controles y mouse inalámbricos,Media,Resuelta,Ana Lucía Prieto,2026-11-26,2026-11-23 07:00,Teams
+SOL-2026-0048,2026-11-19 09:20,Marcela Rincón,Comunicaciones,Compra de insumos,Resmas de papel carta para el área,Baja,Radicada,,2026-11-26,,Formulario
+SOL-2026-0048,2026-11-19 09:20,Marcela Rincón,Comunicaciones,Compra de insumos,Resmas de papel carta para el área,Baja,Radicada,,2026-11-26,,Formulario
+SOL-2026-0049,2026-11-19 13:00,Laura Gómez,Jurídica,Certificado laboral,Certificado laboral sin salario para visa de turismo,Baja,En gestión,Ana Lucía Prieto,2026-11-23,,Correo
+SOL-2026-0050,2026-11-20 07:27,Diana Salazar,Facturación,Compra de insumos,Carpetas y ganchos para archivo,Alta,Resuelta,Esteban Gil,2026-11-27,2026-11-23 07:00,Formulario
+SOL-2026-0051,2026-11-20 08:41,Laura Gómez,Contabilidad,Mantenimiento locativo,Aire acondicionado de la sala 2 no enfría,Baja,Radicada,,2026-11-25,,Formulario
+SOL-2026-0052,2026-11-20 10:05,Catalina Mora,Comunicaciones,Compra de insumos,Tóner para impresora del piso 3,Media,Radicada,,2026-11-27,,Teams
+SOL-2026-0053,2026-11-20 10:20,Diana Salazar,Jurídica,Correspondencia,Envío de documentos originales a notaría,Alta,En revisión,Esteban Gil,2026-11-24,,Teams
+SOL-2026-0054,2026-11-20 16:05,Laura Gómez,Admisiones,Correspondencia,Envío de documentos originales a notaría,Alta,En revisión,Yolanda Ospina,2026-11-24,,Correo
+SOL-2026-0055,2026-11-21 16:41,Valentina Rueda,Servicios Generales,Certificado laboral,Certificado laboral con salario para trámite bancario,Baja,En gestión,,2026-11-25,,Teams
+SOL-2026-0056,2026-11-22 08:12,Hernán Tovar,Calidad,Compra de insumos,Marcadores y borradores para sala de juntas,Baja,Radicada,,2026-11-30,,Formulario
+SOL-2026-0057,2026-11-22 16:27,Sebastián Ariza,Talento Humano,Mantenimiento locativo,Filtración de agua en el techo del archivo,Alta,Radicada,,2026-11-26,,Correo
+SOL-2026-0058,2026-11-23 07:30,Hernán Tovar,Facturación,Reserva de sala,Auditorio para capacitación de 40 personas,Media,En revisión,Yolanda Ospina,2026-11-24,,Correo
+SOL-2026-0059,2026-11-23 07:30,Paola Méndez,Compras,Reserva de sala,Sala pequeña para entrevista,Alta,Radicada,,2026-11-24,,Presencial
+SOL-2026-0060,2026-11-23 07:30,Natalia Cifuentes,Jurídica,Certificado laboral,Certificado laboral con salario para trámite bancario,Media,En revisión,Mauricio Fajardo,2026-11-25,,Teams

@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Teoría · Vibe coding con TAREA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+/* Layout: imprenta CMYK, igual que las otras guías */
+:root{
+  --bg:#f4f7fc;--paper:#ffffff;--ink:#1b1e3c;--muted:#4d5272;--line:#dfe3f0;
+  --cyan:#0098d4;--cyan-dark:#0072a8;--cyan-soft:#e3f5fd;
+  --magenta:#e0307a;--magenta-dark:#b81f5f;--magenta-soft:#fde8f1;
+  --yellow:#ffc531;--yellow-soft:#fff6d9;--green:#12a37a;--green-soft:#e2f6ef;
+  --red:#d6453d;--red-soft:#fde9e7;
+  --display:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Consolas,monospace;
+  --radius:16px;--shadow:0 8px 28px #1b1e3c10;
+  color-scheme:light;font-size:17.5px;
+}
+html.projector{font-size:22px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:20px}
+body{margin:0;color:var(--ink);font:1rem/1.6 var(--body);background:radial-gradient(circle,#1b1e3c17 1px,transparent 1.4px) 0 0/18px 18px,var(--bg)}
+a{color:var(--cyan-dark)}
+:focus-visible{outline:3px solid var(--magenta);outline-offset:3px;border-radius:6px}
+h1,h2,h3,h4{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+p{margin:0}
+code{font:.88em var(--mono);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:1px 5px}
+.shell{display:grid;grid-template-columns:290px minmax(0,1fr);max-width:1440px;margin:0 auto;min-height:100vh}
+.side{position:sticky;top:0;height:100vh;overflow:auto;background:var(--paper);border-right:1px solid var(--line);padding:26px 18px;display:flex;flex-direction:column;gap:18px}
+.brand{display:flex;gap:12px;align-items:center}
+.dots{position:relative;width:44px;height:44px;flex-shrink:0}
+.dots i{position:absolute;width:26px;height:26px;border-radius:50%;mix-blend-mode:multiply}
+.dots i:nth-child(1){background:var(--cyan);left:0;top:0}.dots i:nth-child(2){background:var(--magenta);right:0;top:0}.dots i:nth-child(3){background:var(--yellow);left:9px;bottom:0}
+.brand strong{font-family:var(--display);font-size:1.15rem;display:block}
+.brand small{color:var(--muted);font-size:.78rem}
+.toc{display:grid;gap:2px}
+.toc a{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--muted);padding:7px 10px;border-radius:10px;font-size:.88rem;font-weight:700}
+.toc a span{font-family:var(--display);font-size:.78rem;width:26px;height:26px;display:grid;place-items:center;border-radius:8px;background:var(--bg);color:var(--ink);flex-shrink:0}
+.toc a:hover{background:var(--cyan-soft);color:var(--ink)}
+.toc a[aria-current="true"]{background:var(--yellow-soft);color:var(--ink)}
+.toc a[aria-current="true"] span{background:var(--yellow)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:2px solid var(--cyan-dark);background:var(--cyan-dark);color:#fff;font:700 .95rem/1 var(--body);padding:12px 18px;border-radius:12px;text-decoration:none;cursor:pointer}
+.btn:hover{background:#005c88;border-color:#005c88}
+.btn.ghost{background:var(--paper);color:var(--cyan-dark)}
+.btn.ghost:hover{background:var(--cyan-soft)}
+.btn.sm{padding:8px 12px;font-size:.82rem;border-radius:10px}
+.switch{display:flex;align-items:center;gap:10px;font-size:.85rem;font-weight:700;color:var(--muted);cursor:pointer;border:0;background:none;padding:4px 0}
+.switch .track{width:42px;height:24px;border-radius:20px;background:var(--line);position:relative;transition:background .2s;flex-shrink:0}
+.switch .track:after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0003;transition:left .2s}
+.switch[aria-pressed="true"] .track{background:var(--magenta)}
+.switch[aria-pressed="true"] .track:after{left:21px}
+.mbar{display:none}
+.main{min-width:0;padding-block:34px 90px;padding-left:max(44px,env(safe-area-inset-left,0px));padding-right:max(44px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1000px}
+.hero{background:var(--paper);border:1px solid var(--line);border-radius:26px;padding:40px;display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:30px;align-items:center;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero .kicker{color:var(--magenta-dark);font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:.78rem}
+.hero h1{font-size:clamp(2rem,4.2vw,3.2rem);font-weight:800;letter-spacing:-.02em;margin:12px 0 14px}
+.hero p{color:var(--muted);font-size:1.08rem;max-width:62ch}
+.hero .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.cmyk{position:relative;width:230px;max-width:100%;aspect-ratio:1}
+.cmyk i{position:absolute;width:62%;aspect-ratio:1;border-radius:50%;mix-blend-mode:multiply;animation:breathe 7s ease-in-out infinite}
+.cmyk i:nth-child(1){background:var(--cyan);left:0;top:4%}
+.cmyk i:nth-child(2){background:var(--magenta);right:0;top:4%;animation-delay:-2.3s}
+.cmyk i:nth-child(3){background:var(--yellow);left:19%;bottom:0;animation-delay:-4.6s}
+.cmyk b{position:absolute;inset:0;display:grid;place-items:center;font:800 2.6rem var(--mono);color:var(--ink);letter-spacing:-2px;z-index:2}
+@keyframes breathe{50%{transform:scale(1.06) translate(2%,-2%)}}
+mark{background:linear-gradient(transparent 52%,var(--yellow) 52%,var(--yellow) 92%,transparent 92%);color:inherit;padding:0 .1em}
+.sec{margin-top:64px;scroll-margin-top:20px}
+.sec-head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:start;margin-bottom:22px}
+.num{font-family:var(--display);font-weight:800;font-size:2.6rem;line-height:1;color:var(--accent,var(--cyan))}
+.eyebrow{font-size:.74rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--magenta-dark)}
+.sec h2{font-size:clamp(1.6rem,2.6vw,2.15rem);font-weight:800;letter-spacing:-.015em;margin-top:4px}
+.lead{color:var(--muted);max-width:70ch;margin-top:8px}
+.c{--accent:var(--cyan);--soft:var(--cyan-soft)}.m{--accent:var(--magenta);--soft:var(--magenta-soft)}.y{--accent:#e0a400;--soft:var(--yellow-soft)}.g{--accent:var(--green);--soft:var(--green-soft)}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr))}
+.grid.three{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.card{background:var(--paper);border:1px solid var(--line);border-top:5px solid var(--accent,var(--cyan));border-radius:var(--radius);padding:18px 18px 20px;display:flex;flex-direction:column;gap:8px}
+.card h3{font-size:1.1rem}
+.card p,.card li{color:var(--muted);font-size:.95rem}
+.card ul{margin:0;padding-left:18px}
+.card .ex{font-size:.86rem;background:var(--soft,var(--cyan-soft));color:var(--ink);padding:8px 10px;border-radius:9px}
+.tag{display:inline-flex;align-items:center;font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:30px;background:var(--magenta-soft);color:var(--magenta-dark);width:fit-content;white-space:nowrap}
+.tag.c{background:var(--cyan-soft);color:var(--cyan-dark)}.tag.y{background:var(--yellow-soft);color:#7a5600}.tag.g{background:var(--green-soft);color:#0b6e52}.tag.r{background:var(--red-soft);color:var(--red)}
+.note{background:var(--yellow-soft);border:1px solid #f3dc97;border-radius:12px;padding:12px 16px;font-size:.92rem;margin-top:16px}
+.note.red{background:var(--red-soft);border-color:#f4c4bf}
+.stack{display:grid;gap:14px}
+/* Ruta */
+.route{display:grid;gap:10px}
+.stop{display:grid;grid-template-columns:120px minmax(0,1fr) auto;gap:16px;align-items:center;background:var(--paper);border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:14px;padding:14px 18px}
+.stop time{font-family:var(--display);font-weight:800;font-size:1.05rem;font-variant-numeric:tabular-nums}
+.stop b{display:block}.stop small{color:var(--muted);font-size:.88rem}
+.stop .where{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.stop.brk{background:repeating-linear-gradient(135deg,var(--paper) 0 12px,var(--bg) 12px 24px)}
+.chiplink{font-size:.78rem;font-weight:700;padding:5px 10px;border-radius:30px;text-decoration:none;background:var(--cyan-soft);color:var(--cyan-dark);white-space:nowrap}
+.chiplink.lab{background:var(--magenta-soft);color:var(--magenta-dark)}
+/* Espectro */
+.spectrum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;position:relative}
+.spectrum:before{content:"";position:absolute;left:4%;right:4%;top:30px;height:6px;border-radius:6px;background:linear-gradient(90deg,var(--magenta),var(--yellow),var(--cyan))}
+.sp{position:relative;padding:58px 14px 0;display:flex;flex-direction:column;gap:8px}
+.sp:before{content:"";position:absolute;top:20px;left:14px;width:26px;height:26px;border-radius:50%;background:var(--paper);border:6px solid var(--accent)}
+.sp h3{font-size:1.15rem}
+.sp p{color:var(--muted);font-size:.93rem}
+.sp .ex{font-size:.85rem;background:var(--soft);padding:8px 10px;border-radius:9px}
+.sp.today h3:after{content:"Hoy";margin-left:8px;font:700 .7rem var(--body);background:var(--ink);color:#fff;padding:3px 8px;border-radius:20px;vertical-align:4px}
+/* Tablas */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--paper)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:.9rem}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--ink);color:#fff;font-weight:700;font-size:.8rem;letter-spacing:.02em}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:700}
+/* Anatomía */
+.anat{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:18px;align-items:start}
+.layers{display:grid;gap:8px}
+.layer{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;align-items:center;text-align:left;border:2px solid var(--line);background:var(--paper);border-radius:14px;padding:10px 12px;cursor:pointer;font:inherit;color:inherit}
+.layer b{font-family:var(--display);font-size:1rem;display:block}.layer small{color:var(--muted);font-size:.82rem}
+.layer .ic{width:52px;height:52px;border-radius:12px;display:grid;place-items:center;font:800 .8rem var(--mono);background:var(--lc);color:#fff}
+.layer[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 6px 18px #1b1e3c1a;transform:translateX(4px)}
+.lpanel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow);border-top:6px solid var(--lc,var(--cyan))}
+.lpanel h3{font-size:1.25rem;margin-bottom:6px}
+.lpanel p{color:var(--muted)}
+.lpanel pre{margin:12px 0;white-space:pre-wrap;word-break:break-word;font:.82rem/1.55 var(--mono);background:var(--ink);color:#e7eaf6;border-radius:12px;padding:14px}
+.lpanel .ask{background:var(--yellow-soft);border-radius:10px;padding:10px 12px;font-size:.9rem}
+.lpanel .ask b{display:block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:#7a5600}
+/* TAREA */
+.letters{display:grid;gap:12px}
+.letter{display:grid;grid-template-columns:64px minmax(0,1fr) minmax(0,1.1fr);gap:16px;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;align-items:start}
+.letter .L{font-family:var(--display);font-weight:800;font-size:2.4rem;line-height:1;width:64px;height:64px;display:grid;place-items:center;border-radius:14px;background:var(--soft);color:var(--accent)}
+.letter h3{font-size:1.05rem;margin-bottom:4px}
+.letter p{font-size:.92rem;color:var(--muted)}
+.letter .say{font-size:.86rem;background:var(--bg);border-radius:10px;padding:10px 12px}
+.letter .say b{display:block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--magenta-dark);margin-bottom:2px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tab{border:2px solid var(--line);background:var(--paper);border-radius:30px;padding:8px 14px;font:700 .88rem var(--body);color:var(--ink);cursor:pointer}
+.tab[aria-selected="true"]{border-color:var(--ink);background:var(--ink);color:#fff}
+.compare{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.7fr);gap:14px;align-items:start}
+.pbox{border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.pbox.weak{background:var(--red-soft);border:1px solid #f4c4bf}
+.pbox.strong{background:var(--green-soft);border:1px solid #b5e4d3}
+.pbox h3{font-size:1rem;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.pbox pre,.promptpre{margin:0;white-space:pre-wrap;word-break:break-word;font:.84rem/1.6 var(--mono);background:#ffffffc0;border-radius:10px;padding:12px}
+.why{display:flex;gap:6px;flex-wrap:wrap}
+/* Ciclo */
+.loop{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:22px;align-items:center}
+.loop svg{width:100%;height:auto;display:block}
+.loop svg .node{cursor:pointer}
+.loop svg .node circle{transition:all .2s}
+.loop svg .node.on circle{stroke:var(--ink);stroke-width:4}
+.loop svg text{font-family:var(--body);font-weight:700;font-size:13px;fill:var(--ink);pointer-events:none}
+.loopinfo{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow);min-height:220px}
+.loopinfo h3{font-size:1.3rem;margin-bottom:6px}
+.loopinfo p{color:var(--muted)}
+.loopinfo .tip{margin-top:12px;background:var(--bg);border-radius:10px;padding:10px 12px;font-size:.9rem}
+.rules{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));margin-top:18px}
+.rule{background:var(--ink);color:#fff;border-radius:14px;padding:16px}
+.rule b{font-family:var(--display);font-size:1.1rem;display:block;color:var(--yellow);margin-bottom:4px}
+.rule span{font-size:.9rem;color:#dfe3f0}
+/* Biblioteca */
+.lib{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:14px;align-items:start}
+.libnav{display:grid;gap:6px;align-content:start}
+.libnav button{border:2px solid var(--line);background:var(--paper);border-radius:12px;padding:10px 12px;text-align:left;font:700 .9rem var(--body);color:var(--ink);cursor:pointer}
+.libnav button small{display:block;font-weight:400;color:var(--muted);font-size:.8rem}
+.libnav button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:#fff}
+.libnav button[aria-pressed="true"] small{color:#c9cee6}
+.libbody{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px}
+.libbody .row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.libbody .row b{font-family:var(--display);font-size:1.1rem}
+.libbody pre{margin:0;white-space:pre-wrap;word-break:break-word;font:.85rem/1.6 var(--mono);background:var(--bg);border-radius:10px;padding:14px}
+.libbody .when{font-size:.88rem;color:var(--muted)}
+/* Cifras */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:12px;margin-bottom:18px}
+.stat{background:var(--ink);color:#fff;border-radius:16px;padding:18px}
+.stat b{font:800 2.3rem/1 var(--display);color:var(--yellow);display:block;margin-bottom:6px}
+.stat span{font-size:.88rem;color:#dfe3f0}
+.stat small{display:block;margin-top:6px;font-size:.74rem;color:#9ea4c6}
+/* Demo XSS */
+.xss{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow)}
+.xss .inrow{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px}
+.xss input{flex:1;min-width:240px;border:2px solid var(--line);border-radius:10px;padding:10px 12px;font:.9rem var(--mono)}
+.xss .presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.xss .presets button{border:1px solid var(--line);background:var(--bg);border-radius:20px;padding:5px 10px;font:.78rem var(--mono);cursor:pointer;color:var(--ink)}
+.xgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.xbox{border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.xbox.bad{background:var(--red-soft);border:1px solid #f4c4bf}.xbox.ok{background:var(--green-soft);border:1px solid #b5e4d3}
+.xbox h4{font-size:.95rem;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.xbox code{background:#ffffffb0}
+.xbox iframe{width:100%;height:110px;border:1px dashed #0002;border-radius:10px;background:#fff}
+.xbox .out{height:110px;overflow:auto;border:1px dashed #0002;border-radius:10px;background:#fff;padding:10px;font-size:.95rem;word-break:break-word}
+.xwarn{font-size:.85rem;font-weight:700;color:var(--red);min-height:1.2em}
+.checks{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));margin-top:18px}
+.chk{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;align-items:start}
+.chk i{font-style:normal;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-weight:800;background:var(--red-soft);color:var(--red);font-family:var(--display)}
+.chk b{display:block}.chk span{font-size:.88rem;color:var(--muted)}
+/* Semáforo */
+.traffic{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px;align-items:start}
+.q{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.q:last-child{border-bottom:0}
+.q p{font-size:.95rem}
+.yn{display:flex;gap:6px}
+.yn button{border:2px solid var(--line);background:var(--paper);border-radius:10px;padding:7px 14px;font:700 .85rem var(--body);cursor:pointer;color:var(--ink)}
+.yn button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.light{border-radius:18px;padding:22px;position:sticky;top:20px;border:2px solid var(--line);background:var(--paper)}
+.lamps{display:flex;gap:10px;margin-bottom:14px}
+.lamps i{width:34px;height:34px;border-radius:50%;background:var(--line)}
+.light[data-v="verde"] .lamps i:nth-child(3){background:var(--green);box-shadow:0 0 18px var(--green)}
+.light[data-v="amarillo"] .lamps i:nth-child(2){background:var(--yellow);box-shadow:0 0 18px var(--yellow)}
+.light[data-v="rojo"] .lamps i:nth-child(1){background:var(--red);box-shadow:0 0 18px var(--red)}
+.light h3{font-size:1.5rem}
+.light ul{padding-left:18px;margin:10px 0 0;font-size:.9rem;color:var(--muted)}
+/* Escalera */
+.ladder{display:grid;gap:10px}
+.step{display:grid;grid-template-columns:56px minmax(0,1fr) minmax(0,.9fr);gap:16px;align-items:start;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;margin-left:calc(var(--i)*22px)}
+.step .n{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;font:800 1.5rem var(--display);background:var(--soft);color:var(--accent)}
+.step h3{font-size:1.05rem}
+.step p{font-size:.9rem;color:var(--muted)}
+.step .gate{font-size:.85rem;background:var(--bg);border-radius:10px;padding:9px 11px}
+.step .gate b{display:block;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--magenta-dark)}
+/* Glosario y fuentes */
+.gloss{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));gap:12px;margin:0}
+.gloss div{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px}
+.gloss dt{font-family:var(--display);font-weight:800;font-size:1.05rem}
+.gloss dd{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.sources{columns:2 300px;column-gap:28px;padding-left:20px;font-size:.88rem}
+.sources li{margin:0 0 8px;break-inside:avoid;overflow-wrap:anywhere}
+.finale{margin-top:70px;background:var(--ink);color:#fff;border-radius:26px;padding:42px;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.finale h2{font-size:clamp(1.8rem,3.4vw,2.6rem);font-weight:800;max-width:20ch}
+.finale p{color:#c9cee6;margin-top:8px;max-width:52ch}
+.finale .btn{background:var(--yellow);border-color:var(--yellow);color:var(--ink);font-size:1.1rem;padding:16px 24px}
+.finale .btn:hover{background:#ffd660;border-color:#ffd660}
+footer{color:var(--muted);font-size:.82rem;margin-top:30px}
+.toast{position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:50}
+.toast.show{opacity:1}
+@media (max-width:1020px){
+  .shell{grid-template-columns:1fr}
+  .side{display:none}
+  .mbar{display:flex;position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--paper);border-bottom:1px solid var(--line);gap:8px;align-items:center;padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px))}
+  .mbar nav{display:flex;gap:6px;overflow-x:auto;flex:1;min-width:0;scrollbar-width:none}
+  .mbar nav a{white-space:nowrap;text-decoration:none;font-size:.8rem;font-weight:700;color:var(--muted);padding:7px 10px;border-radius:9px;background:var(--bg)}
+  .mbar nav a[aria-current="true"]{background:var(--yellow);color:var(--ink)}
+  .mbar .btn{flex-shrink:0}
+  .main{padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+  html{scroll-padding-top:70px}.sec{scroll-margin-top:70px}
+}
+@media (max-width:760px){
+  .main{padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .hero{grid-template-columns:1fr;padding:26px}
+  .cmyk{width:140px;order:-1}
+  .stop{grid-template-columns:1fr}.stop .where{justify-content:flex-start}
+  .spectrum{grid-template-columns:1fr}.spectrum:before{display:none}
+  .anat,.compare,.loop,.lib,.traffic,.xgrid{grid-template-columns:1fr}
+  .letter{grid-template-columns:52px minmax(0,1fr)}
+  .letter .L{width:52px;height:52px;font-size:1.9rem}
+  .letter .say{grid-column:1/-1}
+  .step{grid-template-columns:48px minmax(0,1fr);margin-left:0}.step .n{width:48px;height:48px}.step .gate{grid-column:1/-1}
+  .q{grid-template-columns:1fr}
+  .light{position:static}
+  .num{font-size:2rem}
+  .finale{padding:28px}
+  .mbar .btn span{display:none}
+}
+@media (prefers-reduced-motion:reduce){.cmyk i{animation:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="mbar">
+  <nav id="mnav" aria-label="Secciones"></nav>
+  <a class="btn sm" href="laboratorio-vibe-coding.html">Laboratorio<span> →</span></a>
+</header>
+<div class="shell">
+<aside class="side">
+  <div class="brand"><div class="dots" aria-hidden="true"><i></i><i></i><i></i></div><div><strong>Teoría · Vibe coding</strong><small>De la idea a la app con IA</small></div></div>
+  <a class="btn" href="laboratorio-vibe-coding.html">Ir al Laboratorio →</a>
+  <button class="switch" type="button" id="projector" aria-pressed="false"><span class="track"></span>Modo proyector</button>
+  <nav class="toc" id="toc" aria-label="Índice"></nav>
+  <a class="chiplink" href="index.html" style="margin-top:auto;text-align:center">← Inicio del tema</a>
+</aside>
+
+<main class="main"><div class="wrap">
+  <section class="hero" aria-labelledby="t-hero">
+    <div>
+      <div class="kicker">Vibe coding con IA generativa · Gestión y productividad</div>
+      <h1 id="t-hero">Describe la herramienta que necesitas <mark>y la IA escribe el código</mark>. Tú pones la especificación, las pruebas y el criterio.</h1>
+      <p>Hoy convertimos un problema real de gestión, el seguimiento de solicitudes administrativas, en una aplicación web que funciona. La IA escribe el código. Nosotros decidimos qué se construye, comprobamos que funciona, buscamos sus fallas de seguridad y decidimos si sirve.</p>
+      <div class="actions"><a class="btn" href="laboratorio-vibe-coding.html">Ir al Laboratorio →</a><a class="btn ghost" href="materiales/mesa-de-solicitudes.html" target="_blank" rel="noopener">Ver la app de referencia ↗</a></div>
+    </div>
+    <div class="cmyk" aria-hidden="true"><i></i><i></i><i></i><b>&lt;/&gt;</b></div>
+  </section>
+
+  <!-- 1 -->
+  <section class="sec c" id="ruta" data-title="Ruta de la clase">
+    <div class="sec-head"><div class="num">01</div><div><div class="eyebrow">Una sesión de trabajo · Teoría corta, mucha práctica</div><h2>Ruta de la clase</h2><p class="lead">Primero <mark>construimos una app</mark> para la mesa de solicitudes. Después, la última hora es para los <mark>microproyectos</mark> de cada equipo. Quien termine antes tiene retos de Nivel 2 y Nivel 3 en el laboratorio.</p></div></div>
+    <div class="route">
+      <div class="stop c"><time>4:15–4:25</time><div><b>Apertura en vivo</b><small>Un prompt, una app. La generamos en vivo y la comparamos con la app de referencia.</small></div><div class="where"><a class="chiplink" href="#vibe">¿Qué es?</a></div></div>
+      <div class="stop m"><time>4:25–4:45</time><div><b>Teoría corta</b><small>Herramientas, cómo se arma una app de un solo archivo, TAREA para especificar software, el ciclo de iteración y la seguridad.</small></div><div class="where"><a class="chiplink" href="#tarea">TAREA</a><a class="chiplink" href="#ciclo">Ciclo</a></div></div>
+      <div class="stop y"><time>4:45–5:05</time><div><b>Pasos 1 y 2 · Especificar, generar y abrir</b><small>Cada persona escribe su especificación TAREA, la IA genera la app y la abrimos en el navegador.</small></div><div class="where"><a class="chiplink lab" href="laboratorio-vibe-coding.html#paso-1">Laboratorio ↗</a></div></div>
+      <div class="stop c"><time>5:05–5:25</time><div><b>Paso 3 · Iterar</b><small>Tres mejoras, una por mensaje: importar el CSV, la vista de lista con exportación y el detalle con bitácora.</small></div><div class="where"><a class="chiplink" href="#biblioteca">Prompts de iteración</a></div></div>
+      <div class="stop brk y"><time>5:25–5:35</time><div><b>Receso</b><small>La hora exacta se ajusta según cómo vaya el grupo.</small></div><div class="where"></div></div>
+      <div class="stop m"><time>5:35–5:50</time><div><b>Pasos 4 y 5 · Probar, romper y revisar</b><small>Pruebas de borde, el archivo con trampas, una auditoría de seguridad hecha por la IA y una revisión humana con la matriz.</small></div><div class="where"><a class="chiplink" href="#seguridad">Seguridad</a></div></div>
+      <div class="stop c"><time>5:50–6:00</time><div><b>Galería y caza de errores</b><small>Cada equipo prueba la app de otro e intenta romperla. ¿Qué encontraron?</small></div><div class="where"><a class="chiplink lab" href="laboratorio-vibe-coding.html#paso-7">Galería ↗</a></div></div>
+      <div class="stop y"><time>6:00–6:50</time><div><b>Microproyectos: rondas por equipo</b><small>Cada equipo avanza en su proyecto. El profesor pasa por cada mesa con seis preguntas.</small></div><div class="where"><a class="chiplink" href="#microproyectos">Las 6 preguntas</a></div></div>
+      <div class="stop m"><time>6:50–7:00</time><div><b>Cierre</b><small>Cada equipo dice qué ya funciona, qué falta y qué riesgo tiene que resolver antes de la próxima sesión.</small></div><div class="where"></div></div>
+    </div>
+    <p class="note">Los retos de <b>Nivel 2</b> (más funciones) y <b>Nivel 3</b> (con agentes de código, pruebas automáticas, revisión cruzada de seguridad y comparación de herramientas) están en el paso 6 del laboratorio. Quien termine antes no se queda esperando.</p>
+  </section>
+
+  <!-- 2 -->
+  <section class="sec m" id="vibe" data-title="¿Qué es vibe coding?">
+    <div class="sec-head"><div class="num">02</div><div><div class="eyebrow">El término y sus matices</div><h2>¿Qué es <em>vibe coding</em>, y qué vamos a hacer hoy?</h2><p class="lead">Andrej Karpathy, cofundador de OpenAI y exdirector de IA en Tesla, usó el término en febrero de 2025 para describir una forma de programar en la que <mark>describes lo que quieres, aceptas lo que genera la IA y casi no miras el código</mark>. Funciona muy bien para prototipos de fin de semana. En una institución de salud, ese mismo descuido es justamente el riesgo.</p></div></div>
+    <div class="spectrum">
+      <div class="sp m"><h3>Vibe coding puro</h3><p>Pides, aceptas todo, pegas el error y vuelves a pedir. No lees el código ni lo pruebas a propósito.</p><div class="ex"><b>Sirve para:</b> una idea rápida, un juguete o un prototipo desechable.</div></div>
+      <div class="sp y today"><h3>Prototipado responsable</h3><p>Una especificación clara, pruebas a propósito, una revisión de seguridad, datos sintéticos y versiones guardadas. La IA escribe y tú verificas.</p><div class="ex"><b>Sirve para:</b> herramientas internas sencillas, maquetas para validar con usuarios y pruebas de concepto.</div></div>
+      <div class="sp c"><h3>Ingeniería asistida por agentes</h3><p>Agentes de código (Claude Code, GitHub Copilot en modo agente, Codex) que trabajan en un repositorio, ejecutan pruebas y proponen cambios que un humano revisa antes de integrarlos.</p><div class="ex"><b>Sirve para:</b> software que va a producción, con control de versiones, integración continua y revisión de código.</div></div>
+    </div>
+    <div class="grid three" style="margin-top:22px">
+      <div class="card g"><h3>Lo que la IA hace bien</h3><ul><li>Pasar de una descripción a una interfaz que funciona en minutos.</li><li>Escribir el código repetitivo: formularios, tablas, filtros, exportar e importar.</li><li>Explicar código que no escribiste y proponer pruebas.</li></ul></div>
+      <div class="card m"><h3>Lo que hace mal si no la guías</h3><ul><li>Inventar requisitos que no pediste y olvidar los que sí.</li><li>Mostrar texto del usuario como HTML (XSS) o guardar secretos en el código.</li><li>Recomendar librerías que no existen o que no revisaste.</li></ul></div>
+      <div class="card c"><h3>Lo que sigue siendo tuyo</h3><ul><li>Decidir qué problema vale la pena resolver.</li><li>Definir qué significa "funciona" (criterios de aceptación).</li><li>Proteger los datos y decidir si el prototipo sigue adelante.</li></ul></div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="sec y" id="herramientas" data-title="Herramientas">
+    <div class="sec-head"><div class="num">03</div><div><div class="eyebrow">Mismo prompt, distintas herramientas</div><h2>¿Dónde se escribe y dónde se ve la app?</h2><p class="lead">Todas las herramientas de chat generan el mismo tipo de archivo: un HTML con todo adentro. Lo que cambia es <mark>si puedes ver la app dentro del chat</mark> o si tienes que guardarla y abrirla tú. En ambos casos el resultado sirve.</p></div></div>
+    <div class="tbl"><table>
+      <thead><tr><th>Herramienta</th><th>¿Dónde ves la app?</th><th>¿Cómo la guardas?</th><th>Datos</th><th>Úsala para</th></tr></thead>
+      <tbody>
+        <tr><td>Microsoft Copilot Chat<br><span class="tag c">Cuenta de trabajo</span></td><td>Si tu organización tiene activas las páginas de Copilot y la vista previa de código, Copilot abre una página al lado del chat donde la app se puede probar. Si no, verás el código en el chat.</td><td>Copiar el código → Bloc de notas → guardar como <code>.html</code>.</td><td>Con la cuenta de trabajo aplica la protección de datos empresarial: los prompts no se usan para entrenar los modelos.</td><td>El ejercicio de hoy, con la herramienta aprobada.</td></tr>
+        <tr><td>Claude<br><span class="tag c">Artefactos</span></td><td>Panel lateral con la app funcionando.</td><td>Botón de descargar o copiar.</td><td>Según la licencia: con la institucional, la que defina la institución.</td><td>Apps más elaboradas y explicaciones del código.</td></tr>
+        <tr><td>ChatGPT y Gemini<br><span class="tag y">Canvas</span></td><td>Canvas con vista previa del código.</td><td>Copiar o descargar desde el canvas.</td><td>En cuentas gratuitas, <b>solo datos sintéticos</b>.</td><td>Comparar el mismo prompt en otra IA (reto del paso 6).</td></tr>
+        <tr><td>Agentes de código<br><span class="tag">Para quien ya programa</span></td><td>En tu editor o terminal: GitHub Copilot en modo agente, Claude Code o Codex.</td><td>Archivos en una carpeta o repositorio, con control de versiones.</td><td>Ojo con lo que el agente puede leer en tu equipo y con los secretos.</td><td>Reto de Nivel 3: proyecto con varios archivos y pruebas automáticas.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note"><b>Para activar el modo app en Copilot:</b> en el prompt usa palabras como "aplicación", "interactiva" o "interfaz". Si en tu cuenta no aparece la vista previa, no pasa nada: copias el código y lo abres en Edge. El administrador puede desactivar la vista previa de código y, en ese caso, Copilot genera el código pero no lo muestra funcionando.</p>
+  </section>
+
+  <!-- 4 -->
+  <section class="sec c" id="anatomia" data-title="Anatomía de la app">
+    <div class="sec-head"><div class="num">04</div><div><div class="eyebrow">Un solo archivo, sin servidor</div><h2>¿De qué está hecha una app de un solo archivo?</h2><p class="lead">Lo que vamos a construir es un archivo <code>.html</code> que tiene adentro la estructura, el estilo y la lógica. Se abre con doble clic, funciona sin internet y <mark>guarda los datos solo en ese navegador</mark>. Toca cada capa.</p></div></div>
+    <div class="anat">
+      <div class="layers" id="layers" role="group" aria-label="Capas de la app"></div>
+      <div class="lpanel" id="lpanel" aria-live="polite"></div>
+    </div>
+    <div class="grid three" style="margin-top:18px">
+      <div class="card c"><span class="tag c">Opción 1 · La de hoy</span><h3>Doble clic</h3><p>Guarda el archivo como <code>mesa-solicitudes.html</code> y ábrelo con Edge o Chrome. La dirección empieza por <code>file://</code>. Es suficiente para un prototipo.</p></div>
+      <div class="card y"><span class="tag y">Opción 2 · Si tienes Python</span><h3>Servidor local</h3><p>En la carpeta del archivo: <code>python -m http.server 8000</code> y abre <code>http://localhost:8000</code>. Algunas funciones del navegador piden <code>http</code> y no <code>file</code>.</p></div>
+      <div class="card m"><span class="tag">Opción 3 · Compartir</span><h3>Publicarla</h3><p>En OneDrive o SharePoint un <code>.html</code> normalmente se descarga en lugar de abrirse. Para compartir un prototipo se usa un sitio estático aprobado por TI, y <b>nunca con datos reales</b>.</p></div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="sec m" id="tarea" data-title="TAREA para software">
+    <div class="sec-head"><div class="num">05</div><div><div class="eyebrow">El método del curso, aplicado a especificar software</div><h2>TAREA: una especificación que la IA puede construir</h2><p class="lead">Un buen prompt de código se parece más a una <mark>historia de usuario con criterios de aceptación</mark> que a una petición. Cada letra de TAREA responde a una pregunta que un desarrollador te haría antes de empezar.</p></div></div>
+    <div class="letters">
+      <div class="letter c"><div class="L">T</div><div><h3>Tarea principal</h3><p>¿Qué app, para quién y qué problema resuelve? Una o dos frases con el contexto.</p></div><div class="say"><b>Ejemplo</b>Construye una app web de una sola página, "Mesa de Solicitudes", para el área administrativa. Hoy las solicitudes llegan por correo y Teams y nadie sabe cuáles están vencidas.</div></div>
+      <div class="letter m"><div class="L">A</div><div><h3>Acción esperada</h3><p>Las funciones, numeradas y verificables. Cada una debe poder probarse con un sí o un no.</p></div><div class="say"><b>Ejemplo</b>1. Radicar una solicitud con id automático. 2. Tablero por estado, con arrastrar y soltar. 3. Semáforo de vencimiento. 4. Filtros. 5. Cuatro indicadores. 6. Guardar en el navegador.</div></div>
+      <div class="letter y"><div class="L">R</div><div><h3>Rol del modelo</h3><p>El tipo de desarrollador que quieres y en qué debe fijarse.</p></div><div class="say"><b>Ejemplo</b>Actúa como desarrollador front-end sénior que cuida la seguridad, la usabilidad y la accesibilidad.</div></div>
+      <div class="letter c"><div class="L">E</div><div><h3>Ejemplo de salida</h3><p>El formato del entregable y el modelo de datos: campos, valores posibles y datos de ejemplo.</p></div><div class="say"><b>Ejemplo</b>Un único archivo HTML con CSS y JS adentro. Campos: id, fecha_radicacion, solicitante, area, tipo… Plazos por tipo en días hábiles. Incluye 12 solicitudes de ejemplo inventadas.</div></div>
+      <div class="letter m"><div class="L">A</div><div><h3>Aclaraciones adicionales</h3><p>Restricciones técnicas, de seguridad y de datos. Aquí van las cosas que la IA olvida si no se las dices.</p></div><div class="say"><b>Ejemplo</b>Sin librerías ni CDN. El texto del usuario se muestra como texto, nunca como HTML. Validar campos obligatorios. Nada de datos reales. Entrega el archivo completo en un solo bloque.</div></div>
+    </div>
+    <h3 style="margin:30px 0 12px;font-size:1.3rem">Prompt flojo frente a prompt TAREA</h3>
+    <div class="tabs" id="tplTabs" role="tablist"></div>
+    <div class="compare" id="tplBody"></div>
+  </section>
+
+  <!-- 6 -->
+  <section class="sec y" id="ciclo" data-title="El ciclo">
+    <div class="sec-head"><div class="num">06</div><div><div class="eyebrow">Iterar sin perder el control</div><h2>El ciclo: especificar, generar, probar, mejorar</h2><p class="lead">La primera versión casi nunca es la final. Lo que diferencia a un buen vibe coder es <mark>cómo itera</mark>: un cambio a la vez, con pruebas, y guardando cada versión que funciona. Toca cada paso del ciclo.</p></div></div>
+    <div class="loop">
+      <svg viewBox="0 0 360 360" id="loopsvg" role="group" aria-label="Ciclo de vibe coding"></svg>
+      <div class="loopinfo" id="loopinfo" aria-live="polite"></div>
+    </div>
+    <div class="rules">
+      <div class="rule"><b>Un cambio por mensaje</b><span>Si pides cinco cosas, la IA hace tres y rompe dos. Pide una, pruébala y sigue.</span></div>
+      <div class="rule"><b>Reporta como un ticket</b><span>Qué hiciste, qué esperabas, qué pasó y el error de la consola (F12). La IA no ve tu pantalla.</span></div>
+      <div class="rule"><b>Pide el archivo completo</b><span>"Entrega el archivo completo actualizado". Pegar fragmentos a mano es donde más se rompe.</span></div>
+      <div class="rule"><b>Guarda versiones</b><span><code style="background:#ffffff22;border:0;color:#fff">v1.html</code>, <code style="background:#ffffff22;border:0;color:#fff">v2.html</code>… Si algo se daña, vuelves a la última que funcionaba.</span></div>
+      <div class="rule"><b>Si se enreda, reinicia</b><span>Chat nuevo con la especificación y el código de la última versión buena. Las conversaciones largas se degradan.</span></div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="sec c" id="biblioteca" data-title="Prompts de iteración">
+    <div class="sec-head"><div class="num">07</div><div><div class="eyebrow">Para copiar y adaptar</div><h2>Biblioteca de prompts de iteración</h2><p class="lead">Después de la especificación inicial, casi todo lo que pidas cabe en uno de estos moldes. Cambia lo que está entre corchetes.</p></div></div>
+    <div class="lib"><div class="libnav" id="libnav"></div><div class="libbody" id="libbody" aria-live="polite"></div></div>
+  </section>
+
+  <!-- 8 -->
+  <section class="sec m" id="seguridad" data-title="Seguridad">
+    <div class="sec-head"><div class="num">08</div><div><div class="eyebrow">El código generado también se audita</div><h2>¿Es segura la app que escribió la IA?</h2><p class="lead">Que una app funcione no quiere decir que sea segura. La IA aprendió de mucho código, también del inseguro, y <mark>repite los errores clásicos</mark> si no le pides lo contrario y si nadie revisa.</p></div></div>
+    <div class="stats">
+      <div class="stat"><b>≈45 %</b><span>de las tareas de desarrollo resueltas con código generado por IA introdujeron vulnerabilidades en estudios recientes.</span><small>IBM Think, 2026</small></div>
+      <div class="stat"><b>≈1 de 5</b><span>paquetes recomendados por asistentes de IA no existe. Alguien puede registrarlos con malware: <i>slopsquatting</i>.</span><small>TechTarget, 2026</small></div>
+      <div class="stat"><b>74</b><span>vulnerabilidades publicadas se rastrearon directamente a código generado por IA, y se estima que el número real es mucho mayor.</span><small>Georgia Tech, vía Engadget</small></div>
+    </div>
+    <h3 style="font-size:1.25rem;margin:8px 0 10px">Pruébalo: ¿qué pasa si la app muestra el texto como HTML?</h3>
+    <div class="xss">
+      <p style="color:var(--muted);font-size:.95rem">Escribe una descripción de solicitud o usa un ejemplo. A la izquierda, la app insegura la inserta con <code>innerHTML</code>. A la derecha, la segura la inserta como texto con <code>textContent</code>.</p>
+      <div class="inrow"><input id="xin" aria-label="Descripción de prueba" value="&lt;b&gt;URGENTE&lt;/b&gt; revisar la cerradura del archivo"></div>
+      <div class="presets" id="xpresets"></div>
+      <div class="xgrid">
+        <div class="xbox bad"><h4>App insegura <code>el.innerHTML = desc</code></h4><iframe id="xbad" sandbox="" title="Resultado de la app insegura"></iframe><div class="xwarn" id="xwarn"></div></div>
+        <div class="xbox ok"><h4>App segura <code>el.textContent = desc</code></h4><div class="out" id="xok"></div><div style="font-size:.85rem;color:#0b6e52;font-weight:700">El texto se ve tal cual. Nada se interpreta ni se ejecuta.</div></div>
+      </div>
+      <p class="note">Esta demostración corre en una caja aislada (sandbox) y no ejecuta nada. En una app real sin esa protección, el ejemplo con <code>onerror</code> ejecutaría código: podría leer lo que la app guarda en el navegador o cambiar lo que ve el usuario. El CSV del laboratorio trae una fila con esta trampa a propósito.</p>
+    </div>
+    <h3 style="font-size:1.25rem;margin:28px 0 0">Ocho cosas que hay que buscar en el código generado</h3>
+    <div class="checks" id="checks"></div>
+  </section>
+
+  <!-- 9 -->
+  <section class="sec y" id="datos" data-title="Datos y semáforo">
+    <div class="sec-head"><div class="num">09</div><div><div class="eyebrow">Protección de datos, antes de escribir el prompt</div><h2>¿Qué puede ir en un prompt de código?</h2><p class="lead">Para construir una app <mark>no necesitas datos reales</mark>: necesitas su estructura. Pídele a la IA que invente datos sintéticos con los mismos campos y formatos. Responde estas preguntas antes de pegar algo en un chat.</p></div></div>
+    <div class="traffic">
+      <div class="panel"><div id="sqs"></div></div>
+      <div class="light" id="slight" data-v="verde" aria-live="polite"><div class="lamps" aria-hidden="true"><i></i><i></i><i></i></div><h3 id="slightTitle">Verde</h3><p id="slightText"></p><ul id="slightWhy"></ul></div>
+    </div>
+    <div class="grid three" style="margin-top:18px">
+      <div class="card m"><h3>Nunca en un prompt</h3><ul><li>Datos de pacientes o de historia clínica, ni siquiera "de prueba" sacados de producción.</li><li>Contraseñas, llaves de API, tokens, cadenas de conexión.</li><li>Datos personales de colaboradores: documento, teléfono, salario.</li></ul></div>
+      <div class="card y"><h3>Con la herramienta institucional y criterio</h3><ul><li>Estructuras de tablas, nombres de campos y reglas de negocio.</li><li>Código interno que no tenga secretos.</li><li>Procedimientos internos que no sean confidenciales.</li></ul></div>
+      <div class="card g"><h3>Sin problema</h3><ul><li>Datos sintéticos que generó la propia IA.</li><li>Información pública: normas, estándares, documentación oficial.</li><li>Tu especificación TAREA.</li></ul></div>
+    </div>
+    <p class="note">El marco de referencia en Colombia es la Ley 1581 de 2012 (protección de datos personales) y, para la información clínica, la Ley 2015 de 2020 (historia clínica electrónica interoperable). Cada institución tiene además su política de tratamiento de datos. <b>Ante la duda, la respuesta es datos sintéticos.</b></p>
+  </section>
+
+  <!-- 10 -->
+  <section class="sec c" id="producto" data-title="Del prototipo al producto">
+    <div class="sec-head"><div class="num">10</div><div><div class="eyebrow">Cuándo seguir y cuándo parar</div><h2>Del prototipo al producto: una escalera, no un salto</h2><p class="lead">El HTML de hoy sirve para <mark>validar una idea con usuarios reales en una semana</mark>. Si la idea funciona, se sube un escalón, y cada escalón tiene una pregunta que hay que responder antes de pasar al siguiente.</p></div></div>
+    <div class="ladder">
+      <div class="step m" style="--i:0"><div class="n">1</div><div><h3>Prototipo HTML con IA</h3><p>Un archivo, datos sintéticos, en tu navegador. Es lo que hacemos hoy.</p></div><div class="gate"><b>Para subir</b>¿Los usuarios lo entienden y lo quieren usar? Pruébalo con 3 personas.</div></div>
+      <div class="step y" style="--i:1"><div class="n">2</div><div><h3>Herramientas institucionales sin código</h3><p>Formulario de Forms → lista de SharePoint → flujo de Power Automate con conectores estándar (aprobaciones, correo, Teams).</p></div><div class="gate"><b>Para subir</b>¿Varias personas lo usan a diario? ¿Ya hay datos reales y se necesitan permisos por rol?</div></div>
+      <div class="step c" style="--i:2"><div class="n">3</div><div><h3>App de bajo código gobernada</h3><p>Power Apps u otra plataforma aprobada, con identidad institucional, permisos y auditoría.</p></div><div class="gate"><b>Para subir</b>¿Debe integrarse con sistemas centrales o maneja datos clínicos o sensibles?</div></div>
+      <div class="step g" style="--i:3"><div class="n">4</div><div><h3>Desarrollo formal</h3><p>Repositorio, pruebas automáticas, revisión de código y de seguridad, despliegue controlado e interoperabilidad con estándares. Aquí los agentes de código ayudan, pero el ciclo de desarrollo manda.</p></div><div class="gate"><b>Señal de alerta</b>Si el prototipo toca datos de pacientes, no se sube de escalón sin TI, seguridad y protección de datos.</div></div>
+    </div>
+    <p class="note"><b>Puente con Power Automate:</b> la app puede exportar un CSV con las mismas columnas que una lista de SharePoint, y un flujo con conectores estándar puede encargarse de las alertas de vencimiento por correo o Teams. Pídele a la IA que describa ese flujo paso a paso y valídalo en Power Automate.</p>
+  </section>
+
+  <!-- 11 -->
+  <section class="sec m" id="microproyectos" data-title="Microproyectos">
+    <div class="sec-head"><div class="num">11</div><div><div class="eyebrow">La última hora</div><h2>Las seis preguntas de la ronda</h2><p class="lead">Durante la hora de microproyectos, el profesor pasa por cada equipo con estas preguntas. Tenerlas resueltas hace que la retroalimentación sea más útil y que el pitch se arme solo.</p></div></div>
+    <div class="grid three">
+      <div class="card c"><span class="tag c">1 · Problema</span><h3>¿Qué duele hoy y a quién?</h3><p>En una frase, con un número: cuánto tiempo, cuántos casos o cuántos errores.</p></div>
+      <div class="card m"><span class="tag">2 · Usuario</span><h3>¿Quién lo usaría el lunes?</h3><p>Una persona concreta, con su cargo. ¿Ya le preguntaron?</p></div>
+      <div class="card y"><span class="tag y">3 · Solución</span><h3>¿Qué hace la IA y qué hace la persona?</h3><p>Dónde entra la IA, dónde hay un humano que revisa y dónde queda la trazabilidad.</p></div>
+      <div class="card m"><span class="tag">4 · Datos</span><h3>¿Qué datos toca y en qué color del semáforo está?</h3><p>Si es rojo, ¿cómo lo resuelven con datos sintéticos o anonimizados?</p></div>
+      <div class="card c"><span class="tag c">5 · Evidencia</span><h3>¿Cómo sabrán que funcionó?</h3><p>Una métrica antes y después, y una demo que se pueda mostrar en dos minutos.</p></div>
+      <div class="card y"><span class="tag y">6 · Siguiente paso</span><h3>¿Qué tiene que estar listo para la próxima sesión?</h3><p>Lo mínimo para mostrar, el riesgo principal y quién responde por cada cosa.</p></div>
+    </div>
+    <div class="grid two" style="margin-top:18px">
+      <div class="card y"><h3>Si su proyecto es con Power Automate</h3><ul><li>Revisen que todos los conectores sean estándar (Outlook, Teams, SharePoint, Forms, Aprobaciones). HTTP, SQL Server o Dataverse suelen requerir licencia premium.</li><li>Diseñen primero el flujo en papel: disparador, condiciones, acciones, qué pasa si falla.</li><li>Copilot dentro de Power Automate puede proponer el flujo a partir de una descripción. Igual hay que probar cada rama.</li></ul></div>
+      <div class="card c"><h3>Si su proyecto es de interoperabilidad</h3><ul><li>Trabajen sobre estándares: HL7 v2, HL7 FHIR R4 y, en Colombia, el Resumen Digital de Atención (RDA) de la Resolución 1888 de 2025, que usa FHIR.</li><li>Datos de prueba: genérenlos con Synthea o con la IA. Los servidores FHIR públicos de prueba son públicos de verdad: nada real ahí.</li><li>Una IA puede explicar un recurso FHIR, mapear campos o validar la estructura de un JSON. La decisión clínica y el mapeo final los valida una persona.</li></ul></div>
+    </div>
+  </section>
+
+  <!-- 12 -->
+  <section class="sec y" id="glosario" data-title="Glosario">
+    <div class="sec-head"><div class="num">12</div><div><div class="eyebrow">Para no perderse</div><h2>Glosario</h2></div></div>
+    <dl class="gloss">
+      <div><dt>Vibe coding</dt><dd>Programar describiendo lo que quieres en lenguaje natural y dejando que la IA escriba el código.</dd></div>
+      <div><dt>App de un solo archivo</dt><dd>Un HTML que tiene adentro la estructura, el estilo (CSS) y la lógica (JavaScript). No necesita servidor.</dd></div>
+      <div><dt>localStorage</dt><dd>Espacio del navegador donde una página guarda datos. Es local, no está cifrado y no se comparte con otros equipos.</dd></div>
+      <div><dt>Criterio de aceptación</dt><dd>Condición verificable que define cuándo una función está terminada.</dd></div>
+      <div><dt>XSS</dt><dd>Cross-site scripting: un texto con código que la app muestra como HTML y termina ejecutándose.</dd></div>
+      <div><dt>Inyección de fórmulas CSV</dt><dd>Celdas que empiezan con =, +, - o @ y que Excel interpreta como fórmulas al abrir el archivo.</dd></div>
+      <div><dt>Slopsquatting</dt><dd>Registrar con malware el nombre de una librería que las IA suelen inventar, a la espera de que alguien la instale.</dd></div>
+      <div><dt>ANS (SLA)</dt><dd>Acuerdo de nivel de servicio: el plazo comprometido para atender una solicitud.</dd></div>
+      <div><dt>Agente de código</dt><dd>IA que lee, edita y ejecuta código en un proyecto: propone cambios, corre pruebas y repite.</dd></div>
+      <div><dt>Datos sintéticos</dt><dd>Datos inventados con la misma forma que los reales. Permiten construir y probar sin exponer a nadie.</dd></div>
+      <div><dt>FHIR</dt><dd>Estándar de HL7 para intercambiar información de salud mediante recursos (Patient, Encounter…) y API web.</dd></div>
+      <div><dt>Prueba de borde</dt><dd>Probar con valores extremos o raros: vacío, muy largo, fechas imposibles, caracteres especiales.</dd></div>
+    </dl>
+  </section>
+
+  <!-- 13 -->
+  <section class="sec c" id="fuentes" data-title="Fuentes">
+    <div class="sec-head"><div class="num">13</div><div><div class="eyebrow">Para profundizar</div><h2>Fuentes</h2></div></div>
+    <ul class="sources">
+      <li>Wikipedia. <a href="https://en.wikipedia.org/wiki/Vibe_coding" target="_blank" rel="noopener">Vibe coding</a>.</li>
+      <li>Snyk. <a href="https://snyk.io/articles/is-vibe-coding-secure/" target="_blank" rel="noopener">Is vibe coding secure?</a></li>
+      <li>IBM Think. <a href="https://www.ibm.com/think/insights/vibe-coding-security-risks" target="_blank" rel="noopener">Vibe coding security risks</a>.</li>
+      <li>Engadget. <a href="https://engadget.com/2247892/what-is-vibe-coding-explained" target="_blank" rel="noopener">What is vibe coding and why does it get so much hate?</a></li>
+      <li>TechTarget. <a href="https://www.techtarget.com/it-strategy/feature/Slopsquatting-explained-When-AI-code-turns-malicious" target="_blank" rel="noopener">Slopsquatting explained</a>.</li>
+      <li>Microsoft Support. <a href="https://support.microsoft.com/en-us/microsoft-365-copilot/build-lightweight-apps-within-microsoft-365-copilot-pages" target="_blank" rel="noopener">Build lightweight apps within Microsoft 365 Copilot Pages</a>.</li>
+      <li>Microsoft 365 Message Center. <a href="https://mc.merill.net/message/MC1254560" target="_blank" rel="noopener">MC1254560: control de administración para la vista previa de código en Copilot Pages</a>.</li>
+      <li>Microsoft Learn. <a href="https://learn.microsoft.com/en-us/copilot/microsoft-365/enterprise-data-protection" target="_blank" rel="noopener">Enterprise data protection in Microsoft 365 Copilot and Copilot Chat</a>.</li>
+      <li>OWASP. <a href="https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html" target="_blank" rel="noopener">Cross Site Scripting Prevention Cheat Sheet</a>.</li>
+      <li>OWASP. <a href="https://owasp.org/www-community/attacks/CSV_Injection" target="_blank" rel="noopener">CSV Injection</a>.</li>
+      <li>Ministerio de Salud y Protección Social. <a href="https://www.minsalud.gov.co/Comunicaciones/noticias/2026/Paginas/resumen-digital-de-atencion-en-salud-transformara-el-acceso-a-la-informacion-clinica-en-colombia.aspx" target="_blank" rel="noopener">Resumen Digital de Atención en Salud (RDA)</a>.</li>
+      <li>Ministerio de Salud y Protección Social. <a href="https://www.minsalud.gov.co/ihce/Paginas/Normatividad.aspx" target="_blank" rel="noopener">Normatividad de la interoperabilidad de la historia clínica electrónica</a>.</li>
+      <li>HL7. <a href="https://hl7.org/fhir/R4/" target="_blank" rel="noopener">FHIR R4</a>. · Synthea. <a href="https://synthetichealth.github.io/synthea/" target="_blank" rel="noopener">Generador de pacientes sintéticos</a>.</li>
+    </ul>
+  </section>
+
+  <section class="finale">
+    <div><h2>Ahora, al laboratorio: la mesa de solicitudes.</h2><p>Especifica con TAREA, genera, abre, mejora, rompe, revisa y comparte. Quien termine antes tiene retos de Nivel 2 y Nivel 3.</p></div>
+    <a class="btn" href="laboratorio-vibe-coding.html">Ir al Laboratorio →</a>
+  </section>
+  <footer>Actividad con datos ficticios. La Organización Altamira y todas las personas del caso son inventadas. Herramientas revisadas en noviembre de 2026.</footer>
+</div></main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2400)}
+async function copy(text){try{await navigator.clipboard.writeText(text);toast('Copiado al portapapeles')}catch(e){const a=document.createElement('textarea');a.value=text;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand('copy')}catch(_){}a.remove();toast(ok?'Copiado al portapapeles':'No se pudo copiar: selecciona el texto')}}
+
+/* Índice y sección activa */
+const secs=$$('.sec');
+$('#toc').innerHTML=secs.map((s,i)=>`<a href="#${s.id}" data-id="${s.id}"><span>${String(i+1).padStart(2,'0')}</span>${esc(s.dataset.title)}</a>`).join('');
+$('#mnav').innerHTML=secs.map(s=>`<a href="#${s.id}" data-id="${s.id}">${esc(s.dataset.title)}</a>`).join('');
+function setActive(id){$$('[data-id]').forEach(a=>a.setAttribute('aria-current',String(a.dataset.id===id)));const m=$(`#mnav a[data-id="${id}"]`);if(m&&window.innerWidth<=1020){$('#mnav').scrollTo({left:m.offsetLeft-16,behavior:reduce?'auto':'smooth'})}}
+if('IntersectionObserver' in window){const vis=new Map();const io=new IntersectionObserver(es=>{es.forEach(e=>vis.set(e.target.id,e.isIntersecting?e.boundingClientRect.top:null));const cur=[...vis].filter(([,v])=>v!==null).sort((a,b)=>Math.abs(a[1])-Math.abs(b[1]))[0];if(cur)setActive(cur[0])},{rootMargin:'-10% 0px -55% 0px'});secs.forEach(s=>io.observe(s))}
+setActive('ruta');
+
+/* Modo proyector (compartido con las otras guías) */
+const pj=$('#projector');function applyPj(on){document.documentElement.classList.toggle('projector',on);pj.setAttribute('aria-pressed',String(on))}
+let pjOn=false;try{pjOn=localStorage.getItem('teoria-proyector')==='1'}catch(e){}applyPj(pjOn);
+pj.addEventListener('click',()=>{pjOn=!pjOn;applyPj(pjOn);try{localStorage.setItem('teoria-proyector',pjOn?'1':'0')}catch(e){}toast(pjOn?'Modo proyector activado':'Modo proyector desactivado')});
+
+/* ===== Anatomía ===== */
+const LAYERS=[
+ {k:'HTML',n:'Estructura',s:'Qué hay en la pantalla',c:'#e0307a',t:'HTML: la estructura',p:'Define qué elementos existen: el encabezado, los botones, el formulario, las columnas del tablero. Es el esqueleto.',code:'<header>Mesa de Solicitudes</header>\n<button id="nueva">+ Nueva solicitud</button>\n<section id="tablero"></section>',ask:'"Agrega un botón Exportar CSV junto a Nueva solicitud."'},
+ {k:'CSS',n:'Apariencia',s:'Cómo se ve',c:'#0098d4',t:'CSS: la apariencia',p:'Colores, tamaños, márgenes y diseño adaptable. Aquí viven el semáforo rojo, amarillo y verde y que la app se vea bien en un portátil o en un proyector.',code:'.vencida  { border-left: 5px solid #d6453d; }\n.porvencer{ border-left: 5px solid #ffc531; }\n.atiempo  { border-left: 5px solid #12a37a; }',ask:'"Usa una paleta sobria y aumenta el contraste del texto gris."'},
+ {k:'JS',n:'Lógica',s:'Qué hace',c:'#1b1e3c',t:'JavaScript: la lógica',p:'Calcula fechas límite, filtra, mueve tarjetas entre columnas, valida el formulario e importa y exporta archivos. Es donde más errores aparecen y donde está casi todo el riesgo de seguridad.',code:'function semaforo(s){\n  if (hoy > s.fecha_limite) return "vencida";\n  if (diasHabiles(hoy, s.fecha_limite) <= 1) return "porvencer";\n  return "atiempo";\n}',ask:'"Explícame en 5 líneas qué hace la función semaforo y qué pasa si fecha_limite está vacía."'},
+ {k:'LS',n:'Memoria',s:'Dónde quedan los datos',c:'#12a37a',t:'localStorage: la memoria del navegador',p:'La app guarda las solicitudes en el navegador para que no se pierdan al recargar. Pero solo existen en ese navegador y en ese equipo: si otra persona abre el archivo, ve su propia copia vacía. Además, no está cifrado.',code:'localStorage.setItem("solicitudes", JSON.stringify(datos));\nconst datos = JSON.parse(localStorage.getItem("solicitudes") || "[]");',ask:'"¿Qué pasa con los datos si borro el historial del navegador? Agrega un botón para exportar una copia de respaldo."'},
+ {k:'CSV',n:'Intercambio',s:'Entrada y salida',c:'#e0a400',t:'CSV: el puente con Excel y Power Automate',p:'Importar y exportar CSV conecta el prototipo con el mundo real: Excel, una lista de SharePoint o un flujo de Power Automate. También es una puerta de entrada de datos sucios y de trampas.',code:'id,fecha_radicacion,solicitante,area,tipo,...\nSOL-2026-0001,2026-10-29 10:00,Julio Herrera,...',ask:'"Al importar, informa cuántas filas se omitieron por duplicadas o inválidas y por qué."'}];
+let li=0;
+function layRender(){
+ $('#layers').innerHTML=LAYERS.map((l,i)=>`<button type="button" class="layer" aria-pressed="${i===li}" data-l="${i}" style="--lc:${l.c}"><span class="ic">${esc(l.k)}</span><span><b>${esc(l.n)}</b><small>${esc(l.s)}</small></span></button>`).join('');
+ const l=LAYERS[li];const p=$('#lpanel');p.style.setProperty('--lc',l.c);
+ p.innerHTML=`<h3>${esc(l.t)}</h3><p>${esc(l.p)}</p><pre>${esc(l.code)}</pre><div class="ask"><b>Pídele a la IA</b>${esc(l.ask)}</div>`;
+}
+$('#layers').addEventListener('click',e=>{const b=e.target.closest('[data-l]');if(!b)return;li=+b.dataset.l;layRender()});
+layRender();
+
+/* ===== Prompt flojo frente a TAREA ===== */
+const MAIN=`T — Tarea: Construye una aplicación web de una sola página llamada "Mesa de Solicitudes" para el área administrativa de la Organización Altamira (ficticia). Hoy las solicitudes internas (compras de insumos, mantenimiento locativo, certificados laborales, viáticos, reservas de sala, préstamo de equipos, correspondencia y actualización de proveedores) llegan por correo, Teams y formularios, y nadie sabe cuáles están vencidas.
+
+A — Acción: La app debe permitir:
+1. Radicar una solicitud con solicitante, área, tipo, descripción, prioridad (Alta, Media, Baja) y canal. Asigna un id con el formato SOL-AAAA-0001 y calcula la fecha límite según el tipo.
+2. Ver las solicitudes en un tablero por estado (Radicada, En revisión, En gestión, Esperando información, Resuelta, Rechazada) y moverlas arrastrando las tarjetas.
+3. Mostrar un semáforo en cada tarjeta: rojo si está vencida, amarillo si vence hoy o el próximo día hábil, verde si está a tiempo.
+4. Filtrar por texto, tipo, área, prioridad y responsable.
+5. Mostrar arriba cuatro indicadores: abiertas, vencidas, por vencer y porcentaje de cumplimiento.
+6. Guardar los datos en el navegador para que no se pierdan al recargar.
+
+R — Rol: Actúa como desarrollador front-end sénior que cuida la seguridad, la usabilidad y la accesibilidad.
+
+E — Ejemplo de salida: Un único archivo HTML con el CSS y el JavaScript adentro, listo para guardar como mesa-solicitudes.html y abrir con doble clic. Cada solicitud tiene estos campos: id, fecha_radicacion, solicitante, area, tipo, descripcion, prioridad, estado, responsable, fecha_limite, fecha_cierre, canal. Plazos en días hábiles (lunes a viernes): Compra de insumos 5, Mantenimiento locativo 3, Certificado laboral 2, Viáticos y anticipos 4, Reserva de sala 1, Préstamo de equipo 2, Correspondencia 2, Actualización de proveedor 5. Responsables: Ana Lucía Prieto, Mauricio Fajardo, Yolanda Ospina y Esteban Gil. Incluye 12 solicitudes de ejemplo inventadas, con algunas vencidas.
+
+A — Aclaraciones: No uses librerías ni recursos externos (nada de CDN ni fuentes en línea). Todo texto que escriba el usuario se muestra como texto, nunca como HTML. Valida los campos obligatorios con mensajes claros junto a cada campo. Interfaz en español, limpia y profesional. No uses datos reales de personas. Entrega el archivo completo en un solo bloque de código y, al final, una lista corta de cómo probarlo.`;
+const TPL=[
+ {label:'Mesa de solicitudes',weak:'Hazme una app para gestionar solicitudes.',wt:['No dice qué solicitudes ni para quién','Sin funciones verificables','No dice formato ni campos','Sin reglas de seguridad'],strong:MAIN},
+ {label:'Préstamo de equipos',weak:'Necesito un inventario de equipos.',wt:['¿Inventario o préstamos?','Sin estados ni fechas','Sin datos de ejemplo'],strong:`T — Tarea: Construye una app web de una sola página para controlar el préstamo de equipos de TI (portátiles, videobeams, cámaras) de una organización ficticia.
+A — Acción: 1. Registrar equipos con placa, tipo, marca y estado (Disponible, Prestado, En reparación, De baja). 2. Registrar un préstamo con quién, área, fecha de entrega y fecha de devolución pactada. 3. Mostrar los préstamos vencidos en rojo y los que vencen en 2 días en amarillo. 4. Registrar la devolución con observaciones del estado del equipo. 5. Historial de préstamos por equipo.
+R — Rol: Actúa como desarrollador front-end sénior con experiencia en herramientas internas de TI.
+E — Ejemplo de salida: Un único archivo HTML con CSS y JS adentro. Incluye 15 equipos y 8 préstamos de ejemplo inventados. Pestañas: Equipos, Préstamos, Vencidos.
+A — Aclaraciones: Sin librerías externas. Guarda en el navegador. El texto del usuario se muestra como texto, nunca como HTML. No pidas documento de identidad: basta con el nombre y el área. Entrega el archivo completo en un solo bloque.`},
+ {label:'Ventanas de cambio',weak:'Haz un calendario de cambios.',wt:['No dice qué es un conflicto','Sin reglas de aprobación','Sin vista'],strong:`T — Tarea: Construye una app web de una sola página para planear las ventanas de mantenimiento y los cambios de TI de una organización ficticia.
+A — Acción: 1. Registrar un cambio con sistema afectado, tipo (Estándar, Normal, Emergencia), responsable, inicio, fin, impacto (Alto, Medio, Bajo) y plan de reversión. 2. Ver un calendario semanal. 3. Alertar cuando dos cambios afectan el mismo sistema y se cruzan en el tiempo. 4. Marcar en rojo los cambios de impacto alto sin plan de reversión. 5. Estados: Propuesto, Aprobado, Ejecutado, Revertido.
+R — Rol: Actúa como desarrollador front-end sénior que conoce la gestión de cambios de ITIL.
+E — Ejemplo de salida: Un único archivo HTML. Incluye 10 cambios de ejemplo para las próximas dos semanas, con al menos un conflicto.
+A — Aclaraciones: Sin librerías externas. Guarda en el navegador. Muestra el texto como texto, nunca como HTML. No uses nombres de servidores ni direcciones IP reales. Entrega el archivo completo.`}];
+let ti=0;
+function tplRender(){
+ $('#tplTabs').innerHTML=TPL.map((t,i)=>`<button class="tab" role="tab" type="button" aria-selected="${i===ti}" data-tpl="${i}">${esc(t.label)}</button>`).join('');
+ const t=TPL[ti];
+ $('#tplBody').innerHTML=`<div class="pbox weak"><h3>Prompt flojo</h3><pre>${esc(t.weak)}</pre><div class="why">${t.wt.map(w=>`<span class="tag">${esc(w)}</span>`).join('')}</div></div><div class="pbox strong"><h3>Prompt TAREA <button class="btn sm" type="button" data-copytpl="${ti}">Copiar prompt</button></h3><pre>${esc(t.strong)}</pre></div>`;
+}
+$('#tplTabs').addEventListener('click',e=>{const b=e.target.closest('[data-tpl]');if(!b)return;ti=+b.dataset.tpl;tplRender()});
+$('#tplBody').addEventListener('click',e=>{const b=e.target.closest('[data-copytpl]');if(b)copy(TPL[+b.dataset.copytpl].strong)});
+tplRender();
+
+/* ===== Ciclo ===== */
+const LOOP=[
+ {n:'Especificar',c:'#e0307a',t:'Especificar con TAREA',p:'Escribe qué app, para quién, qué funciones (verificables), el modelo de datos y las restricciones. Diez minutos aquí ahorran una hora de correcciones.',tip:'Pregunta de control: ¿cada función se puede probar con un sí o un no?'},
+ {n:'Generar',c:'#0098d4',t:'Generar',p:'La IA entrega el archivo completo. Si la respuesta se corta, pide "continúa exactamente donde quedaste" o pide el archivo por partes.',tip:'Pídele también una lista de cómo probar la app: es tu primer guion de pruebas.'},
+ {n:'Abrir',c:'#e0a400',t:'Abrir y ejecutar',p:'Vista previa en el chat o guardar como .html y abrir en el navegador. Abre la consola (F12) para ver errores en rojo.',tip:'Si no carga nada, casi siempre es un archivo incompleto o mal copiado.'},
+ {n:'Probar',c:'#12a37a',t:'Probar a propósito',p:'Recorre los criterios de aceptación uno por uno. Luego prueba bordes: campos vacíos, textos muy largos, caracteres especiales, recargar la página, importar el CSV con trampas.',tip:'Anota cada falla como un ticket: pasos, esperado, obtenido.'},
+ {n:'Mejorar',c:'#b81f5f',t:'Pedir un cambio',p:'Un cambio por mensaje, con el contexto exacto. Prueba y guarda la versión antes de pedir el siguiente.',tip:'"Mantén todo lo que ya funciona" es una aclaración que vale la pena repetir.'},
+ {n:'Revisar',c:'#1b1e3c',t:'Revisar seguridad y calidad',p:'Pide una auditoría de seguridad del código y revísala con la lista de ocho puntos. Después, la matriz de validación: exactitud, pertinencia, completitud, trazabilidad y coherencia.',tip:'La auditoría de la IA ayuda, pero quien firma es una persona.'}];
+let lo=0;
+function loopRender(){
+ const R=128,cx=180,cy=180,n=LOOP.length;
+ let svg=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#dfe3f0" stroke-width="10"/>`;
+ svg+=`<text x="${cx}" y="${cy-6}" text-anchor="middle" style="font-size:15px;font-weight:800">Un cambio</text><text x="${cx}" y="${cy+14}" text-anchor="middle" style="font-size:15px;font-weight:800">a la vez</text>`;
+ LOOP.forEach((s,i)=>{const a=-Math.PI/2+i*2*Math.PI/n,x=cx+R*Math.cos(a),y=cy+R*Math.sin(a);
+  svg+=`<g class="node ${i===lo?'on':''}" data-loop="${i}" tabindex="0" role="button" aria-label="${esc(s.t)}"><circle cx="${x}" cy="${y}" r="38" fill="${s.c}"/><text x="${x}" y="${y+4}" text-anchor="middle" style="fill:#fff;font-size:12.5px">${esc(s.n)}</text></g>`});
+ $('#loopsvg').innerHTML=svg;
+ const s=LOOP[lo];$('#loopinfo').innerHTML=`<span class="tag" style="background:${s.c};color:#fff">Paso ${lo+1} de ${n}</span><h3 style="margin-top:8px">${esc(s.t)}</h3><p>${esc(s.p)}</p><div class="tip">💡 ${esc(s.tip)}</div>`;
+}
+$('#loopsvg').addEventListener('click',e=>{const g=e.target.closest('[data-loop]');if(!g)return;lo=+g.dataset.loop;loopRender()});
+$('#loopsvg').addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const g=e.target.closest('[data-loop]');if(!g)return;e.preventDefault();lo=+g.dataset.loop;loopRender();const n=$(`[data-loop="${lo}"]`);if(n)n.focus()});
+loopRender();
+
+/* ===== Biblioteca ===== */
+const LIB=[
+ {n:'Agregar una función',s:'Una sola cosa nueva',w:'Cuando la app ya funciona y quieres algo más.',p:`Agrega esta función a la app: [describe la función].
+Criterio de aceptación: [cómo sé que funciona, verificable con sí o no].
+Mantén todo lo que ya funciona sin cambios. Entrega el archivo completo actualizado y dime en 3 líneas qué cambiaste.`},
+ {n:'Corregir un error',s:'Como un ticket',w:'Cuando algo no hace lo que esperabas.',p:`Hay un error.
+Pasos: [qué hiciste, en orden].
+Esperado: [qué debía pasar].
+Obtenido: [qué pasó].
+Error de la consola (F12): [pégalo aquí, si hay].
+Encuentra la causa, explícala en 2 líneas y corrígela sin cambiar nada más. Entrega el archivo completo.`},
+ {n:'Importar el CSV',s:'Datos de ejemplo reales',w:'Paso 3 del laboratorio.',p:`Agrega un botón "Importar CSV" que lea un archivo con estas columnas: id, fecha_radicacion, solicitante, area, tipo, descripcion, prioridad, estado, responsable, fecha_limite, fecha_cierre, canal.
+Respeta los campos entre comillas que tienen comas. Antes de importar, valida: ids duplicados, prioridades mal escritas y estados desconocidos. Al terminar, muestra un informe: filas leídas, importadas, omitidas y por qué.
+Todo texto importado se muestra como texto, nunca como HTML. Entrega el archivo completo.`},
+ {n:'Mejorar el diseño',s:'Sin tocar la lógica',w:'Cuando funciona pero se ve improvisada.',p:`Mejora solo el diseño visual de la app sin cambiar su comportamiento: jerarquía clara, espaciado consistente, buen contraste (WCAG AA), estados de foco visibles y que se vea bien en un portátil de 1366 px y en un proyector. Entrega el archivo completo.`},
+ {n:'Pruebas integradas',s:'Que la app se pruebe sola',w:'Reto de Nivel 2.',p:`Agrega un botón "Ejecutar pruebas" que corra pruebas automáticas dentro de la misma página y muestre ✓ o ✗ por cada una. Incluye pruebas del cálculo de días hábiles, del semáforo, de la importación de CSV (duplicados y comillas) y de que un texto con <img onerror> se muestre como texto. Entrega el archivo completo.`},
+ {n:'Explicar el código',s:'Para entender antes de aceptar',w:'Antes de mostrarle la app a alguien.',p:`Explícame el código de esta app como si fuera a mantenerla yo: 1) un mapa de las funciones principales y qué hace cada una, 2) dónde se guardan los datos, 3) las tres partes más frágiles y por qué. No cambies el código.`},
+ {n:'Auditoría de seguridad',s:'Paso 5 del laboratorio',w:'Siempre, antes de compartir la app.',p:`Actúa como auditor de seguridad de aplicaciones web. Revisa el código completo de la app y busca: XSS (uso de innerHTML, insertAdjacentHTML o document.write con datos del usuario o de un CSV), uso de eval o new Function, recursos externos o librerías, secretos en el código, datos sensibles en localStorage, validaciones que solo existen en la interfaz e inyección de fórmulas al exportar CSV.
+Entrega una tabla con: hallazgo, línea o función, severidad (Alta, Media, Baja), cómo explotarlo en una frase y la corrección. No cambies el código todavía.`},
+ {n:'Accesibilidad',s:'Que todos puedan usarla',w:'Reto de Nivel 2.',p:`Revisa y mejora la accesibilidad de la app: que todo se pueda usar con teclado (incluido mover solicitudes entre estados sin arrastrar), etiquetas en todos los campos, mensajes de error asociados a cada campo, contraste suficiente y que un lector de pantalla anuncie los cambios importantes. Entrega el archivo completo y una lista de lo que cambiaste.`}];
+let bi=0;
+function libRender(){
+ $('#libnav').innerHTML=LIB.map((l,i)=>`<button type="button" aria-pressed="${i===bi}" data-lib="${i}">${esc(l.n)}<small>${esc(l.s)}</small></button>`).join('');
+ const l=LIB[bi];$('#libbody').innerHTML=`<div class="row"><b>${esc(l.n)}</b><button class="btn sm" type="button" id="libcopy">Copiar prompt</button></div><div class="when">Cuándo: ${esc(l.w)}</div><pre>${esc(l.p)}</pre>`;
+}
+$('#libnav').addEventListener('click',e=>{const b=e.target.closest('[data-lib]');if(!b)return;bi=+b.dataset.lib;libRender()});
+$('#libbody').addEventListener('click',e=>{if(e.target.id==='libcopy')copy(LIB[bi].p)});
+libRender();
+
+/* ===== Demo XSS ===== */
+const PRESETS=['<b>URGENTE</b> revisar la cerradura del archivo','<h1 style="color:#d6453d">SISTEMA HACKEADO</h1>','Acceso a la sala <img src=x onerror="alert(1)">','<a href="https://ejemplo.invalid">Haz clic para aprobar</a>','Compra de "post-it", clips & ganchos'];
+$('#xpresets').innerHTML=PRESETS.map((p,i)=>`<button type="button" data-x="${i}">${esc(p.length>34?p.slice(0,34)+'…':p)}</button>`).join('');
+function xRender(){
+ const v=$('#xin').value;
+ $('#xbad').srcdoc=`<!doctype html><meta charset="utf-8"><body style="font:15px system-ui;margin:10px;color:#1b1e3c">${v}</body>`;
+ $('#xok').textContent=v;
+ const risky=/<script|\son\w+\s*=|javascript:/i.test(v),html=/<[a-z!\/]/i.test(v);
+ $('#xwarn').textContent=risky?'⚠ Este texto traía código. Sin el sandbox de esta demo, se habría ejecutado.':html?'⚠ El texto se interpretó como HTML: cambió la página o agregó un enlace falso.':'';
+}
+$('#xpresets').addEventListener('click',e=>{const b=e.target.closest('[data-x]');if(!b)return;$('#xin').value=PRESETS[+b.dataset.x];xRender()});
+$('#xin').addEventListener('input',xRender);
+xRender();
+
+/* ===== Lista de verificación de seguridad ===== */
+const CHECKS=[
+ ['innerHTML con datos del usuario','Busca innerHTML, insertAdjacentHTML y document.write. Todo texto que viene del usuario o de un archivo debe ir con textContent o escaparse.'],
+ ['eval o new Function','Ejecutan texto como código. Casi nunca son necesarios en una app como esta.'],
+ ['Librerías y CDN','Cada script externo es código de un tercero en tu app. ¿Existe, es el oficial, lo necesitas? Cuidado con el slopsquatting.'],
+ ['Secretos en el código','Llaves de API, tokens o contraseñas dentro del HTML las puede leer cualquiera que abra el archivo.'],
+ ['Datos sensibles en el navegador','localStorage no está cifrado y lo lee cualquier script de la página. Nada de datos personales sensibles ahí.'],
+ ['Validación solo en la interfaz','En un prototipo es aceptable. En producción, el servidor debe volver a validar todo.'],
+ ['Inyección de fórmulas al exportar','Celdas que empiezan con =, +, - o @ se ejecutan como fórmulas en Excel. Hay que neutralizarlas.'],
+ ['Datos de prueba que parecen reales','Nombres con documento, teléfonos, diagnósticos… Si parece real, cámbialo por sintético.']];
+$('#checks').innerHTML=CHECKS.map(([t,d],i)=>`<div class="chk"><i>${i+1}</i><div><b>${esc(t)}</b><span>${esc(d)}</span></div></div>`).join('');
+
+/* ===== Semáforo de datos ===== */
+const SQ=[
+ {id:'pac',t:'¿El prompt o los archivos incluyen datos de pacientes o de historia clínica?'},
+ {id:'per',t:'¿Incluye datos personales de colaboradores o usuarios (documento, teléfono, correo, salario)?'},
+ {id:'sec',t:'¿Incluye contraseñas, llaves de API, tokens, cadenas de conexión o direcciones de servidores internos?'},
+ {id:'int',t:'¿Incluye código, estructuras o documentación interna de sistemas de la institución?'},
+ {id:'cta',t:'¿Vas a usar una cuenta personal o gratuita en lugar de la herramienta institucional?'}];
+const sans={pac:'no',per:'no',sec:'no',int:'no',cta:'no'};
+function sRender(){$('#sqs').innerHTML=SQ.map(q=>`<div class="q"><p>${esc(q.t)}</p><div class="yn" role="group" aria-label="${esc(q.t)}"><button type="button" data-sq="${q.id}" data-v="si" aria-pressed="${sans[q.id]==='si'}">Sí</button><button type="button" data-sq="${q.id}" data-v="no" aria-pressed="${sans[q.id]==='no'}">No</button></div></div>`).join('');sEval()}
+function sEval(){const why=[];let v='verde';
+ if(sans.pac==='si'){v='rojo';why.push('Datos de pacientes: no van en ningún chat. Usa datos sintéticos con la misma estructura.')}
+ if(sans.per==='si'){v='rojo';why.push('Reemplaza los datos personales por datos inventados. Para construir la app solo necesitas el formato.')}
+ if(sans.sec==='si'){v='rojo';why.push('Quita los secretos. En el código usa marcadores como TU_LLAVE_AQUI y guarda los secretos fuera del código.')}
+ if(sans.int==='si'){if(sans.cta==='si'){v='rojo';why.push('La información interna no va en una cuenta personal o gratuita.')}else if(v!=='rojo'){v='amarillo';why.push('Usa solo la herramienta institucional y comparte lo mínimo necesario.')}}
+ if(v==='verde'&&sans.cta==='si'){v='amarillo';why.push('Con una cuenta personal o gratuita, solo información pública o sintética.')}
+ if(v==='verde')why.push('Adelante. Igual revisa el código generado antes de compartir la app.');
+ const L=$('#slight');L.dataset.v=v;$('#slightTitle').textContent={verde:'Verde: adelante',amarillo:'Amarillo: con cuidado',rojo:'Rojo: así no'}[v];
+ $('#slightText').textContent={verde:'Puedes usar la IA para esta tarea.',amarillo:'Se puede, cumpliendo lo que se indica abajo.',rojo:'No pegues esto en un chat. Cambia primero lo que se indica.'}[v];
+ $('#slightWhy').innerHTML=why.map(w=>`<li>${esc(w)}</li>`).join('');
+}
+$('#sqs').addEventListener('click',e=>{const b=e.target.closest('[data-sq]');if(!b)return;sans[b.dataset.sq]=b.dataset.v;sRender()});
+sRender();
+})();
+</script>
+</body>
+</html>

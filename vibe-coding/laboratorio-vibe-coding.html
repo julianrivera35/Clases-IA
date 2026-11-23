@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Laboratorio · Vibe coding: la mesa de solicitudes</title>
+<meta name="theme-color" content="#ffffff">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f7fc;--paper:#ffffff;--ink:#1b1e3c;--muted:#4d5272;--line:#dfe3f0;
+  --cyan:#0098d4;--cyan-dark:#0072a8;--cyan-soft:#e3f5fd;
+  --magenta:#e0307a;--magenta-dark:#b81f5f;--magenta-soft:#fde8f1;
+  --yellow:#ffc531;--yellow-soft:#fff6d9;--green:#12a37a;--green-soft:#e2f6ef;--red:#d6453d;--red-soft:#fde9e7;
+  --pre:#f6f8fd;--shadow:0 10px 30px #1b1e3c12;--radius:18px;
+  --display:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --font:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Consolas,monospace;color-scheme:light}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background-color:var(--bg);background-image:radial-gradient(#d3dbef 1.1px,transparent 1.3px);background-size:20px 20px;color:var(--ink);font:17px/1.6 var(--font)}
+button,input,textarea,select{font:inherit;color:inherit}button{cursor:pointer}a{color:var(--cyan-dark)}
+:focus-visible{outline:3px solid var(--magenta);outline-offset:2px}
+h1,h2,h3,h4,.brand strong{font-family:var(--display);margin:0;line-height:1.2}
+p{margin:0}
+code{font:.86em var(--mono);background:var(--pre);border:1px solid var(--line);border-radius:6px;padding:1px 5px}
+.shell{max-width:1380px;margin:auto;display:grid;grid-template-columns:272px minmax(0,1fr);min-height:100vh}
+.sidebar{background:var(--paper);border-right:1px solid var(--line);padding:28px 18px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:18px;overflow-y:auto}
+.brand{display:flex;align-items:center;gap:12px;padding:2px 8px}
+.brandmark{height:46px;width:46px;border-radius:14px;display:grid;place-items:center;font:800 18px var(--mono);color:var(--ink);position:relative;background:var(--yellow)}
+.brandmark:before,.brandmark:after{content:'';position:absolute;width:15px;height:15px;border-radius:50%;mix-blend-mode:multiply}
+.brandmark:before{background:var(--cyan);right:-5px;top:-5px}.brandmark:after{background:var(--magenta);right:4px;top:-8px}
+.brand strong{display:block;font-size:19px;letter-spacing:-.2px}.brand small{color:var(--muted);font-size:12px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:var(--magenta-dark)}
+.nav{display:grid;gap:4px}
+.nav button{border:0;text-align:left;color:var(--ink);background:transparent;border-radius:12px;padding:9px 12px;display:flex;align-items:center;gap:11px;font-weight:700;font-size:14px}
+.nav button:hover{background:var(--bg)}
+.nav .num{display:grid;place-items:center;width:29px;height:29px;border-radius:9px;flex-shrink:0;font-weight:800;border:2px solid var(--c,var(--cyan));color:var(--cd,var(--cyan-dark));background:var(--paper)}
+.nav button:nth-child(3n+2){--c:var(--magenta);--cd:var(--magenta-dark)}.nav button:nth-child(3n+3){--c:var(--yellow);--cd:#8a6200}
+.nav button.active{background:var(--ink);color:#fff}.nav button.active .num{background:var(--c,var(--cyan));border-color:var(--c,var(--cyan));color:var(--ink)}
+.nav button.done .num:after{content:'✓';font-size:12px;margin-left:1px}
+.side-link{display:flex;justify-content:space-between;text-decoration:none;font-weight:700;font-size:14px;background:var(--cyan-soft);color:var(--cyan-dark);border-radius:12px;padding:10px 14px}
+.sidetip{font-size:13px;color:var(--muted);background:var(--bg);border-radius:12px;padding:12px 14px;margin-top:auto}
+.sidetip b{display:block;color:var(--ink)}
+.score{background:var(--ink);color:#fff;border-radius:14px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
+.score b{font:800 26px var(--display);color:var(--yellow)}.score span{font-size:13px;color:#c9cee6}
+.main{min-width:0;padding:30px max(40px,env(safe-area-inset-right,0px)) 80px max(40px,env(safe-area-inset-left,0px))}
+.inner{max-width:1020px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.status{font-size:14px;font-weight:700;color:var(--muted);background:var(--paper);border:1px solid var(--line);border-radius:30px;padding:6px 12px}
+.hero{background:var(--paper);border:1px solid var(--line);border-radius:26px;padding:32px 36px;box-shadow:var(--shadow);display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:24px;align-items:center;margin-bottom:22px}
+.hero h1{font-size:clamp(28px,3.6vw,42px);letter-spacing:-.8px;margin:8px 0 10px}
+.hl{background:linear-gradient(transparent 58%,var(--yellow) 58%,var(--yellow) 92%,transparent 92%)}
+.hero p{color:var(--muted)}
+.hero-art{position:relative;height:150px}
+.hero-art .win{position:absolute;inset:10px 0 0 10px;background:var(--ink);border-radius:14px;padding:30px 14px 12px;font:12px/1.7 var(--mono);color:#c9cee6;overflow:hidden}
+.hero-art .win:before{content:'';position:absolute;top:11px;left:12px;width:9px;height:9px;border-radius:50%;background:var(--magenta);box-shadow:14px 0 var(--yellow),28px 0 var(--cyan)}
+.hero-art .win i{display:block;height:8px;border-radius:4px;background:#ffffff26;margin:6px 0}
+.hero-art .win i.a{background:var(--cyan);width:60%}.hero-art .win i.b{background:var(--magenta);width:80%}.hero-art .win i.c{background:var(--yellow);width:45%}
+.page{display:none}.page.active{display:block;animation:in .25s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+.section-heading{margin-bottom:18px}
+.section-heading h2{font-size:clamp(26px,3vw,34px);letter-spacing:-.6px;margin:6px 0 8px}
+.lead{color:var(--muted);max-width:72ch}
+.theory-link{display:inline-block;margin-top:10px;font-weight:700;font-size:14px;text-decoration:none;background:var(--cyan-soft);border-radius:20px;padding:5px 12px}
+.time{display:inline-block;font:700 13px var(--font);background:var(--yellow-soft);color:#7a5600;border-radius:20px;padding:3px 10px;margin-left:6px;vertical-align:3px;letter-spacing:0;text-transform:none}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);margin-bottom:16px}
+.panel h3{font-size:21px;margin-bottom:6px}
+.subtle{color:var(--muted);font-size:15px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr))}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.chip{display:inline-flex;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;background:var(--cyan-soft);color:var(--cyan-dark);width:fit-content}
+.chip.m{background:var(--magenta-soft);color:var(--magenta-dark)}.chip.y{background:var(--yellow-soft);color:#7a5600}.chip.g{background:var(--green-soft);color:#0b6e52}.chip.r{background:var(--red-soft);color:var(--red)}
+.button{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:2px solid var(--cyan-dark);background:var(--paper);color:var(--cyan-dark);border-radius:12px;padding:10px 16px;font-weight:700;text-decoration:none;font-size:15px}
+.button.primary{background:var(--cyan-dark);color:#fff}
+.button.primary:hover{background:#005c88}
+.button.small{padding:6px 11px;font-size:13px;border-radius:10px}
+.button.warm{background:var(--yellow);border-color:var(--yellow);color:var(--ink)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.pick{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.pick button{border:2px solid var(--line);background:var(--paper);border-radius:14px;padding:12px 14px;text-align:left;display:flex;flex-direction:column;gap:2px}
+.pick button b{font-family:var(--display);font-size:16px}.pick button small{color:var(--muted);font-size:13px}
+.pick button[aria-pressed="true"]{border-color:var(--ink);background:var(--yellow-soft);box-shadow:0 6px 16px #1b1e3c14}
+.checklist{display:grid;gap:8px}
+.check{display:flex;gap:10px;align-items:flex-start;background:var(--bg);border-radius:12px;padding:10px 12px;cursor:pointer;font-size:15px}
+.check input{width:20px;height:20px;margin-top:2px;accent-color:var(--green);flex-shrink:0}
+.check.on{background:var(--green-soft)}
+.field{display:grid;gap:5px;margin-top:12px}
+.field label{font-weight:700;font-size:14px}
+.field textarea,.field input,.field select{border:2px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--paper);width:100%}
+.field textarea{min-height:84px;resize:vertical;font-size:15px}
+.field textarea.code{font:13px/1.55 var(--mono);min-height:110px}
+.builder{display:grid;gap:12px}
+.bl{display:grid;grid-template-columns:54px minmax(0,1fr);gap:14px;align-items:start}
+.bl .L{width:54px;height:54px;border-radius:14px;display:grid;place-items:center;font:800 28px var(--display);background:var(--s);color:var(--a)}
+.bl label{font-weight:700;font-size:14px;display:block;margin-bottom:4px}
+.bl textarea{width:100%;border:2px solid var(--line);border-radius:12px;padding:10px 12px;font:14px/1.55 var(--mono);min-height:70px;resize:vertical;background:var(--paper)}
+.promptbox{background:var(--ink);color:#e7eaf6;border-radius:14px;padding:16px;margin-top:14px}
+.promptbox .row{justify-content:space-between;margin-bottom:8px}
+.promptbox b{color:var(--yellow);font-family:var(--display);font-size:16px}
+.promptbox pre{margin:0;white-space:pre-wrap;word-break:break-word;font:13px/1.6 var(--mono);max-height:320px;overflow:auto}
+.promptbox .button{border-color:var(--yellow);background:var(--yellow);color:var(--ink)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tab{border:2px solid var(--line);background:var(--paper);border-radius:30px;padding:7px 14px;font-weight:700;font-size:14px}
+.tab[aria-selected="true"]{border-color:var(--ink);background:var(--ink);color:#fff}
+ol.steps{margin:0;padding-left:22px;display:grid;gap:8px}
+ol.steps li{padding-left:4px}
+.trouble{display:grid;gap:8px}
+.trouble details{background:var(--bg);border-radius:12px;padding:10px 14px}
+.trouble summary{font-weight:700;cursor:pointer}
+.trouble p{margin-top:6px;font-size:15px;color:var(--muted)}
+.improve{display:grid;gap:12px}
+.imp{border:1px solid var(--line);border-left:6px solid var(--a,var(--cyan));border-radius:14px;padding:14px 16px;background:var(--paper)}
+.imp .row{justify-content:space-between}
+.imp h4{font-size:17px}
+.imp pre{margin:8px 0 0;white-space:pre-wrap;word-break:break-word;font:13px/1.55 var(--mono);background:var(--pre);border-radius:10px;padding:12px}
+.imp .ok{display:flex;gap:8px;align-items:center;font-weight:700;font-size:14px;color:#0b6e52}
+.imp .ok input{width:18px;height:18px;accent-color:var(--green)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--paper)}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--ink);color:#fff;font-size:13px}
+tr:last-child td{border-bottom:0}
+td code{white-space:pre-wrap;word-break:break-all}
+td select{border:2px solid var(--line);border-radius:10px;padding:6px 8px;background:var(--paper);min-width:118px}
+td select.pasa{border-color:var(--green);background:var(--green-soft)}td select.falla{border-color:var(--red);background:var(--red-soft)}td select.cumple{border-color:var(--green);background:var(--green-soft)}td select.parcial{border-color:#e0a400;background:var(--yellow-soft)}td select.nocumple{border-color:var(--red);background:var(--red-soft)}
+td input{border:2px solid var(--line);border-radius:10px;padding:6px 8px;width:100%}
+.tally{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.note{background:var(--yellow-soft);border:1px solid #f3dc97;border-radius:12px;padding:12px 16px;font-size:15px;margin-top:14px}
+.note.red{background:var(--red-soft);border-color:#f4c4bf}
+.early{background:var(--magenta-soft);border:1px dashed var(--magenta);border-radius:14px;padding:12px 16px;font-size:15px;margin-top:14px}
+.retos{display:grid;gap:12px}
+.reto{border:1px solid var(--line);border-radius:16px;background:var(--paper);padding:16px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 16px}
+.reto.on{background:var(--green-soft);border-color:#b5e4d3}
+.reto h4{font-size:18px}
+.reto p{color:var(--muted);font-size:15px}
+.reto .pts{font:800 20px var(--display);color:var(--magenta-dark);text-align:right;white-space:nowrap}
+.reto .act{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.reto details{grid-column:1/-1}
+.reto summary{font-weight:700;font-size:14px;color:var(--cyan-dark);cursor:pointer}
+.reto pre{white-space:pre-wrap;word-break:break-word;font:13px/1.55 var(--mono);background:var(--pre);border-radius:10px;padding:12px;margin:8px 0 0}
+.level{display:flex;align-items:baseline;gap:10px;margin:22px 0 10px}
+.level h3{font-size:22px}
+.cases{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.case{border:2px solid var(--line);border-radius:16px;padding:14px 16px;background:var(--paper);display:flex;flex-direction:column;gap:6px;text-align:left}
+.case b{font-family:var(--display);font-size:17px}.case small{color:var(--muted);font-size:14px}
+.case[aria-pressed="true"]{border-color:var(--ink);background:var(--yellow-soft)}
+.navbtns{display:flex;justify-content:space-between;gap:10px;margin-top:22px}
+.mobile-nav{display:none}
+.toast{position:fixed;right:20px;bottom:20px;background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}
+.toast.show{opacity:1}
+#print{display:none}
+@media(max-width:980px){
+  .shell{grid-template-columns:1fr}.sidebar{display:none}
+  .mobile-nav{display:flex;gap:6px;overflow-x:auto;position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line);padding:10px 14px}
+  .mobile-nav button{white-space:nowrap;border:0;background:var(--bg);border-radius:9px;padding:7px 10px;font-weight:700;font-size:13px}
+  .mobile-nav button.active{background:var(--yellow)}
+  .main{padding:20px 16px 60px}
+  .hero{grid-template-columns:1fr}.hero-art{display:none}
+}
+@media print{
+  @page{margin:14mm}
+  body{background:#fff;font-size:11pt}
+  .shell,.mobile-nav,.toast{display:none!important}
+  #print{display:block}
+  .rp-head{display:flex;justify-content:space-between;align-items:center;border-bottom:3pt solid var(--ink);padding-bottom:8pt;margin-bottom:12pt}
+  .rp-head h1{font-size:20pt}.rp-head small{color:var(--muted)}
+  .rp-dots{display:flex;gap:4pt}.rp-dots i{width:14pt;height:14pt;border-radius:50%;display:block;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .rp-sec{break-inside:auto;border:1pt solid var(--line);border-left:5pt solid var(--a,var(--cyan));border-radius:8pt;padding:8pt 12pt;margin-bottom:9pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .rp-sec h2{font-size:13pt;margin-bottom:4pt;break-after:avoid}.rp-sec dt,.rp-sec dd,.rp-sec tr{break-inside:avoid}
+  .rp-sec dl{display:grid;grid-template-columns:150pt 1fr;gap:3pt 10pt;margin:0}
+  .rp-sec dt{font-weight:700;color:var(--muted)}.rp-sec dd{margin:0;white-space:pre-wrap}
+  .rp-sec table{font-size:9.5pt}.rp-sec th{background:#eef1f7;color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .rp-foot{font-size:8.5pt;color:var(--muted);margin-top:10pt}
+}
+</style>
+</head>
+<body>
+<div class="mobile-nav" id="mobileNav"></div>
+<div class="shell">
+<aside class="sidebar">
+  <div class="brand"><div class="brandmark">&lt;/&gt;</div><div><strong>Vibe coding</strong><small>La mesa de solicitudes</small></div></div>
+  <div><div class="eyebrow" style="padding-left:12px;margin-bottom:10px">Pasos del laboratorio</div><nav class="nav" id="sideNav"></nav></div>
+  <div class="score" aria-live="polite"><span>Puntos de retos</span><b id="scoreSide">0</b></div>
+  <a class="side-link" href="teoria-vibe-coding.html"><span>Teoría del tema</span><span aria-hidden="true">↗</span></a>
+  <div class="sidetip"><b>Tu trabajo se guarda en este navegador</b>Nada se envía a un servidor. Al final, descarga tu informe en PDF.</div>
+</aside>
+<main class="main"><div class="inner">
+  <div class="topbar"><span class="eyebrow">Laboratorio · Vibe coding con TAREA</span><span class="row"><a class="button small" href="teoria-vibe-coding.html">Ver la teoría ↗</a><span class="status" id="headerStatus">Paso 0 de 8</span></span></div>
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Especificar · Generar · Probar · Revisar</div>
+      <h1>De un problema de gestión a <span class="hl">una app que funciona</span>, sin escribir el código a mano.</h1>
+      <p>La mesa de solicitudes de la Organización Altamira está saturada: 37 solicitudes abiertas, 17 vencidas y ninguna visibilidad. Hoy le construimos una herramienta con IA, la probamos a propósito, buscamos sus fallas de seguridad y la mostramos.</p>
+    </div>
+    <div class="hero-art" aria-hidden="true"><div class="win"><i class="a"></i><i></i><i class="b"></i><i></i><i class="c"></i><i></i></div></div>
+  </div>
+  <div id="pages"></div>
+</div></main>
+</div>
+<div id="print"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('show'),2400)}
+async function copy(text){try{await navigator.clipboard.writeText(text);toast('Copiado al portapapeles')}catch(e){const a=document.createElement('textarea');a.value=text;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand('copy')}catch(_){}a.remove();toast(ok?'Copiado al portapapeles':'No se pudo copiar: selecciona el texto')}}
+
+/* ================= Contenido ================= */
+const TOOLS=[
+ {id:'copilot',n:'Microsoft Copilot Chat',s:'Con la cuenta de trabajo. La herramienta de hoy.'},
+ {id:'claude',n:'Claude',s:'Con artefactos: la app aparece al lado del chat.'},
+ {id:'chatgpt',n:'ChatGPT',s:'Con canvas y vista previa.'},
+ {id:'gemini',n:'Gemini',s:'Con canvas y vista previa.'}];
+const CASES=[
+ {id:'mesa',n:'Mesa de solicitudes administrativas',s:'El caso principal: radicar, asignar, semáforo de vencimiento, tablero e indicadores.',main:true,
+  T:'Construye una aplicación web de una sola página llamada "Mesa de Solicitudes" para el área administrativa de la Organización Altamira (ficticia). Hoy las solicitudes internas (compras de insumos, mantenimiento locativo, certificados laborales, viáticos, reservas de sala, préstamo de equipos, correspondencia y actualización de proveedores) llegan por correo, Teams y formularios, y nadie sabe cuáles están vencidas.',
+  A:'La app debe permitir:\n1. Radicar una solicitud con solicitante, área, tipo, descripción, prioridad (Alta, Media, Baja) y canal. Asigna un id con el formato SOL-AAAA-0001 y calcula la fecha límite según el tipo.\n2. Ver las solicitudes en un tablero por estado (Radicada, En revisión, En gestión, Esperando información, Resuelta, Rechazada) y moverlas arrastrando las tarjetas.\n3. Mostrar un semáforo en cada tarjeta: rojo si está vencida, amarillo si vence hoy o el próximo día hábil, verde si está a tiempo.\n4. Filtrar por texto, tipo, área, prioridad y responsable.\n5. Mostrar arriba cuatro indicadores: abiertas, vencidas, por vencer y porcentaje de cumplimiento.\n6. Guardar los datos en el navegador para que no se pierdan al recargar.',
+  R:'Actúa como desarrollador front-end sénior que cuida la seguridad, la usabilidad y la accesibilidad.',
+  E:'Un único archivo HTML con el CSS y el JavaScript adentro, listo para guardar como mesa-solicitudes.html y abrir con doble clic. Cada solicitud tiene estos campos: id, fecha_radicacion, solicitante, area, tipo, descripcion, prioridad, estado, responsable, fecha_limite, fecha_cierre, canal. Plazos en días hábiles (lunes a viernes): Compra de insumos 5, Mantenimiento locativo 3, Certificado laboral 2, Viáticos y anticipos 4, Reserva de sala 1, Préstamo de equipo 2, Correspondencia 2, Actualización de proveedor 5. Responsables: Ana Lucía Prieto, Mauricio Fajardo, Yolanda Ospina y Esteban Gil. Incluye 12 solicitudes de ejemplo inventadas, con algunas vencidas.',
+  X:'No uses librerías ni recursos externos (nada de CDN ni fuentes en línea). Todo texto que escriba el usuario se muestra como texto, nunca como HTML. Valida los campos obligatorios con mensajes claros junto a cada campo. Interfaz en español, limpia y profesional. No uses datos reales de personas. Entrega el archivo completo en un solo bloque de código y, al final, una lista corta de cómo probarlo.'},
+ {id:'equipos',n:'Préstamo de equipos de TI',s:'Portátiles, videobeams y cámaras: quién los tiene, hasta cuándo y en qué estado vuelven.',
+  T:'Construye una app web de una sola página para controlar el préstamo de equipos de TI (portátiles, videobeams, cámaras web, diademas) de una organización ficticia.',
+  A:'1. Registrar equipos con placa, tipo, marca y estado (Disponible, Prestado, En reparación, De baja).\n2. Registrar un préstamo con persona, área, fecha de entrega y fecha de devolución pactada.\n3. Mostrar en rojo los préstamos vencidos y en amarillo los que vencen en 2 días.\n4. Registrar la devolución con observaciones sobre el estado del equipo.\n5. Historial de préstamos por equipo.\n6. Indicadores: equipos disponibles, prestados, vencidos y en reparación.',
+  R:'Actúa como desarrollador front-end sénior con experiencia en herramientas internas de TI.',
+  E:'Un único archivo HTML con CSS y JS adentro. Pestañas: Equipos, Préstamos y Vencidos. Incluye 15 equipos y 8 préstamos de ejemplo inventados.',
+  X:'Sin librerías externas. Guarda en el navegador. El texto del usuario se muestra como texto, nunca como HTML. No pidas documento de identidad: basta con el nombre y el área. Entrega el archivo completo en un solo bloque.'},
+ {id:'cambios',n:'Ventanas de cambio y mantenimiento',s:'Calendario de cambios de TI con detección de choques y plan de reversión.',
+  T:'Construye una app web de una sola página para planear las ventanas de mantenimiento y los cambios de TI de una organización ficticia.',
+  A:'1. Registrar un cambio con sistema afectado, tipo (Estándar, Normal, Emergencia), responsable, inicio, fin, impacto (Alto, Medio, Bajo) y plan de reversión.\n2. Ver un calendario semanal.\n3. Alertar cuando dos cambios afectan el mismo sistema y se cruzan en el tiempo.\n4. Marcar en rojo los cambios de impacto alto sin plan de reversión.\n5. Estados: Propuesto, Aprobado, Ejecutado, Revertido.',
+  R:'Actúa como desarrollador front-end sénior que conoce la gestión de cambios de ITIL.',
+  E:'Un único archivo HTML. Incluye 10 cambios de ejemplo para las próximas dos semanas, con al menos un conflicto y un cambio de impacto alto sin plan de reversión.',
+  X:'Sin librerías externas. Guarda en el navegador. Muestra el texto como texto, nunca como HTML. No uses nombres de servidores ni direcciones IP reales. Entrega el archivo completo.'},
+ {id:'incidentes',n:'Registro y triage de incidentes de seguridad',s:'Matriz de severidad, tiempos de respuesta y seguimiento. Todo ficticio.',
+  T:'Construye una app web de una sola página para registrar y priorizar incidentes de seguridad de la información en una organización ficticia, como ejercicio de entrenamiento.',
+  A:'1. Registrar un incidente con fecha, categoría (Phishing, Malware, Acceso indebido, Pérdida de equipo, Fuga de información, Otro), activo afectado, impacto y probabilidad (1 a 5).\n2. Calcular la severidad con una matriz de impacto por probabilidad y mostrarla en colores.\n3. Asignar un tiempo de respuesta según la severidad y mostrar los que lo superaron.\n4. Estados: Reportado, En análisis, Contenido, Cerrado, con bitácora de acciones.\n5. Ver la matriz de riesgo con cuántos incidentes hay en cada celda.',
+  R:'Actúa como desarrollador front-end sénior con conocimientos de gestión de incidentes (ISO 27035).',
+  E:'Un único archivo HTML. Incluye 12 incidentes de ejemplo inventados, variados en categoría y severidad.',
+  X:'Sin librerías externas. No incluyas direcciones IP, correos ni nombres reales. Muestra el texto como texto, nunca como HTML. Advierte en la interfaz que es una herramienta de entrenamiento. Entrega el archivo completo.'},
+ {id:'compromisos',n:'Seguimiento de compromisos de comités',s:'De las actas a las tareas: responsable, fecha y semáforo de cumplimiento.',
+  T:'Construye una app web de una sola página para hacer seguimiento a los compromisos que salen de los comités de una organización ficticia.',
+  A:'1. Registrar comités y reuniones (fecha, comité, asistentes).\n2. Registrar compromisos de cada reunión con descripción, responsable, fecha de entrega y estado (Pendiente, En curso, Cumplido, Vencido).\n3. Permitir pegar el texto de un acta y extraer los compromisos que tengan el patrón "Responsable: … Fecha: …".\n4. Vista por responsable y vista por comité.\n5. Generar un resumen de pendientes listo para copiar en un correo.',
+  R:'Actúa como desarrollador front-end sénior y analista de procesos.',
+  E:'Un único archivo HTML. Incluye 3 comités, 5 reuniones y 15 compromisos de ejemplo inventados.',
+  X:'Sin librerías externas. Guarda en el navegador. Muestra el texto como texto, nunca como HTML. Entrega el archivo completo.'},
+ {id:'turnos',n:'Turnos de soporte y disponibilidad',s:'Calendario de turnos con reglas de equidad y cobertura.',
+  T:'Construye una app web de una sola página para organizar los turnos de soporte y disponibilidad de un equipo de TI ficticio de 8 personas.',
+  A:'1. Registrar personas, sus habilidades (Redes, Servidores, Aplicaciones, Mesa de ayuda) y sus días no disponibles.\n2. Generar automáticamente los turnos de un mes: una persona de día y una de disponibilidad nocturna, sin repetir dos noches seguidas.\n3. Mostrar el calendario y el conteo de turnos por persona para revisar que sea equitativo.\n4. Permitir intercambiar turnos con un registro de quién cambió con quién.\n5. Alertar si un día queda sin cobertura de alguna habilidad.',
+  R:'Actúa como desarrollador front-end sénior con experiencia en problemas de programación de horarios.',
+  E:'Un único archivo HTML. Incluye 8 personas de ejemplo inventadas.',
+  X:'Sin librerías externas. Explica en comentarios la regla de asignación. Muestra el texto como texto, nunca como HTML. Entrega el archivo completo.'},
+ {id:'interfaces',n:'Catálogo de interfaces de interoperabilidad',s:'Qué sistemas se hablan, con qué estándar, en qué estado y quién responde.',
+  T:'Construye una app web de una sola página para mantener un catálogo de las interfaces de integración entre sistemas de una institución de salud ficticia.',
+  A:'1. Registrar una interfaz con sistema origen, sistema destino, estándar (HL7 v2, HL7 FHIR, archivo plano, servicio web propio), mensaje o recurso (por ejemplo ADT^A01 o Patient), frecuencia, responsable técnico y estado (Activa, En pruebas, Con fallas, Retirada).\n2. Ver un mapa de sistemas con las conexiones entre ellos.\n3. Filtrar por estándar, estado y sistema.\n4. Registrar incidentes de cada interfaz con fecha y causa.\n5. Indicadores: interfaces por estándar y por estado.',
+  R:'Actúa como desarrollador front-end sénior con experiencia en interoperabilidad en salud (HL7 v2 y FHIR).',
+  E:'Un único archivo HTML. Incluye 8 sistemas ficticios (sin nombres de productos comerciales) y 14 interfaces de ejemplo.',
+  X:'Sin librerías externas. No incluyas datos de pacientes, endpoints ni credenciales: solo metadatos de las interfaces. Muestra el texto como texto, nunca como HTML. Entrega el archivo completo.'}];
+
+const IMPROVE=[
+ {id:'i1',a:'var(--cyan)',t:'Mejora 1 · Importar el archivo CSV',w:'Carga las 61 solicitudes de ejemplo. Descarga el CSV en el paso 0.',p:`Agrega un botón "Importar CSV" que lea un archivo con estas columnas: id, fecha_radicacion, solicitante, area, tipo, descripcion, prioridad, estado, responsable, fecha_limite, fecha_cierre, canal.
+Respeta los campos entre comillas que tienen comas. Valida antes de importar: ids duplicados, prioridades mal escritas y estados desconocidos. Al terminar, muestra un informe con filas leídas, importadas, omitidas y por qué.
+Todo texto importado se muestra como texto, nunca como HTML. Mantén todo lo que ya funciona. Entrega el archivo completo actualizado.`,alt:`Agrega un botón "Importar CSV" y otro "Exportar CSV" con todas las columnas de los registros de la app. Respeta los campos entre comillas que tienen comas, valida duplicados y valores no reconocidos, y muestra un informe al importar. Todo texto importado se muestra como texto, nunca como HTML. Entrega el archivo completo.`},
+ {id:'i2',a:'var(--magenta)',t:'Mejora 2 · Vista de lista y exportar',w:'Una tabla ordenable que respeta los filtros y se puede llevar a Excel.',p:`Agrega una vista "Lista" (además del tablero) con una tabla de todas las solicitudes que se pueda ordenar haciendo clic en cada encabezado y que respete los filtros activos.
+Agrega un botón "Exportar CSV" que descargue lo que se ve en la lista. Si una celda empieza por =, +, - o @, antepón un apóstrofo para que Excel no la ejecute como fórmula. Mantén todo lo que ya funciona. Entrega el archivo completo.`,alt:`Agrega una vista de tabla con todos los registros, ordenable por cada columna y que respete los filtros. Si una celda exportada empieza por =, +, - o @, antepón un apóstrofo. Entrega el archivo completo.`},
+ {id:'i3',a:'#e0a400',t:'Mejora 3 · Detalle con bitácora',w:'Trazabilidad: quién cambió qué y cuándo.',p:`Al hacer clic en una solicitud, abre un panel lateral con todos sus datos y permite cambiar estado, responsable y prioridad, y agregar notas.
+Cada cambio queda en una bitácora con fecha y hora ("Estado: En revisión → En gestión"). Regla: no se puede pasar a "En gestión" ni a "Esperando información" sin responsable asignado; avisa con un mensaje claro. Mantén todo lo que ya funciona. Entrega el archivo completo.`,alt:`Al hacer clic en un registro, abre un panel de detalle que permita editarlo y que guarde una bitácora con fecha y hora de cada cambio. Agrega una regla de negocio que impida un cambio de estado inválido y muestre un mensaje claro. Entrega el archivo completo.`}];
+
+const TESTS=[
+ ['Criterio','Radicar una solicitud completa','Aparece en "Radicada" con id SOL-AAAA-#### y una fecha límite correcta.'],
+ ['Criterio','Mover una tarjeta a otro estado','Cambia de columna y los indicadores se actualizan.'],
+ ['Criterio','Recargar la página (F5)','Los datos siguen ahí.'],
+ ['Borde','Guardar el formulario vacío','Mensajes junto a cada campo obligatorio; no se guarda.'],
+ ['Borde','Descripción de 2.000 caracteres','No rompe el diseño de la tarjeta.'],
+ ['Borde','Radicar un viernes un trámite de 2 días hábiles','La fecha límite cae el martes, no el domingo.'],
+ ['Datos','Importar el CSV de ejemplo','61 filas leídas; detecta el id duplicado y la prioridad "alta" en minúscula.'],
+ ['Seguridad','Descripción: <b>URGENTE</b> revisar','Se ve el texto con las etiquetas, no en negrita.'],
+ ['Seguridad','Importar el CSV con la fila SOL-2026-0042','No aparece ninguna ventana emergente (alert). Si aparece: XSS.'],
+ ['Seguridad','Exportar y abrir en Excel una descripción que empiece con =1+1','Excel muestra el texto, no el resultado 2.']];
+
+const CHECKS=['No hay innerHTML, insertAdjacentHTML ni document.write con datos del usuario o del CSV sin escapar','No hay eval ni new Function','No carga scripts, fuentes ni estilos de internet (o cada uno está justificado y verificado)','No hay llaves, tokens ni contraseñas en el código','No guarda datos personales sensibles en localStorage','Las validaciones importantes están claras (y sé que en producción se repiten en el servidor)','La exportación CSV neutraliza fórmulas','Los datos de ejemplo son claramente ficticios'];
+const MATRIX=[['Exactitud','¿Las fechas límite, los conteos y los indicadores están bien calculados?'],['Pertinencia','¿Resuelve el problema de la mesa de solicitudes, o agrega cosas que nadie pidió?'],['Completitud','¿Cumple las 6 funciones de la especificación y las 3 mejoras?'],['Trazabilidad','¿Se puede saber quién cambió qué y cuándo? ¿El código está explicado?'],['Coherencia','¿Los estados, colores y textos son consistentes en todas las vistas?']];
+
+const RETOS=[
+ {lvl:2,id:'r1',pts:10,t:'Indicadores con gráficos',d:'Una vista "Indicadores" con barras de abiertas por tipo, carga por responsable y cumplimiento del plazo, hechas sin librerías.',p:`Agrega una vista "Indicadores" con gráficos de barras horizontales hechos con HTML y CSS o SVG, sin librerías: 1) solicitudes abiertas por tipo, divididas en vencidas, por vencer y a tiempo; 2) carga por responsable; 3) cerradas a tiempo frente a tarde por tipo. Cada barra debe tener su número y una etiqueta accesible. Entrega el archivo completo.`},
+ {lvl:2,id:'r2',pts:10,t:'Festivos de Colombia',d:'Que el plazo no cuente los festivos, incluidos los que se trasladan al lunes (Ley Emiliani) y los que dependen de la Semana Santa.',p:`Modifica el cálculo de días hábiles para que excluya los festivos de Colombia de cualquier año: los fijos, los que se trasladan al lunes siguiente por la Ley Emiliani y los que dependen de la fecha de Pascua (calcúlala con un algoritmo, no con una lista fija). Muéstrame la lista de festivos de 2026 que calcula para que la verifique. Entrega el archivo completo.`},
+ {lvl:2,id:'r3',pts:10,t:'Pruebas dentro de la app',d:'Un botón "Ejecutar pruebas" que muestre ✓ o ✗ para el cálculo de fechas, el semáforo, la importación y el escape de HTML.',p:`Agrega un botón "Ejecutar pruebas" que corra pruebas automáticas dentro de la misma página y muestre ✓ o ✗ por cada una. Incluye: el 2 de noviembre de 2026 es festivo; un trámite de 1 día radicado el viernes 13 de noviembre de 2026 vence el martes 17; el semáforo de una solicitud vencida es rojo; la importación omite un id duplicado; un texto con <img onerror> se muestra como texto. Entrega el archivo completo.`},
+ {lvl:2,id:'r4',pts:10,t:'Accesible con teclado',d:'Que todo se pueda hacer sin mouse, incluido cambiar el estado sin arrastrar, y que un lector de pantalla entienda la app.',p:`Haz que toda la app se pueda usar solo con teclado: navegar las tarjetas, abrir el detalle con Enter, cambiar el estado sin arrastrar y cerrar paneles con Escape. Agrega etiquetas a todos los campos, asocia los mensajes de error a su campo y anuncia los cambios importantes a los lectores de pantalla. Entrega el archivo completo y la lista de cambios.`},
+ {lvl:3,id:'r5',pts:20,t:'Con un agente de código',d:'Para quien ya programa: con GitHub Copilot en modo agente, Claude Code o Codex, pasar la app a un proyecto con varios archivos, pruebas automáticas y README.',p:`Tengo esta app de un solo archivo (adjunto). Antes de escribir código, propón un plan: estructura de carpetas (index.html, css/, js/ con módulos), qué funciones van en cada módulo y qué pruebas automáticas escribirías (por ejemplo con Vitest para la lógica de fechas, semáforo e importación). Espera mi aprobación. Después implementa el plan, ejecuta las pruebas y escribe un README con cómo correr el proyecto.`},
+ {lvl:3,id:'r6',pts:20,t:'Puente con Power Automate',d:'Diseñar el flujo (con conectores estándar) que avise por Teams o correo las solicitudes por vencer, a partir de una lista de SharePoint con las mismas columnas.',p:`Actúa como especialista en Power Automate. Tengo una lista de SharePoint "Solicitudes" con estas columnas: id, fecha_radicacion, solicitante, area, tipo, descripcion, prioridad, estado, responsable, fecha_limite, fecha_cierre, canal.
+Diseña un flujo programado que todos los días hábiles a las 7:00 a. m. avise a cada responsable, por Teams o por correo, qué solicitudes vencen hoy o ya están vencidas. Usa solo conectores estándar. Dame: el disparador, cada acción con su configuración, las expresiones exactas (por ejemplo para comparar fechas) y qué pasa si una solicitud no tiene responsable.`},
+ {lvl:3,id:'r7',pts:20,t:'Equipo rojo: auditoría cruzada',d:'Intercambien apps con otro equipo. Busquen fallas de seguridad y de lógica, y entreguen un informe con severidad, evidencia y corrección sugerida.',p:`Voy a revisar la seguridad de una app web de un solo archivo hecha por otro equipo. Dame un plan de pruebas de 15 minutos: qué entradas maliciosas o de borde probar en cada campo y en la importación CSV, qué buscar en el código fuente (Ctrl+U) y cómo documentar cada hallazgo (título, severidad, pasos para reproducir, evidencia, corrección sugerida). Solo pruebas sobre el archivo local y con datos ficticios.`},
+ {lvl:3,id:'r8',pts:30,t:'Jefe final: mismo prompt, tres IA',d:'Usen la misma especificación TAREA en Copilot, Claude y ChatGPT o Gemini. Califiquen las tres apps con la matriz de validación y presenten el resultado en la galería.',p:`(Usa tu misma especificación TAREA del paso 1, sin cambiarla, en tres herramientas distintas.)
+Para cada app anota: ¿funcionó a la primera?, número de funciones que cumple (de 6), resultado de las 3 pruebas de seguridad del paso 4, tamaño del archivo y una calificación de 1 a 5 en cada criterio de la matriz. Conclusión en una frase: ¿cuál usarías y por qué?`}];
+
+const STEPS=[
+ {t:'Preparación',time:'4:45'},{t:'Especificar con TAREA',time:'4:45–4:55'},{t:'Generar y abrir',time:'4:55–5:05'},{t:'Iterar: tres mejoras',time:'5:05–5:25'},{t:'Probar y romper',time:'5:35–5:43'},{t:'Revisar seguridad',time:'5:43–5:50'},{t:'Retos por niveles',time:'Para quien termine antes'},{t:'Galería y caza de errores',time:'5:50–6:00'},{t:'Microproyecto: ficha de la ronda',time:'6:00–7:00'}];
+
+/* ================= Estado ================= */
+const KEY='lab-vibe-coding-v1';
+const blank=()=>({tool:'copilot',caseId:'mesa',checks:{},spec:{},imp:{},tests:{},sec:{},matrix:{},matrixEv:{},retos:{},f:{}});
+let state=blank(),step=0;
+try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&typeof s==='object'){const b=blank();state={...b,...s};for(const k of Object.keys(b))if(typeof b[k]==='object'&&(!state[k]||typeof state[k]!=='object'))state[k]=b[k];if(Number.isInteger(s.step))step=s.step}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({...state,step}))}catch(e){}}
+const curCase=()=>CASES.find(c=>c.id===state.caseId)||CASES[0];
+const specVal=k=>state.spec[state.caseId+'_'+k]??curCase()[k];
+function fullPrompt(){return`T — Tarea: ${specVal('T')}\n\nA — Acción: ${specVal('A')}\n\nR — Rol: ${specVal('R')}\n\nE — Ejemplo de salida: ${specVal('E')}\n\nA — Aclaraciones: ${specVal('X')}`}
+const score=()=>RETOS.reduce((t,r)=>t+(state.retos[r.id]?r.pts:0),0);
+
+/* ================= Helpers de HTML ================= */
+const field=(id,label,ph='',kind='textarea')=>kind==='input'?`<div class="field"><label for="f_${id}">${esc(label)}</label><input id="f_${id}" data-field="${id}" placeholder="${esc(ph)}" value="${esc(state.f[id]||'')}"></div>`:`<div class="field"><label for="f_${id}">${esc(label)}</label><textarea id="f_${id}" data-field="${id}" placeholder="${esc(ph)}">${esc(state.f[id]||'')}</textarea></div>`;
+const selectField=(id,label,opts)=>`<div class="field"><label for="f_${id}">${esc(label)}</label><select id="f_${id}" data-field="${id}"><option value="">Elige…</option>${opts.map(o=>`<option ${state.f[id]===o?'selected':''}>${esc(o)}</option>`).join('')}</select></div>`;
+const checkItem=(group,id,text)=>{const on=!!(state[group]||{})[id];return`<label class="check ${on?'on':''}"><input type="checkbox" data-group="${group}" data-id="${esc(id)}" ${on?'checked':''}><span>${text}</span></label>`};
+const head=(n,eyebrow,title,lead,theory)=>`<div class="section-heading" id="paso-${n}"><div class="eyebrow">Paso ${n} · ${esc(eyebrow)} <span class="time">${esc(STEPS[n].time)}</span></div><h2>${esc(title)}</h2><p class="lead">${lead}</p>${theory?`<a class="theory-link" href="teoria-vibe-coding.html#${theory[0]}">${esc(theory[1])} ↗</a>`:''}</div>`;
+const navBtns=n=>`<div class="navbtns">${n>0?`<button class="button" type="button" data-go="${n-1}">← Paso ${n-1}</button>`:'<span></span>'}${n<8?`<button class="button primary" type="button" data-go="${n+1}">Paso ${n+1}: ${esc(STEPS[n+1].t)} →</button>`:''}</div>`;
+
+/* ================= Páginas ================= */
+function p0(){return head(0,'Preparación','Elige herramienta y caso, y descarga los materiales','Todo el grupo trabaja la <b>mesa de solicitudes</b>. Si ya la conoces o quieres un reto distinto, elige uno de los casos alternativos: los pasos son los mismos.',['herramientas','Herramientas en la teoría'])+`
+ <div class="panel"><h3>¿Con qué herramienta vas a trabajar?</h3><p class="subtle">El prompt sirve igual en todas. Hoy recomendamos Copilot con la cuenta de trabajo.</p><div class="pick" style="margin-top:12px">${TOOLS.map(t=>`<button type="button" data-tool="${t.id}" aria-pressed="${state.tool===t.id}"><b>${esc(t.n)}</b><small>${esc(t.s)}</small></button>`).join('')}</div></div>
+ <div class="panel"><h3>¿Qué caso vas a construir?</h3><p class="subtle">El caso define el texto inicial de tu especificación en el paso 1. Puedes cambiarlo cuando quieras.</p><div class="cases" style="margin-top:12px">${CASES.map(c=>`<button type="button" class="case" data-case="${c.id}" aria-pressed="${state.caseId===c.id}">${c.main?'<span class="chip y">Caso principal</span>':'<span class="chip">Alternativo</span>'}<b>${esc(c.n)}</b><small>${esc(c.s)}</small></button>`).join('')}</div></div>
+ <div class="grid two">
+  <div class="card"><span class="chip g">Datos sintéticos</span><h3>CSV de 61 solicitudes</h3><p class="subtle">Para la mejora 1 y las pruebas. Trae <b>cinco trampas a propósito</b>: un duplicado, una prioridad mal escrita, una solicitud en gestión sin responsable y dos descripciones con HTML.</p><a class="button primary" href="materiales/solicitudes-administrativas.csv" download>Descargar CSV</a></div>
+  <div class="card"><span class="chip m">Hasta dónde se puede llegar</span><h3>App de referencia</h3><p class="subtle">Hecha con IA a partir de una especificación TAREA, con importación, bitácora, indicadores, festivos y pruebas integradas. Mírala <b>después</b> de generar la tuya.</p><a class="button" href="materiales/mesa-de-solicitudes.html" target="_blank" rel="noopener">Abrir la app de referencia ↗</a></div>
+ </div>
+ <div class="panel"><h3>Antes de empezar</h3><div class="checklist">${[['c1','Abrí la herramienta con mi <b>cuenta de trabajo</b> (o la que elegí).'],['c2','Creé una carpeta <code>vibe-coding</code> en el escritorio para guardar las versiones.'],['c3','Tengo a mano el Bloc de notas (o VS Code) y Edge o Chrome.'],['c4','Descargué el CSV de ejemplo.'],['c5','Hoy <b>no uso ningún dato real</b>: ni de pacientes, ni de colaboradores, ni credenciales.']].map(([id,t])=>checkItem('checks',id,t)).join('')}</div></div>
+ <div class="note">La Organización Altamira, su mesa de solicitudes y todas las personas del caso son inventadas.</div>`+navBtns(0)}
+
+function p1(){const c=curCase();const L=[['T','Tarea principal','¿Qué app, para quién y qué problema resuelve?','var(--cyan)','var(--cyan-soft)'],['A','Acción esperada','Funciones numeradas y verificables','var(--magenta)','var(--magenta-soft)'],['R','Rol del modelo','Qué tipo de desarrollador','#e0a400','var(--yellow-soft)'],['E','Ejemplo de salida','Formato del entregable y modelo de datos','var(--cyan)','var(--cyan-soft)'],['X','Aclaraciones adicionales','Restricciones técnicas, de seguridad y de datos','var(--magenta)','var(--magenta-soft)']];
+ return head(1,'Especificar','Escribe tu especificación TAREA','Ya viene escrita para <b>'+esc(c.n)+'</b>. <b>Léela y cámbiala</b>: agrega una función que tú pedirías, ajusta los plazos o los campos. Un prompt que entiendes es un prompt que puedes depurar.',['tarea','TAREA para software'])+`
+ <div class="panel"><div class="builder">${L.map(([k,n,h,a,s])=>`<div class="bl" style="--a:${a};--s:${s}"><div class="L">${k==='X'?'A':k}</div><div><label for="sp_${k}">${esc(n)} <span class="subtle" style="font-weight:400">· ${esc(h)}</span></label><textarea id="sp_${k}" data-spec="${k}" rows="${k==='A'||k==='E'?7:3}">${esc(specVal(k))}</textarea></div></div>`).join('')}</div>
+ <div class="row" style="margin-top:12px"><button class="button small" type="button" id="specReset">Restaurar el texto original del caso</button></div>
+ <div class="promptbox"><div class="row"><b>Tu prompt completo</b><button class="button small" type="button" id="copySpec">Copiar prompt</button></div><pre id="specPre">${esc(fullPrompt())}</pre></div></div>
+ <div class="panel"><h3>Revisión rápida antes de enviar</h3><div class="checklist">${[['s1','Cada función de la <b>A</b> se puede probar con un sí o un no.'],['s2','La <b>E</b> define el formato (un solo HTML) y los campos de los datos.'],['s3','La última <b>A</b> incluye seguridad: sin librerías externas y el texto del usuario como texto, nunca como HTML.'],['s4','No hay ningún dato real en todo el prompt.'],['s5','Agregué o cambié al menos una cosa del texto original.']].map(([id,t])=>checkItem('checks',id,t)).join('')}</div></div>
+ <div class="early"><b>¿Terminaste antes?</b> Pídele a la IA que critique tu especificación antes de construirla: <i>"Antes de escribir código, hazme las 5 preguntas que harías como desarrollador para aclarar esta especificación"</i>. Responde y ajusta.</div>`+navBtns(1)}
+
+const OPEN={
+ copilot:{t:'Microsoft Copilot Chat',s:['Entra a Copilot Chat con tu cuenta de trabajo y abre un chat nuevo.','Pega tu prompt y envíalo. Las palabras "aplicación", "interactiva" o "interfaz" ayudan a que Copilot abra una página con la app.','<b>Si aparece la página al lado del chat</b>, usa la opción de vista previa para probar la app ahí mismo.','<b>Si solo ves código</b>, copia el bloque completo (botón de copiar del bloque).','Abre el Bloc de notas, pega y elige <b>Archivo → Guardar como</b>. Tipo: <b>Todos los archivos</b>. Nombre: <code>mesa-v1.html</code>. Codificación: <b>UTF-8</b>.','Abre la carpeta y haz doble clic en el archivo. Se abre en Edge.']},
+ claude:{t:'Claude',s:['Abre un chat nuevo y pega tu prompt.','Claude crea un artefacto: la app aparece funcionando en el panel lateral.','Pruébala ahí. Para guardarla, usa la opción de descargar o copiar del artefacto.','Guárdala como <code>mesa-v1.html</code> en tu carpeta y ábrela con doble clic.']},
+ chatgpt:{t:'ChatGPT',s:['Abre un chat nuevo y pega tu prompt. Si no abre el canvas, agrega "usa canvas".','En el canvas, usa la opción de vista previa para ver la app funcionando.','Copia o descarga el código y guárdalo como <code>mesa-v1.html</code>.','Recuerda: en cuentas gratuitas, solo datos sintéticos.']},
+ gemini:{t:'Gemini',s:['Abre un chat nuevo, activa Canvas y pega tu prompt.','Usa la vista previa del canvas para probar la app.','Copia el código, guárdalo como <code>mesa-v1.html</code> y ábrelo con doble clic.','Recuerda: en cuentas gratuitas, solo datos sintéticos.']}};
+function p2(){const o=OPEN[state.tool]||OPEN.copilot;
+ return head(2,'Generar y abrir','Que la IA construya la app y ábrela en el navegador','Las instrucciones cambian según la herramienta que elegiste en el paso 0. Si la vista previa no aparece, no pasa nada: <mark>guardar y abrir el archivo siempre funciona</mark>.',['anatomia','Cómo se abre una app de un solo archivo'])+`
+ <div class="panel"><div class="tabs" role="tablist">${TOOLS.map(t=>`<button class="tab" role="tab" type="button" data-tool="${t.id}" aria-selected="${state.tool===t.id}">${esc(t.n)}</button>`).join('')}</div>
+ <h3>${esc(o.t)}</h3><ol class="steps">${o.s.map(s=>`<li>${s}</li>`).join('')}</ol>
+ <div class="note">Abre la <b>consola del navegador con F12</b> y deja visible la pestaña "Console". Si algo falla, los errores en rojo son lo que le vas a pegar a la IA.</div></div>
+ <div class="panel"><h3>Si algo sale mal</h3><div class="trouble">
+  <details><summary>La página sale en blanco</summary><p>Casi siempre el código quedó incompleto. Busca al final <code>&lt;/html&gt;</code>. Si no está, pide: "Tu respuesta se cortó. Entrega de nuevo el archivo completo." Si es muy largo: "Entrégalo en dos partes y dime exactamente dónde termina la primera".</p></details>
+  <details><summary>Se ven caracteres raros (Ã³, Ã±)</summary><p>El archivo no se guardó en UTF-8. En el Bloc de notas, "Guardar como" y en Codificación elige UTF-8. Revisa también que el HTML tenga <code>&lt;meta charset="utf-8"&gt;</code>.</p></details>
+  <details><summary>Se abre como texto o se guardó como .html.txt</summary><p>En "Guardar como", el tipo debe ser "Todos los archivos". En el Explorador, activa "Extensiones de nombre de archivo" para ver la extensión real.</p></details>
+  <details><summary>Funciona en la vista previa pero no al abrir el archivo</summary><p>Pregúntale a la IA: "En la vista previa funciona, pero al abrir el archivo con doble clic sale este error en la consola: [pega el error]". Puede ser algo que solo existe dentro del chat.</p></details>
+  <details><summary>Copilot responde con una explicación y no con código</summary><p>Pide directamente: "Entrega el código completo del archivo HTML en un solo bloque, sin explicaciones antes".</p></details>
+ </div></div>
+ <div class="panel"><h3>Mi primera versión</h3>${selectField('genFirst','¿Funcionó a la primera?',['Sí, todo','Casi: funcionó con fallas pequeñas','No: tuve que pedir correcciones'])}${field('genFix','¿Qué le faltó o qué falló? (esto es tu primer ticket)','No se guardan los datos al recargar...')}</div>
+ <div class="early"><b>¿Terminaste antes?</b> Recorre las 6 funciones de tu especificación y marca cuáles cumple. Luego pídele a la IA: <i>"Explícame en 5 líneas cómo calculas la fecha límite y qué pasa si se radica un sábado"</i>. ¿La respuesta coincide con lo que ves?</div>`+navBtns(2)}
+
+function p3(){const c=curCase();
+ return head(3,'Iterar','Tres mejoras, una por mensaje','Envía cada mejora en el mismo chat, <b>prueba</b> y guarda la versión antes de pedir la siguiente: <code>mesa-v2.html</code>, <code>mesa-v3.html</code>… Si algo se rompe, vuelves a la última que funcionaba.',['ciclo','El ciclo de iteración'])+`
+ ${c.main?'':'<div class="note">Estás en un caso alternativo: usa la versión general de cada prompt (debajo del principal).</div>'}
+ <div class="improve">${IMPROVE.map(m=>`<div class="imp" style="--a:${m.a}"><div class="row"><h4>${esc(m.t)}</h4><span class="row"><button class="button small" type="button" data-copyimp="${m.id}">Copiar prompt</button><label class="ok"><input type="checkbox" data-group="imp" data-id="${m.id}" ${state.imp[m.id]?'checked':''}> Funciona</label></span></div><p class="subtle">${esc(m.w)}</p><pre>${esc(c.main?m.p:m.alt)}</pre></div>`).join('')}</div>
+ <div class="panel" style="margin-top:16px"><h3>Registro de versiones</h3><p class="subtle">Una línea por versión: qué cambió y si tuviste que corregir algo.</p>
+ <div class="tbl"><table><thead><tr><th style="width:90px">Versión</th><th>Qué cambió</th></tr></thead><tbody>${['v1','v2','v3','v4','v5'].map(v=>`<tr><td><b>${v}</b></td><td><input data-field="ver_${v}" aria-label="Cambios de ${v}" value="${esc(state.f['ver_'+v]||'')}" placeholder="${v==='v1'?'Primera versión generada':''}"></td></tr>`).join('')}</tbody></table></div></div>
+ <div class="note"><b>Si la IA rompe algo que ya funcionaba:</b> "La versión anterior hacía [X] y ahora no. Restaura ese comportamiento sin perder [lo nuevo]. Entrega el archivo completo." Y si la conversación se enreda, abre un chat nuevo con tu especificación más el código de la última versión buena.</div>
+ <div class="early"><b>¿Terminaste las tres?</b> Ve al paso 6 y elige un reto de Nivel 2. Cada reto suma puntos.</div>`+navBtns(3)}
+
+function p4(){const t=TESTS.map((x,i)=>`<tr><td><span class="chip ${x[0]==='Seguridad'?'r':x[0]==='Borde'?'y':x[0]==='Datos'?'g':''}">${esc(x[0])}</span></td><td><code>${esc(x[1])}</code></td><td>${esc(x[2])}</td><td><select data-test="${i}" class="${(state.tests[i]||'').toLowerCase()}" aria-label="Resultado de la prueba ${i+1}"><option value="">—</option>${['Pasa','Falla','No aplica'].map(o=>`<option ${state.tests[i]===o?'selected':''}>${o}</option>`).join('')}</select></td></tr>`).join('');
+ return head(4,'Probar y romper','Prueba la app a propósito e intenta romperla','Los primeros tres son criterios de aceptación. Los demás son pruebas de borde, de datos y de seguridad. <mark>Una falla encontrada hoy es una falla que no llega a un usuario.</mark>',['seguridad','Seguridad del código generado'])+`
+ <div class="panel"><div class="tbl"><table><thead><tr><th>Tipo</th><th>Prueba</th><th>Resultado esperado</th><th>Resultado</th></tr></thead><tbody>${t}</tbody></table></div><div class="tally" id="tally"></div></div>
+ <div class="panel"><h3>Si una prueba falla, repórtala como un ticket</h3><div class="promptbox" style="margin-top:8px"><div class="row"><b>Prompt para corregir</b><button class="button small" type="button" data-copytxt="bug">Copiar</button></div><pre>${esc(BUG)}</pre></div>${field('bugs','¿Qué pruebas fallaron y cómo las corregiste?','La prueba 9 mostró un alert: usaba innerHTML en la tarjeta...')}</div>
+ <div class="note red"><b>Sobre la prueba 9:</b> la fila SOL-2026-0042 del CSV trae un <code>&lt;img onerror&gt;</code> que solo muestra una ventana de aviso. Es inofensivo y está ahí para que veas, en tu propia app, qué pasa cuando el texto se trata como HTML.</div>`+navBtns(4)}
+const BUG=`Hay un error.
+Pasos: [qué hiciste, en orden]
+Esperado: [qué debía pasar]
+Obtenido: [qué pasó]
+Error de la consola (F12): [pégalo aquí, si hay]
+Encuentra la causa, explícala en 2 líneas y corrígela sin cambiar nada más. Entrega el archivo completo.`;
+const AUDIT=`Actúa como auditor de seguridad de aplicaciones web. Revisa el código completo de la app y busca: XSS (uso de innerHTML, insertAdjacentHTML o document.write con datos del usuario o de un CSV), uso de eval o new Function, recursos externos o librerías, secretos en el código, datos sensibles en localStorage, validaciones que solo existen en la interfaz e inyección de fórmulas al exportar CSV.
+Entrega una tabla con: hallazgo, línea o función, severidad (Alta, Media, Baja), cómo explotarlo en una frase y la corrección. No cambies el código todavía.`;
+
+function p5(){return head(5,'Revisar','Auditoría de la IA y revisión humana','Primero, la IA audita su propio código. Después, <b>tú</b> lo revisas con la lista de verificación y calificas la app con la matriz del curso. La auditoría de la IA ayuda, pero quien firma es una persona.',['seguridad','Las ocho cosas que hay que buscar'])+`
+ <div class="panel"><h3>1 · Auditoría hecha por la IA</h3><div class="promptbox"><div class="row"><b>Prompt de auditoría</b><button class="button small" type="button" data-copytxt="audit">Copiar</button></div><pre>${esc(AUDIT)}</pre></div>${field('audit','Hallazgos principales de la IA (y si estás de acuerdo)','Encontró innerHTML en renderCard (Alta)...')}</div>
+ <div class="panel"><h3>2 · Revisión humana</h3><p class="subtle">Abre el código (Ctrl+U en el navegador o el Bloc de notas) y busca con Ctrl+F: <code>innerHTML</code>, <code>eval</code>, <code>http</code>, <code>key</code>, <code>localStorage</code>.</p><div class="checklist" style="margin-top:10px">${CHECKS.map((c,i)=>checkItem('sec','k'+i,esc(c))).join('')}</div></div>
+ <div class="panel"><h3>3 · Matriz de validación</h3><div class="tbl"><table><thead><tr><th>Criterio</th><th>Pregunta</th><th>Resultado</th><th>Evidencia</th></tr></thead><tbody>${MATRIX.map(([k,q])=>`<tr><td><b>${esc(k)}</b></td><td>${esc(q)}</td><td><select data-matrix="${k}" class="${({Cumple:'cumple',Parcial:'parcial','No cumple':'nocumple'})[state.matrix[k]]||''}" aria-label="Resultado de ${esc(k)}"><option value="">—</option>${['Cumple','Parcial','No cumple'].map(o=>`<option ${state.matrix[k]===o?'selected':''}>${o}</option>`).join('')}</select></td><td><input data-matrixev="${k}" aria-label="Evidencia de ${esc(k)}" value="${esc(state.matrixEv[k]||'')}"></td></tr>`).join('')}</tbody></table></div></div>
+ <div class="panel"><h3>4 · Decisión</h3>${selectField('decision','Con lo que sabes ahora, esta app…',['Sirve para mostrarla como prototipo con datos ficticios','Necesita correcciones antes de mostrarla','No debería mostrarse: tiene fallas graves'])}${field('decisionWhy','¿Por qué?')}</div>`+navBtns(5)}
+
+function p6(){const lv=l=>RETOS.filter(r=>r.lvl===l).map(r=>`<div class="reto ${state.retos[r.id]?'on':''}"><div><h4>${esc(r.t)}</h4><p>${esc(r.d)}</p></div><div class="pts">+${r.pts}</div><details><summary>Ver el prompt sugerido</summary><pre>${esc(r.p)}</pre></details><div class="act"><button class="button small" type="button" data-copyreto="${r.id}">Copiar prompt</button><label class="check ${state.retos[r.id]?'on':''}" style="padding:6px 10px"><input type="checkbox" data-group="retos" data-id="${r.id}" ${state.retos[r.id]?'checked':''}><span>Lo logré</span></label></div></div>`).join('');
+ return head(6,'Retos','Retos para quien termina antes','Elige el que más te sirva. Los de Nivel 3 son para quien ya programa o ya hace automatizaciones. <b>Puntos acumulados: <span id="scoreInline">'+score()+'</span></b>. En la galería contamos quién llegó más lejos.',null)+`
+ <div class="level"><h3>Nivel 2 · Más funciones, mejor calidad</h3><span class="chip y">10 puntos cada uno</span></div><div class="retos">${lv(2)}</div>
+ <div class="level"><h3>Nivel 3 · Para desarrolladores y automatizadores</h3><span class="chip m">20 a 30 puntos</span></div><div class="retos">${lv(3)}</div>
+ <div class="panel" style="margin-top:16px"><h3>Otro caso, mismo método</h3><p class="subtle">¿Ya dominas la mesa de solicitudes? En el paso 0 elige un caso alternativo (préstamo de equipos, ventanas de cambio, incidentes de seguridad, compromisos de comités, turnos o catálogo de interfaces) y repite los pasos 1 a 5 en versión rápida.</p><button class="button small" type="button" data-go="0" style="margin-top:10px">Ir a elegir caso</button></div>
+ ${field('retoNotes','Notas de mis retos (qué logré y qué aprendí)')}`+navBtns(6)}
+
+function p7(){return head(7,'Compartir','Galería y caza de errores','Cada equipo intercambia su app con el equipo de al lado. Tienen <b>cinco minutos</b> para encontrarle la mayor cantidad de fallas posibles, y después las contamos.',['seguridad','Qué buscar'])+`
+ <div class="panel"><h3>Cómo lo hacemos</h3><ol class="steps">
+  <li>Pásale tu archivo <code>.html</code> al equipo de al lado (por Teams o por USB). Nada de datos reales adentro.</li>
+  <li><b>5 minutos</b> para romper la app del otro: campos vacíos, textos enormes, <code>&lt;b&gt;hola&lt;/b&gt;</code>, fechas raras, importar el CSV con trampas, recargar.</li>
+  <li>Anota cada falla en una línea: qué hiciste y qué pasó.</li>
+  <li>Al final, cada equipo dice en un minuto su <b>mejor hallazgo</b> y su <b>mejor función</b>. Votamos la app más sólida.</li></ol></div>
+ <div class="panel">${field('gWho','¿La app de quién revisé?','Equipo de la mesa 3','input')}${field('gBugs','Fallas que encontré','1. Al guardar vacío no avisa...')}${field('gBest','La mejor idea que vi en otra app')}${field('gMine','Lo que otros encontraron en mi app')}</div>`+navBtns(7)}
+
+function p8(){return head(8,'Microproyecto','Ficha de tu microproyecto para la ronda','Durante la última hora el profesor pasa por cada equipo. Llenen esta ficha mientras trabajan: son las <b>seis preguntas de la ronda</b> y la base del pitch.',['microproyectos','Las seis preguntas'])+`
+ <div class="panel">${field('mTeam','Equipo e integrantes','','input')}${field('mName','Nombre del proyecto','','input')}
+ ${field('mProblem','1 · Problema: ¿qué duele hoy y a quién? (con un número)','Las solicitudes de acceso a sistemas tardan 4 días en promedio porque...')}
+ ${field('mUser','2 · Usuario: ¿quién lo usaría el lunes?')}
+ ${field('mSolution','3 · Solución: ¿qué hace la IA, qué hace la persona y dónde queda la trazabilidad?')}
+ ${selectField('mLight','4 · Datos: ¿en qué color del semáforo está?',['Verde: solo datos públicos o sintéticos','Amarillo: información interna en la herramienta institucional','Rojo: toca datos personales o clínicos'])}
+ ${field('mData','¿Qué datos toca y cómo los protegen?','Usamos datos sintéticos con la misma estructura de...')}
+ ${field('mMetric','5 · Evidencia: ¿cómo sabrán que funcionó? (métrica antes y después, y demo de 2 minutos)')}
+ ${field('mNext','6 · Siguiente paso: ¿qué tiene que estar listo para la próxima sesión y quién responde?')}
+ ${selectField('mTool','Herramienta principal',['Power Automate','Copilot / Copilot Studio','App HTML con IA','Power Apps','Claude / ChatGPT / Gemini','Otra'])}
+ ${field('mRisk','Riesgo principal y cómo lo mitigan')}
+ ${field('mAsk','¿Qué necesitan del profesor en la ronda?')}</div>
+ <div class="panel"><h3>Lleva tu trabajo</h3><p class="subtle">El informe incluye tu especificación, tus versiones, las pruebas, la revisión de seguridad, los retos y la ficha del microproyecto.</p><div class="row" style="margin-top:12px"><button class="button primary" type="button" id="btnPdf">Descargar informe en PDF</button><button class="button" type="button" id="btnCopySum">Copiar resumen</button><button class="button" type="button" id="btnReset" style="border-color:var(--red);color:var(--red)">Borrar mi trabajo</button></div><p class="subtle" style="margin-top:8px">En la ventana de impresión elige "Guardar como PDF".</p></div>`+navBtns(8)}
+
+const PAGES=[p0,p1,p2,p3,p4,p5,p6,p7,p8];
+
+/* ================= Render ================= */
+function stepDone(n){const c=state.checks;return[
+ ['c1','c2','c3','c4','c5'].every(k=>c[k]),['s1','s2','s3','s4','s5'].every(k=>c[k]),!!state.f.genFirst,IMPROVE.every(m=>state.imp[m.id]),
+ TESTS.every((_,i)=>state.tests[i]),Object.keys(state.matrix).length===MATRIX.length,score()>0,!!(state.f.gBugs||'').trim(),!!(state.f.mProblem||'').trim()][n]}
+function renderNav(){
+ $('#sideNav').innerHTML=STEPS.map((s,i)=>`<button type="button" data-go="${i}" class="${i===step?'active':''} ${stepDone(i)?'done':''}"><span class="num">${i}</span>${esc(s.t)}</button>`).join('');
+ $('#mobileNav').innerHTML=STEPS.map((s,i)=>`<button type="button" data-go="${i}" class="${i===step?'active':''}">${i} · ${esc(s.t)}</button>`).join('');
+ $('#headerStatus').textContent=`Paso ${step} de 8`;$('#scoreSide').textContent=score();
+}
+function render(){$('#pages').innerHTML=`<section class="page active">${PAGES[step]()}</section>`;renderNav();if(step===4)tally()}
+function go(n,scroll=true){step=Math.max(0,Math.min(8,n));save();render();try{history.replaceState(null,'','#paso-'+step)}catch(e){}if(scroll)window.scrollTo({top:document.querySelector('.hero').offsetTop+document.querySelector('.hero').offsetHeight-10,behavior:'smooth'})}
+function tally(){const r=Object.values(state.tests);const n=v=>r.filter(x=>x===v).length;const el=$('#tally');if(el)el.innerHTML=`<span class="chip g">Pasan: ${n('Pasa')}</span><span class="chip r">Fallan: ${n('Falla')}</span><span class="chip">Sin probar: ${TESTS.length-r.filter(Boolean).length}</span>`}
+
+/* ================= Eventos ================= */
+document.addEventListener('click',e=>{
+ const g=e.target.closest('[data-go]');if(g){go(+g.dataset.go);return}
+ const t=e.target.closest('[data-tool]');if(t){state.tool=t.dataset.tool;save();render();return}
+ const c=e.target.closest('[data-case]');if(c){state.caseId=c.dataset.case;save();render();toast('Caso: '+curCase().n);return}
+ const ci=e.target.closest('[data-copyimp]');if(ci){const m=IMPROVE.find(x=>x.id===ci.dataset.copyimp);copy(curCase().main?m.p:m.alt);return}
+ const cr=e.target.closest('[data-copyreto]');if(cr){copy(RETOS.find(x=>x.id===cr.dataset.copyreto).p);return}
+ const ct=e.target.closest('[data-copytxt]');if(ct){copy(ct.dataset.copytxt==='audit'?AUDIT:BUG);return}
+ if(e.target.id==='copySpec'){copy(fullPrompt());return}
+ if(e.target.id==='specReset'){['T','A','R','E','X'].forEach(k=>delete state.spec[state.caseId+'_'+k]);save();render();toast('Texto original restaurado');return}
+ if(e.target.id==='btnPdf'){buildPrint();setTimeout(()=>window.print(),100);return}
+ if(e.target.id==='btnCopySum'){copy(summary());return}
+ if(e.target.id==='btnReset'){if(confirm('¿Borrar todo tu trabajo de este laboratorio en este navegador?')){state=blank();step=0;save();render();toast('Trabajo borrado')}return}
+});
+document.addEventListener('change',e=>{
+ const el=e.target;
+ if(el.matches('[data-group]')){state[el.dataset.group][el.dataset.id]=el.checked;save();
+   const lab=el.closest('.check');if(lab)lab.classList.toggle('on',el.checked);const r=el.closest('.reto');if(r)r.classList.toggle('on',el.checked);
+   renderNav();const si=$('#scoreInline');if(si)si.textContent=score();if(el.dataset.group==='retos'&&el.checked)toast(`+${RETOS.find(x=>x.id===el.dataset.id).pts} puntos`);return}
+ if(el.matches('[data-test]')){state.tests[el.dataset.test]=el.value;el.className=el.value.toLowerCase();save();tally();renderNav();return}
+ if(el.matches('[data-matrix]')){state.matrix[el.dataset.matrix]=el.value;el.className=({Cumple:'cumple',Parcial:'parcial','No cumple':'nocumple'})[el.value]||'';if(!el.value)delete state.matrix[el.dataset.matrix];save();renderNav();return}
+ if(el.matches('select[data-field]')){state.f[el.dataset.field]=el.value;save();renderNav()}
+});
+document.addEventListener('input',e=>{
+ const el=e.target;
+ if(el.matches('[data-field]')){state.f[el.dataset.field]=el.value;save();return}
+ if(el.matches('[data-matrixev]')){state.matrixEv[el.dataset.matrixev]=el.value;save();return}
+ if(el.matches('[data-spec]')){state.spec[state.caseId+'_'+el.dataset.spec]=el.value;save();const p=$('#specPre');if(p)p.textContent=fullPrompt()}
+});
+document.addEventListener('focusout',e=>{if(e.target.matches('textarea[data-field],input[data-field]'))renderNav()});
+
+/* ================= Resumen e informe ================= */
+const L=(k,v)=>v&&String(v).trim()?`${k}: ${v}`:'';
+function summary(){const toolN=(TOOLS.find(t=>t.id===state.tool)||{}).n;const f=state.f;
+ return[`LABORATORIO · VIBE CODING CON TAREA`,`Caso: ${curCase().n} · Herramienta: ${toolN}`,``,`ESPECIFICACIÓN`,fullPrompt(),``,`GENERACIÓN`,L('¿Funcionó a la primera?',f.genFirst),L('Qué falló',f.genFix),``,`MEJORAS`,...IMPROVE.map(m=>`${state.imp[m.id]?'✓':'·'} ${m.t}`),...['v1','v2','v3','v4','v5'].map(v=>L(v,f['ver_'+v])).filter(Boolean),``,`PRUEBAS`,...TESTS.map((t,i)=>`${state.tests[i]||'—'} · ${t[1]}`),L('Fallas y correcciones',f.bugs),``,`SEGURIDAD`,L('Hallazgos de la IA',f.audit),`Revisión humana: ${CHECKS.filter((_,i)=>state.sec['k'+i]).length} de ${CHECKS.length} puntos verificados`,...MATRIX.map(([k])=>`${k}: ${state.matrix[k]||'—'}${state.matrixEv[k]?' · '+state.matrixEv[k]:''}`),L('Decisión',f.decision),L('Por qué',f.decisionWhy),``,`RETOS (${score()} puntos)`,...RETOS.filter(r=>state.retos[r.id]).map(r=>`✓ ${r.t} (+${r.pts})`),L('Notas',f.retoNotes),``,`GALERÍA`,L('Revisé la app de',f.gWho),L('Fallas encontradas',f.gBugs),L('Mejor idea vista',f.gBest),L('Lo que encontraron en mi app',f.gMine),``,`MICROPROYECTO`,L('Equipo',f.mTeam),L('Proyecto',f.mName),L('Problema',f.mProblem),L('Usuario',f.mUser),L('Solución',f.mSolution),L('Semáforo de datos',f.mLight),L('Datos y protección',f.mData),L('Evidencia',f.mMetric),L('Siguiente paso',f.mNext),L('Herramienta',f.mTool),L('Riesgo',f.mRisk),L('Necesitamos del profesor',f.mAsk)].filter((x,i,a)=>x!==''||a[i-1]!=='').join('\n')}
+function buildPrint(){const f=state.f;const dl=(rows,quiet)=>{const h=rows.filter(r=>r[1]&&String(r[1]).trim()).map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('');return h?`<dl>${h}</dl>`:(quiet?'':'<dl><dd>Sin registrar</dd></dl>')};
+ const sec=(a,t,body)=>`<section class="rp-sec" style="--a:${a}"><h2>${esc(t)}</h2>${body}</section>`;
+ $('#print').innerHTML=`<header class="rp-head"><div><small>Laboratorio · Vibe coding con TAREA</small><h1>${esc(f.mName||curCase().n)}</h1><small>${esc(f.mTeam||'')} · Caso: ${esc(curCase().n)} · Herramienta: ${esc((TOOLS.find(t=>t.id===state.tool)||{}).n)} · ${esc(new Date().toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'}))}</small></div><div class="rp-dots"><i style="background:var(--cyan)"></i><i style="background:var(--magenta)"></i><i style="background:var(--yellow)"></i></div></header>
+ ${sec('var(--cyan)','1 · Especificación TAREA',`<dl>${[['Tarea','T'],['Acción','A'],['Rol','R'],['Ejemplo de salida','E'],['Aclaraciones','X']].map(([n,k])=>`<dt>${n}</dt><dd>${esc(specVal(k))}</dd>`).join('')}</dl>`)}
+ ${sec('var(--magenta)','2 · Generación e iteración',dl([['¿Funcionó a la primera?',f.genFirst],['Qué falló',f.genFix],...IMPROVE.map(m=>[m.t,state.imp[m.id]?'Funciona':'Pendiente']),...['v1','v2','v3','v4','v5'].map(v=>['Versión '+v,f['ver_'+v]])]))}
+ ${sec('#e0a400','3 · Pruebas',`<table><thead><tr><th>Tipo</th><th>Prueba</th><th>Resultado</th></tr></thead><tbody>${TESTS.map((t,i)=>`<tr><td>${esc(t[0])}</td><td>${esc(t[1])}</td><td><b>${esc(state.tests[i]||'—')}</b></td></tr>`).join('')}</tbody></table>${dl([['Fallas y correcciones',f.bugs]],1)}`)}
+ ${sec('var(--red)','4 · Seguridad y validación',`${dl([['Hallazgos de la IA',f.audit],['Revisión humana',`${CHECKS.filter((_,i)=>state.sec['k'+i]).length} de ${CHECKS.length} puntos verificados`]])}<table><thead><tr><th>Criterio</th><th>Resultado</th><th>Evidencia</th></tr></thead><tbody>${MATRIX.map(([k])=>`<tr><td>${esc(k)}</td><td><b>${esc(state.matrix[k]||'—')}</b></td><td>${esc(state.matrixEv[k]||'')}</td></tr>`).join('')}</tbody></table>${dl([['Decisión',f.decision],['Por qué',f.decisionWhy]],1)}`)}
+ ${sec('var(--green)',`5 · Retos (${score()} puntos) y galería`,dl([['Retos logrados',RETOS.filter(r=>state.retos[r.id]).map(r=>`${r.t} (+${r.pts})`).join('\n')],['Notas',f.retoNotes],['Revisé la app de',f.gWho],['Fallas encontradas',f.gBugs],['Mejor idea vista',f.gBest],['Lo que encontraron en mi app',f.gMine]]))}
+ ${sec('var(--ink)','6 · Microproyecto',dl([['Problema',f.mProblem],['Usuario',f.mUser],['Solución',f.mSolution],['Semáforo de datos',f.mLight],['Datos y protección',f.mData],['Evidencia',f.mMetric],['Siguiente paso',f.mNext],['Herramienta',f.mTool],['Riesgo principal',f.mRisk],['Necesitamos del profesor',f.mAsk]]))}
+ <p class="rp-foot">Informe generado en el navegador. Caso y datos ficticios.</p>`}
+window.addEventListener('beforeprint',buildPrint);
+
+/* ================= Inicio ================= */
+const m=location.hash.match(/^#paso-(\d)$/);if(m)step=+m[1];
+render();
+})();
+</script>
+</body>
+</html>

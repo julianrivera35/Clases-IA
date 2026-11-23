@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Teoría · Vibe coding con TAREA</title>
+<title>Teoría · Vibe coding</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
 <style>
@@ -107,7 +107,7 @@ mark{background:linear-gradient(transparent 52%,var(--yellow) 52%,var(--yellow) 
 .sp h3{font-size:1.15rem}
 .sp p{color:var(--muted);font-size:.93rem}
 .sp .ex{font-size:.85rem;background:var(--soft);padding:8px 10px;border-radius:9px}
-.sp.today h3:after{content:"Hoy";margin-left:8px;font:700 .7rem var(--body);background:var(--ink);color:#fff;padding:3px 8px;border-radius:20px;vertical-align:4px}
+.sp.today h3:after{content:"Esta sesión";margin-left:8px;font:700 .7rem var(--body);background:var(--ink);color:#fff;padding:3px 8px;border-radius:20px;vertical-align:4px}
 /* Tablas */
 .tbl{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--paper)}
 table{border-collapse:collapse;width:100%;min-width:760px;font-size:.9rem}
@@ -275,7 +275,7 @@ footer{color:var(--muted);font-size:.82rem;margin-top:30px}
 </header>
 <div class="shell">
 <aside class="side">
-  <div class="brand"><div class="dots" aria-hidden="true"><i></i><i></i><i></i></div><div><strong>Teoría · Vibe coding</strong><small>De la idea a la app con IA</small></div></div>
+  <div class="brand"><div class="dots" aria-hidden="true"><i></i><i></i><i></i></div><div><strong>Teoría · Vibe coding</strong><small>IA generativa aplicada al desarrollo</small></div></div>
   <a class="btn" href="laboratorio-vibe-coding.html">Ir al Laboratorio →</a>
   <button class="switch" type="button" id="projector" aria-pressed="false"><span class="track"></span>Modo proyector</button>
   <nav class="toc" id="toc" aria-label="Índice"></nav>
@@ -285,9 +285,9 @@ footer{color:var(--muted);font-size:.82rem;margin-top:30px}
 <main class="main"><div class="wrap">
   <section class="hero" aria-labelledby="t-hero">
     <div>
-      <div class="kicker">Vibe coding con IA generativa · Gestión y productividad</div>
-      <h1 id="t-hero">Describe la herramienta que necesitas <mark>y la IA escribe el código</mark>. Tú pones la especificación, las pruebas y el criterio.</h1>
-      <p>Hoy convertimos un problema real de gestión, el seguimiento de solicitudes administrativas, en una aplicación web que funciona. La IA escribe el código. Nosotros decidimos qué se construye, comprobamos que funciona, buscamos sus fallas de seguridad y decidimos si sirve.</p>
+      <div class="kicker">IA generativa aplicada al desarrollo</div>
+      <h1 id="t-hero"><mark>Vibe coding</mark>: prototipos funcionales con IA</h1>
+      <p>Guía de conceptos de la sesión: qué es el vibe coding, qué herramientas usar, cómo especificar una aplicación con TAREA, cómo iterar y cómo revisar la seguridad del código generado. La práctica, con el caso de una mesa de solicitudes administrativas, está en el laboratorio.</p>
       <div class="actions"><a class="btn" href="laboratorio-vibe-coding.html">Ir al Laboratorio →</a><a class="btn ghost" href="materiales/mesa-de-solicitudes.html" target="_blank" rel="noopener">Ver la app de referencia ↗</a></div>
     </div>
     <div class="cmyk" aria-hidden="true"><i></i><i></i><i></i><b>&lt;/&gt;</b></div>
@@ -295,33 +295,33 @@ footer{color:var(--muted);font-size:.82rem;margin-top:30px}
 
   <!-- 1 -->
   <section class="sec c" id="ruta" data-title="Ruta de la clase">
-    <div class="sec-head"><div class="num">01</div><div><div class="eyebrow">Una sesión de trabajo · Teoría corta, mucha práctica</div><h2>Ruta de la clase</h2><p class="lead">Primero <mark>construimos una app</mark> para la mesa de solicitudes. Después, la última hora es para los <mark>microproyectos</mark> de cada equipo. Quien termine antes tiene retos de Nivel 2 y Nivel 3 en el laboratorio.</p></div></div>
+    <div class="sec-head"><div class="num">01</div><div><div class="eyebrow">Agenda</div><h2>Ruta de la clase</h2><p class="lead">La primera parte es la construcción de una app para el caso de la mesa de solicitudes. La última hora es para los microproyectos. Quienes terminen antes tienen desafíos adicionales en el laboratorio.</p></div></div>
     <div class="route">
-      <div class="stop c"><time>4:15–4:25</time><div><b>Apertura en vivo</b><small>Un prompt, una app. La generamos en vivo y la comparamos con la app de referencia.</small></div><div class="where"><a class="chiplink" href="#vibe">¿Qué es?</a></div></div>
+      <div class="stop c"><time>4:15–4:25</time><div><b>Apertura</b><small>Pregunta inicial y demostración en vivo con Copilot.</small></div><div class="where"><a class="chiplink" href="#vibe">¿Qué es?</a></div></div>
       <div class="stop m"><time>4:25–4:45</time><div><b>Teoría corta</b><small>Herramientas, cómo se arma una app de un solo archivo, TAREA para especificar software, el ciclo de iteración y la seguridad.</small></div><div class="where"><a class="chiplink" href="#tarea">TAREA</a><a class="chiplink" href="#ciclo">Ciclo</a></div></div>
       <div class="stop y"><time>4:45–5:05</time><div><b>Pasos 1 y 2 · Especificar, generar y abrir</b><small>Cada persona escribe su especificación TAREA, la IA genera la app y la abrimos en el navegador.</small></div><div class="where"><a class="chiplink lab" href="laboratorio-vibe-coding.html#paso-1">Laboratorio ↗</a></div></div>
-      <div class="stop c"><time>5:05–5:25</time><div><b>Paso 3 · Iterar</b><small>Tres mejoras, una por mensaje: importar el CSV, la vista de lista con exportación y el detalle con bitácora.</small></div><div class="where"><a class="chiplink" href="#biblioteca">Prompts de iteración</a></div></div>
+      <div class="stop c"><time>5:05–5:25</time><div><b>Paso 3 · Iterar</b><small>Tres mejoras, una por mensaje: importación del CSV, vista de lista con exportación y detalle con bitácora.</small></div><div class="where"><a class="chiplink" href="#biblioteca">Prompts de iteración</a></div></div>
       <div class="stop brk y"><time>5:25–5:35</time><div><b>Receso</b><small>La hora exacta se ajusta según cómo vaya el grupo.</small></div><div class="where"></div></div>
-      <div class="stop m"><time>5:35–5:50</time><div><b>Pasos 4 y 5 · Probar, romper y revisar</b><small>Pruebas de borde, el archivo con trampas, una auditoría de seguridad hecha por la IA y una revisión humana con la matriz.</small></div><div class="where"><a class="chiplink" href="#seguridad">Seguridad</a></div></div>
-      <div class="stop c"><time>5:50–6:00</time><div><b>Galería y caza de errores</b><small>Cada equipo prueba la app de otro e intenta romperla. ¿Qué encontraron?</small></div><div class="where"><a class="chiplink lab" href="laboratorio-vibe-coding.html#paso-7">Galería ↗</a></div></div>
-      <div class="stop y"><time>6:00–6:50</time><div><b>Microproyectos: rondas por equipo</b><small>Cada equipo avanza en su proyecto. El profesor pasa por cada mesa con seis preguntas.</small></div><div class="where"><a class="chiplink" href="#microproyectos">Las 6 preguntas</a></div></div>
+      <div class="stop m"><time>5:35–5:50</time><div><b>Pasos 4 y 5 · Probar y revisar</b><small>Casos de borde, prueba de XSS con el archivo de práctica, auditoría de seguridad hecha por la IA y revisión con la matriz.</small></div><div class="where"><a class="chiplink" href="#seguridad">Seguridad</a></div></div>
+      <div class="stop c"><time>5:50–6:00</time><div><b>Galería y revisión cruzada</b><small>Cada persona prueba la app de otra y registra las fallas encontradas.</small></div><div class="where"><a class="chiplink lab" href="laboratorio-vibe-coding.html#paso-7">Galería ↗</a></div></div>
+      <div class="stop y"><time>6:00–6:50</time><div><b>Microproyectos</b><small>Trabajo en los proyectos de cada equipo, con acompañamiento del profesor.</small></div><div class="where"><a class="chiplink" href="#producto">Del prototipo al producto</a></div></div>
       <div class="stop m"><time>6:50–7:00</time><div><b>Cierre</b><small>Cada equipo dice qué ya funciona, qué falta y qué riesgo tiene que resolver antes de la próxima sesión.</small></div><div class="where"></div></div>
     </div>
-    <p class="note">Los retos de <b>Nivel 2</b> (más funciones) y <b>Nivel 3</b> (con agentes de código, pruebas automáticas, revisión cruzada de seguridad y comparación de herramientas) están en el paso 6 del laboratorio. Quien termine antes no se queda esperando.</p>
+    <p class="note">Los desafíos adicionales de <b>Nivel 2</b> (funcionalidad y calidad) y <b>Nivel 3</b> (para quienes ya programan o automatizan) están en el paso 6 del laboratorio.</p>
   </section>
 
   <!-- 2 -->
   <section class="sec m" id="vibe" data-title="¿Qué es vibe coding?">
-    <div class="sec-head"><div class="num">02</div><div><div class="eyebrow">El término y sus matices</div><h2>¿Qué es <em>vibe coding</em>, y qué vamos a hacer hoy?</h2><p class="lead">Andrej Karpathy, cofundador de OpenAI y exdirector de IA en Tesla, usó el término en febrero de 2025 para describir una forma de programar en la que <mark>describes lo que quieres, aceptas lo que genera la IA y casi no miras el código</mark>. Funciona muy bien para prototipos de fin de semana. En una institución de salud, ese mismo descuido es justamente el riesgo.</p></div></div>
+    <div class="sec-head"><div class="num">02</div><div><div class="eyebrow">Definición</div><h2>¿Qué es vibe coding?</h2><p class="lead">Andrej Karpathy, cofundador de OpenAI y exdirector de IA en Tesla, propuso el término en febrero de 2025 para una forma de programar en la que <mark>se describe lo que se necesita, se acepta el código que genera la IA y se revisa poco o nada</mark>. Es útil para prototipos rápidos. En un entorno institucional, el código generado necesita especificación, pruebas y revisión antes de usarse.</p></div></div>
     <div class="spectrum">
-      <div class="sp m"><h3>Vibe coding puro</h3><p>Pides, aceptas todo, pegas el error y vuelves a pedir. No lees el código ni lo pruebas a propósito.</p><div class="ex"><b>Sirve para:</b> una idea rápida, un juguete o un prototipo desechable.</div></div>
-      <div class="sp y today"><h3>Prototipado responsable</h3><p>Una especificación clara, pruebas a propósito, una revisión de seguridad, datos sintéticos y versiones guardadas. La IA escribe y tú verificas.</p><div class="ex"><b>Sirve para:</b> herramientas internas sencillas, maquetas para validar con usuarios y pruebas de concepto.</div></div>
-      <div class="sp c"><h3>Ingeniería asistida por agentes</h3><p>Agentes de código (Claude Code, GitHub Copilot en modo agente, Codex) que trabajan en un repositorio, ejecutan pruebas y proponen cambios que un humano revisa antes de integrarlos.</p><div class="ex"><b>Sirve para:</b> software que va a producción, con control de versiones, integración continua y revisión de código.</div></div>
+      <div class="sp m"><h3>Vibe coding sin revisión</h3><p>Se pide, se acepta el resultado y los errores se devuelven a la IA hasta que funcione. No hay revisión del código ni pruebas.</p><div class="ex"><b>Uso:</b> ideas rápidas y prototipos desechables.</div></div>
+      <div class="sp y today"><h3>Prototipado con verificación</h3><p>Especificación, pruebas, revisión de seguridad, datos sintéticos y control de versiones.</p><div class="ex"><b>Uso:</b> herramientas internas sencillas, maquetas para validar con usuarios y pruebas de concepto.</div></div>
+      <div class="sp c"><h3>Desarrollo con agentes</h3><p>Agentes de código (Claude Code, GitHub Copilot en modo agente, Codex) que trabajan en un repositorio, ejecutan pruebas y proponen cambios que un humano revisa antes de integrarlos.</p><div class="ex"><b>Uso:</b> software que va a producción, con control de versiones, integración continua y revisión de código.</div></div>
     </div>
     <div class="grid three" style="margin-top:22px">
       <div class="card g"><h3>Lo que la IA hace bien</h3><ul><li>Pasar de una descripción a una interfaz que funciona en minutos.</li><li>Escribir el código repetitivo: formularios, tablas, filtros, exportar e importar.</li><li>Explicar código que no escribiste y proponer pruebas.</li></ul></div>
-      <div class="card m"><h3>Lo que hace mal si no la guías</h3><ul><li>Inventar requisitos que no pediste y olvidar los que sí.</li><li>Mostrar texto del usuario como HTML (XSS) o guardar secretos en el código.</li><li>Recomendar librerías que no existen o que no revisaste.</li></ul></div>
-      <div class="card c"><h3>Lo que sigue siendo tuyo</h3><ul><li>Decidir qué problema vale la pena resolver.</li><li>Definir qué significa "funciona" (criterios de aceptación).</li><li>Proteger los datos y decidir si el prototipo sigue adelante.</li></ul></div>
+      <div class="card m"><h3>Dónde falla sin indicaciones</h3><ul><li>Agregar requisitos que nadie pidió y omitir otros.</li><li>Mostrar texto del usuario como HTML (XSS) o guardar secretos en el código.</li><li>Recomendar librerías que no existen o que no revisaste.</li></ul></div>
+      <div class="card c"><h3>Lo que audita la persona</h3><ul><li>Decidir qué problema vale la pena resolver.</li><li>Definir qué significa "funciona" (criterios de aceptación).</li><li>Proteger los datos y decidir si el prototipo sigue adelante.</li></ul></div>
     </div>
   </section>
 
@@ -356,13 +356,13 @@ footer{color:var(--muted);font-size:.82rem;margin-top:30px}
 
   <!-- 5 -->
   <section class="sec m" id="tarea" data-title="TAREA para software">
-    <div class="sec-head"><div class="num">05</div><div><div class="eyebrow">El método del curso, aplicado a especificar software</div><h2>TAREA: una especificación que la IA puede construir</h2><p class="lead">Un buen prompt de código se parece más a una <mark>historia de usuario con criterios de aceptación</mark> que a una petición. Cada letra de TAREA responde a una pregunta que un desarrollador te haría antes de empezar.</p></div></div>
+    <div class="sec-head"><div class="num">05</div><div><div class="eyebrow">El método del curso, aplicado a especificar software</div><h2>TAREA para especificar software</h2><p class="lead">Un buen prompt de código se parece más a una <mark>historia de usuario con criterios de aceptación</mark> que a una petición. Cada letra de TAREA responde a una pregunta que un desarrollador te haría antes de empezar.</p></div></div>
     <div class="letters">
       <div class="letter c"><div class="L">T</div><div><h3>Tarea principal</h3><p>¿Qué app, para quién y qué problema resuelve? Una o dos frases con el contexto.</p></div><div class="say"><b>Ejemplo</b>Construye una app web de una sola página, "Mesa de Solicitudes", para el área administrativa. Hoy las solicitudes llegan por correo y Teams y nadie sabe cuáles están vencidas.</div></div>
       <div class="letter m"><div class="L">A</div><div><h3>Acción esperada</h3><p>Las funciones, numeradas y verificables. Cada una debe poder probarse con un sí o un no.</p></div><div class="say"><b>Ejemplo</b>1. Radicar una solicitud con id automático. 2. Tablero por estado, con arrastrar y soltar. 3. Semáforo de vencimiento. 4. Filtros. 5. Cuatro indicadores. 6. Guardar en el navegador.</div></div>
       <div class="letter y"><div class="L">R</div><div><h3>Rol del modelo</h3><p>El tipo de desarrollador que quieres y en qué debe fijarse.</p></div><div class="say"><b>Ejemplo</b>Actúa como desarrollador front-end sénior que cuida la seguridad, la usabilidad y la accesibilidad.</div></div>
       <div class="letter c"><div class="L">E</div><div><h3>Ejemplo de salida</h3><p>El formato del entregable y el modelo de datos: campos, valores posibles y datos de ejemplo.</p></div><div class="say"><b>Ejemplo</b>Un único archivo HTML con CSS y JS adentro. Campos: id, fecha_radicacion, solicitante, area, tipo… Plazos por tipo en días hábiles. Incluye 12 solicitudes de ejemplo inventadas.</div></div>
-      <div class="letter m"><div class="L">A</div><div><h3>Aclaraciones adicionales</h3><p>Restricciones técnicas, de seguridad y de datos. Aquí van las cosas que la IA olvida si no se las dices.</p></div><div class="say"><b>Ejemplo</b>Sin librerías ni CDN. El texto del usuario se muestra como texto, nunca como HTML. Validar campos obligatorios. Nada de datos reales. Entrega el archivo completo en un solo bloque.</div></div>
+      <div class="letter m"><div class="L">A</div><div><h3>Aclaraciones adicionales</h3><p>Restricciones técnicas, de seguridad y de datos. Aquí van las restricciones que la IA no aplica por su cuenta.</p></div><div class="say"><b>Ejemplo</b>Sin librerías ni CDN. El texto del usuario se muestra como texto, nunca como HTML. Validar campos obligatorios. Nada de datos reales. Entrega el archivo completo en un solo bloque.</div></div>
     </div>
     <h3 style="margin:30px 0 12px;font-size:1.3rem">Prompt flojo frente a prompt TAREA</h3>
     <div class="tabs" id="tplTabs" role="tablist"></div>
@@ -371,17 +371,17 @@ footer{color:var(--muted);font-size:.82rem;margin-top:30px}
 
   <!-- 6 -->
   <section class="sec y" id="ciclo" data-title="El ciclo">
-    <div class="sec-head"><div class="num">06</div><div><div class="eyebrow">Iterar sin perder el control</div><h2>El ciclo: especificar, generar, probar, mejorar</h2><p class="lead">La primera versión casi nunca es la final. Lo que diferencia a un buen vibe coder es <mark>cómo itera</mark>: un cambio a la vez, con pruebas, y guardando cada versión que funciona. Toca cada paso del ciclo.</p></div></div>
+    <div class="sec-head"><div class="num">06</div><div><div class="eyebrow">Iterar sin perder el control</div><h2>El ciclo: especificar, generar, probar, mejorar</h2><p class="lead">La primera versión casi nunca es la final. La calidad depende de <mark>cómo se itera</mark>: un cambio a la vez, con pruebas y guardando cada versión que funciona. Toca cada paso del ciclo.</p></div></div>
     <div class="loop">
       <svg viewBox="0 0 360 360" id="loopsvg" role="group" aria-label="Ciclo de vibe coding"></svg>
       <div class="loopinfo" id="loopinfo" aria-live="polite"></div>
     </div>
     <div class="rules">
-      <div class="rule"><b>Un cambio por mensaje</b><span>Si pides cinco cosas, la IA hace tres y rompe dos. Pide una, pruébala y sigue.</span></div>
+      <div class="rule"><b>Un cambio por mensaje</b><span>Varios cambios a la vez aumentan los errores y dificultan encontrar la causa.</span></div>
       <div class="rule"><b>Reporta como un ticket</b><span>Qué hiciste, qué esperabas, qué pasó y el error de la consola (F12). La IA no ve tu pantalla.</span></div>
       <div class="rule"><b>Pide el archivo completo</b><span>"Entrega el archivo completo actualizado". Pegar fragmentos a mano es donde más se rompe.</span></div>
       <div class="rule"><b>Guarda versiones</b><span><code style="background:#ffffff22;border:0;color:#fff">v1.html</code>, <code style="background:#ffffff22;border:0;color:#fff">v2.html</code>… Si algo se daña, vuelves a la última que funcionaba.</span></div>
-      <div class="rule"><b>Si se enreda, reinicia</b><span>Chat nuevo con la especificación y el código de la última versión buena. Las conversaciones largas se degradan.</span></div>
+      <div class="rule"><b>Reiniciar si se extiende</b><span>Chat nuevo con la especificación y el código de la última versión estable. Las conversaciones largas pierden precisión.</span></div>
     </div>
   </section>
 
@@ -399,7 +399,14 @@ footer{color:var(--muted);font-size:.82rem;margin-top:30px}
       <div class="stat"><b>≈1 de 5</b><span>paquetes recomendados por asistentes de IA no existe. Alguien puede registrarlos con malware: <i>slopsquatting</i>.</span><small>TechTarget, 2026</small></div>
       <div class="stat"><b>74</b><span>vulnerabilidades publicadas se rastrearon directamente a código generado por IA, y se estima que el número real es mucho mayor.</span><small>Georgia Tech, vía Engadget</small></div>
     </div>
-    <h3 style="font-size:1.25rem;margin:8px 0 10px">Pruébalo: ¿qué pasa si la app muestra el texto como HTML?</h3>
+    <h3 style="font-size:1.25rem;margin:8px 0 10px">¿Qué es XSS (cross-site scripting)?</h3>
+    <div class="grid three" style="margin-bottom:16px">
+      <div class="card y"><span class="tag y">1 · Entrada</span><h3>Un texto entra a la app</h3><p>Lo escribe un usuario en un formulario o viene en un archivo importado, por ejemplo un CSV.</p></div>
+      <div class="card m"><span class="tag">2 · Inserción</span><h3>La app lo inserta como HTML</h3><p>Con <code>innerHTML</code>, el navegador no lo trata como texto: interpreta etiquetas y atributos como parte de la página.</p></div>
+      <div class="card c"><span class="tag c">3 · Ejecución</span><h3>El navegador ejecuta el código</h3><p>Si el texto trae JavaScript, se ejecuta con los permisos de la app: puede leer los datos guardados, cambiar la pantalla o enviar información a otro sitio.</p></div>
+    </div>
+    <p class="lead" style="margin-bottom:14px"><b>Corrección:</b> insertar el texto con <code>textContent</code> o escaparlo antes de mostrarlo. Así el navegador lo muestra tal cual y no lo interpreta. Ejemplo: con <code>&lt;img src=x onerror="alert(1)"&gt;</code>, la app vulnerable intenta cargar una imagen llamada "x"; como no existe, se dispara <code>onerror</code> y se ejecuta el código.</p>
+    <h3 style="font-size:1.25rem;margin:8px 0 10px">Demostración</h3>
     <div class="xss">
       <p style="color:var(--muted);font-size:.95rem">Escribe una descripción de solicitud o usa un ejemplo. A la izquierda, la app insegura la inserta con <code>innerHTML</code>. A la derecha, la segura la inserta como texto con <code>textContent</code>.</p>
       <div class="inrow"><input id="xin" aria-label="Descripción de prueba" value="&lt;b&gt;URGENTE&lt;/b&gt; revisar la cerradura del archivo"></div>
@@ -408,7 +415,7 @@ footer{color:var(--muted);font-size:.82rem;margin-top:30px}
         <div class="xbox bad"><h4>App insegura <code>el.innerHTML = desc</code></h4><iframe id="xbad" sandbox="" title="Resultado de la app insegura"></iframe><div class="xwarn" id="xwarn"></div></div>
         <div class="xbox ok"><h4>App segura <code>el.textContent = desc</code></h4><div class="out" id="xok"></div><div style="font-size:.85rem;color:#0b6e52;font-weight:700">El texto se ve tal cual. Nada se interpreta ni se ejecuta.</div></div>
       </div>
-      <p class="note">Esta demostración corre en una caja aislada (sandbox) y no ejecuta nada. En una app real sin esa protección, el ejemplo con <code>onerror</code> ejecutaría código: podría leer lo que la app guarda en el navegador o cambiar lo que ve el usuario. El CSV del laboratorio trae una fila con esta trampa a propósito.</p>
+      <p class="note">Esta demostración corre en una caja aislada (sandbox) y no ejecuta nada. En una app real sin esa protección, el ejemplo con <code>onerror</code> ejecutaría código: podría leer lo que la app guarda en el navegador o cambiar lo que ve el usuario. El CSV del laboratorio incluye esta prueba en la solicitud SOL-2026-0042: si al importarlo aparece una ventana emergente, la app tiene XSS.</p>
     </div>
     <h3 style="font-size:1.25rem;margin:28px 0 0">Ocho cosas que hay que buscar en el código generado</h3>
     <div class="checks" id="checks"></div>
@@ -416,51 +423,34 @@ footer{color:var(--muted);font-size:.82rem;margin-top:30px}
 
   <!-- 9 -->
   <section class="sec y" id="datos" data-title="Datos y semáforo">
-    <div class="sec-head"><div class="num">09</div><div><div class="eyebrow">Protección de datos, antes de escribir el prompt</div><h2>¿Qué puede ir en un prompt de código?</h2><p class="lead">Para construir una app <mark>no necesitas datos reales</mark>: necesitas su estructura. Pídele a la IA que invente datos sintéticos con los mismos campos y formatos. Responde estas preguntas antes de pegar algo en un chat.</p></div></div>
+    <div class="sec-head"><div class="num">09</div><div><div class="eyebrow">Protección de datos, antes de escribir el prompt</div><h2>¿Qué puede ir en un prompt de código?</h2><p class="lead">Para construir y probar una app basta con <mark>datos sintéticos que tengan la misma estructura</mark> que los reales; la IA puede generarlos. Responde estas preguntas antes de pegar información en un chat.</p></div></div>
     <div class="traffic">
       <div class="panel"><div id="sqs"></div></div>
       <div class="light" id="slight" data-v="verde" aria-live="polite"><div class="lamps" aria-hidden="true"><i></i><i></i><i></i></div><h3 id="slightTitle">Verde</h3><p id="slightText"></p><ul id="slightWhy"></ul></div>
     </div>
     <div class="grid three" style="margin-top:18px">
-      <div class="card m"><h3>Nunca en un prompt</h3><ul><li>Datos de pacientes o de historia clínica, ni siquiera "de prueba" sacados de producción.</li><li>Contraseñas, llaves de API, tokens, cadenas de conexión.</li><li>Datos personales de colaboradores: documento, teléfono, salario.</li></ul></div>
+      <div class="card m"><h3>Nunca en un prompt</h3><ul><li>Información confidencial de pacientes, clientes o de la institución, incluso si se extrajo de producción para pruebas.</li><li>Contraseñas, llaves de API, tokens, cadenas de conexión.</li><li>Datos personales de colaboradores: documento, teléfono, salario.</li></ul></div>
       <div class="card y"><h3>Con la herramienta institucional y criterio</h3><ul><li>Estructuras de tablas, nombres de campos y reglas de negocio.</li><li>Código interno que no tenga secretos.</li><li>Procedimientos internos que no sean confidenciales.</li></ul></div>
       <div class="card g"><h3>Sin problema</h3><ul><li>Datos sintéticos que generó la propia IA.</li><li>Información pública: normas, estándares, documentación oficial.</li><li>Tu especificación TAREA.</li></ul></div>
     </div>
-    <p class="note">El marco de referencia en Colombia es la Ley 1581 de 2012 (protección de datos personales) y, para la información clínica, la Ley 2015 de 2020 (historia clínica electrónica interoperable). Cada institución tiene además su política de tratamiento de datos. <b>Ante la duda, la respuesta es datos sintéticos.</b></p>
+    <p class="note">El marco de referencia en Colombia es la Ley 1581 de 2012 (protección de datos personales), junto con la política de tratamiento de datos de cada institución. Ante la duda, se usan datos sintéticos.</p>
   </section>
 
   <!-- 10 -->
   <section class="sec c" id="producto" data-title="Del prototipo al producto">
-    <div class="sec-head"><div class="num">10</div><div><div class="eyebrow">Cuándo seguir y cuándo parar</div><h2>Del prototipo al producto: una escalera, no un salto</h2><p class="lead">El HTML de hoy sirve para <mark>validar una idea con usuarios reales en una semana</mark>. Si la idea funciona, se sube un escalón, y cada escalón tiene una pregunta que hay que responder antes de pasar al siguiente.</p></div></div>
+    <div class="sec-head"><div class="num">10</div><div><div class="eyebrow">Madurez de una solución</div><h2>Del prototipo al producto, paso a paso</h2><p class="lead">Un prototipo HTML sirve para <mark>validar una idea con usuarios</mark>. Si funciona, avanza al siguiente nivel; cada nivel tiene una condición que se debe cumplir antes de pasar al siguiente.</p></div></div>
     <div class="ladder">
-      <div class="step m" style="--i:0"><div class="n">1</div><div><h3>Prototipo HTML con IA</h3><p>Un archivo, datos sintéticos, en tu navegador. Es lo que hacemos hoy.</p></div><div class="gate"><b>Para subir</b>¿Los usuarios lo entienden y lo quieren usar? Pruébalo con 3 personas.</div></div>
-      <div class="step y" style="--i:1"><div class="n">2</div><div><h3>Herramientas institucionales sin código</h3><p>Formulario de Forms → lista de SharePoint → flujo de Power Automate con conectores estándar (aprobaciones, correo, Teams).</p></div><div class="gate"><b>Para subir</b>¿Varias personas lo usan a diario? ¿Ya hay datos reales y se necesitan permisos por rol?</div></div>
-      <div class="step c" style="--i:2"><div class="n">3</div><div><h3>App de bajo código gobernada</h3><p>Power Apps u otra plataforma aprobada, con identidad institucional, permisos y auditoría.</p></div><div class="gate"><b>Para subir</b>¿Debe integrarse con sistemas centrales o maneja datos clínicos o sensibles?</div></div>
-      <div class="step g" style="--i:3"><div class="n">4</div><div><h3>Desarrollo formal</h3><p>Repositorio, pruebas automáticas, revisión de código y de seguridad, despliegue controlado e interoperabilidad con estándares. Aquí los agentes de código ayudan, pero el ciclo de desarrollo manda.</p></div><div class="gate"><b>Señal de alerta</b>Si el prototipo toca datos de pacientes, no se sube de escalón sin TI, seguridad y protección de datos.</div></div>
+      <div class="step m" style="--i:0"><div class="n">1</div><div><h3>Prototipo HTML con IA</h3><p>Un archivo, datos sintéticos, en tu navegador. Es lo que hacemos hoy.</p></div><div class="gate"><b>Para avanzar</b>¿Los usuarios lo entienden y lo quieren usar? Pruébalo con 3 personas.</div></div>
+      <div class="step y" style="--i:1"><div class="n">2</div><div><h3>Herramientas institucionales sin código</h3><p>Formulario de Forms → lista de SharePoint → flujo de Power Automate con conectores estándar (aprobaciones, correo, Teams).</p></div><div class="gate"><b>Para avanzar</b>¿Varias personas lo usan a diario? ¿Ya hay datos reales y se necesitan permisos por rol?</div></div>
+      <div class="step c" style="--i:2"><div class="n">3</div><div><h3>App de bajo código gobernada</h3><p>Power Apps u otra plataforma aprobada, con identidad institucional, permisos y auditoría.</p></div><div class="gate"><b>Para avanzar</b>¿Debe integrarse con sistemas centrales o maneja datos clínicos o sensibles?</div></div>
+      <div class="step g" style="--i:3"><div class="n">4</div><div><h3>Desarrollo formal</h3><p>Repositorio, pruebas automáticas, revisión de código y de seguridad, despliegue controlado e interoperabilidad con estándares. Aquí los agentes de código ayudan, pero el ciclo de desarrollo manda.</p></div><div class="gate"><b>Condición</b>Si maneja información confidencial o datos personales, requiere a TI, seguridad y protección de datos.</div></div>
     </div>
     <p class="note"><b>Puente con Power Automate:</b> la app puede exportar un CSV con las mismas columnas que una lista de SharePoint, y un flujo con conectores estándar puede encargarse de las alertas de vencimiento por correo o Teams. Pídele a la IA que describa ese flujo paso a paso y valídalo en Power Automate.</p>
   </section>
 
-  <!-- 11 -->
-  <section class="sec m" id="microproyectos" data-title="Microproyectos">
-    <div class="sec-head"><div class="num">11</div><div><div class="eyebrow">La última hora</div><h2>Las seis preguntas de la ronda</h2><p class="lead">Durante la hora de microproyectos, el profesor pasa por cada equipo con estas preguntas. Tenerlas resueltas hace que la retroalimentación sea más útil y que el pitch se arme solo.</p></div></div>
-    <div class="grid three">
-      <div class="card c"><span class="tag c">1 · Problema</span><h3>¿Qué duele hoy y a quién?</h3><p>En una frase, con un número: cuánto tiempo, cuántos casos o cuántos errores.</p></div>
-      <div class="card m"><span class="tag">2 · Usuario</span><h3>¿Quién lo usaría el lunes?</h3><p>Una persona concreta, con su cargo. ¿Ya le preguntaron?</p></div>
-      <div class="card y"><span class="tag y">3 · Solución</span><h3>¿Qué hace la IA y qué hace la persona?</h3><p>Dónde entra la IA, dónde hay un humano que revisa y dónde queda la trazabilidad.</p></div>
-      <div class="card m"><span class="tag">4 · Datos</span><h3>¿Qué datos toca y en qué color del semáforo está?</h3><p>Si es rojo, ¿cómo lo resuelven con datos sintéticos o anonimizados?</p></div>
-      <div class="card c"><span class="tag c">5 · Evidencia</span><h3>¿Cómo sabrán que funcionó?</h3><p>Una métrica antes y después, y una demo que se pueda mostrar en dos minutos.</p></div>
-      <div class="card y"><span class="tag y">6 · Siguiente paso</span><h3>¿Qué tiene que estar listo para la próxima sesión?</h3><p>Lo mínimo para mostrar, el riesgo principal y quién responde por cada cosa.</p></div>
-    </div>
-    <div class="grid two" style="margin-top:18px">
-      <div class="card y"><h3>Si su proyecto es con Power Automate</h3><ul><li>Revisen que todos los conectores sean estándar (Outlook, Teams, SharePoint, Forms, Aprobaciones). HTTP, SQL Server o Dataverse suelen requerir licencia premium.</li><li>Diseñen primero el flujo en papel: disparador, condiciones, acciones, qué pasa si falla.</li><li>Copilot dentro de Power Automate puede proponer el flujo a partir de una descripción. Igual hay que probar cada rama.</li></ul></div>
-      <div class="card c"><h3>Si su proyecto es de interoperabilidad</h3><ul><li>Trabajen sobre estándares: HL7 v2, HL7 FHIR R4 y, en Colombia, el Resumen Digital de Atención (RDA) de la Resolución 1888 de 2025, que usa FHIR.</li><li>Datos de prueba: genérenlos con Synthea o con la IA. Los servidores FHIR públicos de prueba son públicos de verdad: nada real ahí.</li><li>Una IA puede explicar un recurso FHIR, mapear campos o validar la estructura de un JSON. La decisión clínica y el mapeo final los valida una persona.</li></ul></div>
-    </div>
-  </section>
-
   <!-- 12 -->
   <section class="sec y" id="glosario" data-title="Glosario">
-    <div class="sec-head"><div class="num">12</div><div><div class="eyebrow">Para no perderse</div><h2>Glosario</h2></div></div>
+    <div class="sec-head"><div class="num">11</div><div><div class="eyebrow">Para no perderse</div><h2>Glosario</h2></div></div>
     <dl class="gloss">
       <div><dt>Vibe coding</dt><dd>Programar describiendo lo que quieres en lenguaje natural y dejando que la IA escriba el código.</dd></div>
       <div><dt>App de un solo archivo</dt><dd>Un HTML que tiene adentro la estructura, el estilo (CSS) y la lógica (JavaScript). No necesita servidor.</dd></div>
@@ -479,7 +469,7 @@ footer{color:var(--muted);font-size:.82rem;margin-top:30px}
 
   <!-- 13 -->
   <section class="sec c" id="fuentes" data-title="Fuentes">
-    <div class="sec-head"><div class="num">13</div><div><div class="eyebrow">Para profundizar</div><h2>Fuentes</h2></div></div>
+    <div class="sec-head"><div class="num">12</div><div><div class="eyebrow">Para profundizar</div><h2>Fuentes</h2></div></div>
     <ul class="sources">
       <li>Wikipedia. <a href="https://en.wikipedia.org/wiki/Vibe_coding" target="_blank" rel="noopener">Vibe coding</a>.</li>
       <li>Snyk. <a href="https://snyk.io/articles/is-vibe-coding-secure/" target="_blank" rel="noopener">Is vibe coding secure?</a></li>
@@ -498,7 +488,7 @@ footer{color:var(--muted);font-size:.82rem;margin-top:30px}
   </section>
 
   <section class="finale">
-    <div><h2>Ahora, al laboratorio: la mesa de solicitudes.</h2><p>Especifica con TAREA, genera, abre, mejora, rompe, revisa y comparte. Quien termine antes tiene retos de Nivel 2 y Nivel 3.</p></div>
+    <div><h2>Laboratorio: mesa de solicitudes</h2><p>Especificación con TAREA, generación, iteración, pruebas, revisión de seguridad y galería.</p></div>
     <a class="btn" href="laboratorio-vibe-coding.html">Ir al Laboratorio →</a>
   </section>
   <footer>Actividad con datos ficticios. La Organización Altamira y todas las personas del caso son inventadas. Herramientas revisadas en noviembre de 2026.</footer>
@@ -533,7 +523,7 @@ const LAYERS=[
  {k:'CSS',n:'Apariencia',s:'Cómo se ve',c:'#0098d4',t:'CSS: la apariencia',p:'Colores, tamaños, márgenes y diseño adaptable. Aquí viven el semáforo rojo, amarillo y verde y que la app se vea bien en un portátil o en un proyector.',code:'.vencida  { border-left: 5px solid #d6453d; }\n.porvencer{ border-left: 5px solid #ffc531; }\n.atiempo  { border-left: 5px solid #12a37a; }',ask:'"Usa una paleta sobria y aumenta el contraste del texto gris."'},
  {k:'JS',n:'Lógica',s:'Qué hace',c:'#1b1e3c',t:'JavaScript: la lógica',p:'Calcula fechas límite, filtra, mueve tarjetas entre columnas, valida el formulario e importa y exporta archivos. Es donde más errores aparecen y donde está casi todo el riesgo de seguridad.',code:'function semaforo(s){\n  if (hoy > s.fecha_limite) return "vencida";\n  if (diasHabiles(hoy, s.fecha_limite) <= 1) return "porvencer";\n  return "atiempo";\n}',ask:'"Explícame en 5 líneas qué hace la función semaforo y qué pasa si fecha_limite está vacía."'},
  {k:'LS',n:'Memoria',s:'Dónde quedan los datos',c:'#12a37a',t:'localStorage: la memoria del navegador',p:'La app guarda las solicitudes en el navegador para que no se pierdan al recargar. Pero solo existen en ese navegador y en ese equipo: si otra persona abre el archivo, ve su propia copia vacía. Además, no está cifrado.',code:'localStorage.setItem("solicitudes", JSON.stringify(datos));\nconst datos = JSON.parse(localStorage.getItem("solicitudes") || "[]");',ask:'"¿Qué pasa con los datos si borro el historial del navegador? Agrega un botón para exportar una copia de respaldo."'},
- {k:'CSV',n:'Intercambio',s:'Entrada y salida',c:'#e0a400',t:'CSV: el puente con Excel y Power Automate',p:'Importar y exportar CSV conecta el prototipo con el mundo real: Excel, una lista de SharePoint o un flujo de Power Automate. También es una puerta de entrada de datos sucios y de trampas.',code:'id,fecha_radicacion,solicitante,area,tipo,...\nSOL-2026-0001,2026-10-29 10:00,Julio Herrera,...',ask:'"Al importar, informa cuántas filas se omitieron por duplicadas o inválidas y por qué."'}];
+ {k:'CSV',n:'Intercambio',s:'Entrada y salida',c:'#e0a400',t:'CSV: el puente con Excel y Power Automate',p:'Importar y exportar CSV conecta el prototipo con el mundo real: Excel, una lista de SharePoint o un flujo de Power Automate. También es una puerta de entrada de datos con errores y de contenido malicioso.',code:'id,fecha_radicacion,solicitante,area,tipo,...\nSOL-2026-0001,2026-10-29 10:00,Julio Herrera,...',ask:'"Al importar, informa cuántas filas se omitieron por duplicadas o inválidas y por qué."'}];
 let li=0;
 function layRender(){
  $('#layers').innerHTML=LAYERS.map((l,i)=>`<button type="button" class="layer" aria-pressed="${i===li}" data-l="${i}" style="--lc:${l.c}"><span class="ic">${esc(l.k)}</span><span><b>${esc(l.n)}</b><small>${esc(l.s)}</small></span></button>`).join('');
@@ -586,7 +576,7 @@ const LOOP=[
  {n:'Especificar',c:'#e0307a',t:'Especificar con TAREA',p:'Escribe qué app, para quién, qué funciones (verificables), el modelo de datos y las restricciones. Diez minutos aquí ahorran una hora de correcciones.',tip:'Pregunta de control: ¿cada función se puede probar con un sí o un no?'},
  {n:'Generar',c:'#0098d4',t:'Generar',p:'La IA entrega el archivo completo. Si la respuesta se corta, pide "continúa exactamente donde quedaste" o pide el archivo por partes.',tip:'Pídele también una lista de cómo probar la app: es tu primer guion de pruebas.'},
  {n:'Abrir',c:'#e0a400',t:'Abrir y ejecutar',p:'Vista previa en el chat o guardar como .html y abrir en el navegador. Abre la consola (F12) para ver errores en rojo.',tip:'Si no carga nada, casi siempre es un archivo incompleto o mal copiado.'},
- {n:'Probar',c:'#12a37a',t:'Probar a propósito',p:'Recorre los criterios de aceptación uno por uno. Luego prueba bordes: campos vacíos, textos muy largos, caracteres especiales, recargar la página, importar el CSV con trampas.',tip:'Anota cada falla como un ticket: pasos, esperado, obtenido.'},
+ {n:'Probar',c:'#12a37a',t:'Probar a propósito',p:'Recorre los criterios de aceptación uno por uno. Luego prueba bordes: campos vacíos, textos muy largos, caracteres especiales, recargar la página, importar el CSV de práctica.',tip:'Anota cada falla como un ticket: pasos, esperado, obtenido.'},
  {n:'Mejorar',c:'#b81f5f',t:'Pedir un cambio',p:'Un cambio por mensaje, con el contexto exacto. Prueba y guarda la versión antes de pedir el siguiente.',tip:'"Mantén todo lo que ya funciona" es una aclaración que vale la pena repetir.'},
  {n:'Revisar',c:'#1b1e3c',t:'Revisar seguridad y calidad',p:'Pide una auditoría de seguridad del código y revísala con la lista de ocho puntos. Después, la matriz de validación: exactitud, pertinencia, completitud, trazabilidad y coherencia.',tip:'La auditoría de la IA ayuda, pero quien firma es una persona.'}];
 let lo=0;
@@ -660,7 +650,7 @@ $('#checks').innerHTML=CHECKS.map(([t,d],i)=>`<div class="chk"><i>${i+1}</i><div
 
 /* ===== Semáforo de datos ===== */
 const SQ=[
- {id:'pac',t:'¿El prompt o los archivos incluyen datos de pacientes o de historia clínica?'},
+ {id:'pac',t:'¿El prompt o los archivos incluyen información confidencial (de pacientes, clientes o de la institución)?'},
  {id:'per',t:'¿Incluye datos personales de colaboradores o usuarios (documento, teléfono, correo, salario)?'},
  {id:'sec',t:'¿Incluye contraseñas, llaves de API, tokens, cadenas de conexión o direcciones de servidores internos?'},
  {id:'int',t:'¿Incluye código, estructuras o documentación interna de sistemas de la institución?'},
@@ -668,7 +658,7 @@ const SQ=[
 const sans={pac:'no',per:'no',sec:'no',int:'no',cta:'no'};
 function sRender(){$('#sqs').innerHTML=SQ.map(q=>`<div class="q"><p>${esc(q.t)}</p><div class="yn" role="group" aria-label="${esc(q.t)}"><button type="button" data-sq="${q.id}" data-v="si" aria-pressed="${sans[q.id]==='si'}">Sí</button><button type="button" data-sq="${q.id}" data-v="no" aria-pressed="${sans[q.id]==='no'}">No</button></div></div>`).join('');sEval()}
 function sEval(){const why=[];let v='verde';
- if(sans.pac==='si'){v='rojo';why.push('Datos de pacientes: no van en ningún chat. Usa datos sintéticos con la misma estructura.')}
+ if(sans.pac==='si'){v='rojo';why.push('La información confidencial no va en ningún chat. Usa datos sintéticos con la misma estructura.')}
  if(sans.per==='si'){v='rojo';why.push('Reemplaza los datos personales por datos inventados. Para construir la app solo necesitas el formato.')}
  if(sans.sec==='si'){v='rojo';why.push('Quita los secretos. En el código usa marcadores como TU_LLAVE_AQUI y guarda los secretos fuera del código.')}
  if(sans.int==='si'){if(sans.cta==='si'){v='rojo';why.push('La información interna no va en una cuenta personal o gratuita.')}else if(v!=='rojo'){v='amarillo';why.push('Usa solo la herramienta institucional y comparte lo mínimo necesario.')}}

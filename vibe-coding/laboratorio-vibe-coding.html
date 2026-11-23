@@ -57,14 +57,15 @@ code{font:.86em var(--mono);background:var(--pre);border:1px solid var(--line);b
 .hero-art .win:before{content:'';position:absolute;top:11px;left:12px;width:9px;height:9px;border-radius:50%;background:var(--magenta);box-shadow:14px 0 var(--yellow),28px 0 var(--cyan)}
 .hero-art .win i{display:block;height:8px;border-radius:4px;background:#ffffff26;margin:6px 0}
 .hero-art .win i.a{background:var(--cyan);width:60%}.hero-art .win i.b{background:var(--magenta);width:80%}.hero-art .win i.c{background:var(--yellow);width:45%}
-.page{display:none}.page.active{display:block;animation:in .25s ease}
+.page{display:none}.page.active{display:flex;flex-direction:column;gap:18px;animation:in .25s ease}
+.page>.note,.page>.early{margin-top:0}.page>.navbtns{margin-top:6px}
 @keyframes in{from{opacity:0;transform:translateY(6px)}}
-.section-heading{margin-bottom:18px}
+.section-heading{margin-bottom:0}
 .section-heading h2{font-size:clamp(26px,3vw,34px);letter-spacing:-.6px;margin:6px 0 8px}
 .lead{color:var(--muted);max-width:72ch}
 .theory-link{display:inline-block;margin-top:10px;font-weight:700;font-size:14px;text-decoration:none;background:var(--cyan-soft);border-radius:20px;padding:5px 12px}
 .time{display:inline-block;font:700 13px var(--font);background:var(--yellow-soft);color:#7a5600;border-radius:20px;padding:3px 10px;margin-left:6px;vertical-align:3px;letter-spacing:0;text-transform:none}
-.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);margin-bottom:16px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
 .panel h3{font-size:21px;margin-bottom:6px}
 .subtle{color:var(--muted);font-size:15px}
 .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
@@ -83,6 +84,9 @@ code{font:.86em var(--mono);background:var(--pre);border:1px solid var(--line);b
 .pick button b{font-family:var(--display);font-size:16px}.pick button small{color:var(--muted);font-size:13px}
 .pick button[aria-pressed="true"]{border-color:var(--ink);background:var(--yellow-soft);box-shadow:0 6px 16px #1b1e3c14}
 .checklist{display:grid;gap:8px}
+.toolinfo{margin-top:14px;background:var(--cyan-soft);border-radius:12px;padding:12px 16px;font-size:15px}
+.toolinfo b{display:block;font-family:var(--display);font-size:16px;margin-bottom:2px}
+.casedata{display:flex;flex-direction:column;gap:8px}
 .check{display:flex;gap:10px;align-items:flex-start;background:var(--bg);border-radius:12px;padding:10px 12px;cursor:pointer;font-size:15px}
 .check input{width:20px;height:20px;margin-top:2px;accent-color:var(--green);flex-shrink:0}
 .check.on{background:var(--green-soft)}
@@ -260,6 +264,22 @@ const CASES=[
   E:'Un único archivo HTML. Incluye 8 sistemas ficticios (sin nombres de productos comerciales) y 14 interfaces de ejemplo.',
   X:'Sin librerías externas. No incluyas datos de pacientes, endpoints ni credenciales: solo metadatos de las interfaces. Muestra el texto como texto, nunca como HTML. Entrega el archivo completo.'}];
 
+const DATA={
+ mesa:{csv:'solicitudes-administrativas.csv',n:'61 solicitudes',xss:'SOL-2026-0042',cols:'',traps:'un id duplicado (SOL-2026-0048), una prioridad mal escrita (SOL-2026-0013), una solicitud en gestión sin responsable (SOL-2026-0055), una descripción con etiquetas HTML (SOL-2026-0034) y una con código que prueba XSS (SOL-2026-0042)'},
+ equipos:{csv:'inventario-equipos.csv',n:'31 equipos',xss:'TI-0012',cols:'placa, tipo, marca, modelo, estado, ubicacion, responsable, area, fecha_prestamo, fecha_devolucion, observaciones',traps:'una placa duplicada (TI-0009), un estado escrito en minúscula (TI-0023), observaciones con etiquetas HTML (TI-0005) y con comillas y comas (TI-0018), y una con código que prueba XSS (TI-0012)'},
+ cambios:{csv:'cambios-ti.csv',n:'21 cambios',xss:'CHG-0016',cols:'id, sistema, tipo, responsable, inicio, fin, impacto, plan_reversion, estado, descripcion',traps:'un id duplicado (CHG-0006), dos cambios que se cruzan en el ERP Financiero (CHG-0004 y CHG-0008), un cambio de impacto alto sin plan de reversión (CHG-0011), un impacto en minúscula (CHG-0019), una descripción con etiquetas HTML (CHG-0014) y una con código que prueba XSS (CHG-0016)'},
+ incidentes:{csv:'incidentes-seguridad.csv',n:'25 incidentes',xss:'INC-0015',cols:'id, fecha, categoria, activo, impacto, probabilidad, estado, responsable, descripcion',traps:'un id duplicado (INC-0012), un impacto fuera de la escala de 1 a 5 (INC-0006), una categoría en minúscula (INC-0020), una descripción con un enlace HTML (INC-0010) y una con código que prueba XSS (INC-0015)'},
+ compromisos:{csv:'compromisos-comites.csv',n:'31 compromisos',xss:'CMP-0014',cols:'id, comite, fecha_reunion, compromiso, responsable, fecha_entrega, estado',traps:'un id duplicado (CMP-0017), un estado en minúscula (CMP-0025), un compromiso sin responsable (CMP-0028), un texto con etiquetas HTML (CMP-0007), otro con comillas y comas (CMP-0021) y uno con código que prueba XSS (CMP-0014)'},
+ turnos:{csv:'personas-soporte.csv',n:'9 personas',xss:'PER-06',cols:'id, nombre, habilidades (separadas por punto y coma), dias_no_disponibles (fechas separadas por punto y coma), observaciones',traps:'una persona duplicada (PER-04), una habilidad en minúscula (PER-07), observaciones con etiquetas HTML (PER-03) y una con código que prueba XSS (PER-06)'},
+ interfaces:{csv:'interfaces-integracion.csv',n:'17 interfaces',xss:'INT-009',cols:'id, sistema_origen, sistema_destino, estandar, mensaje_recurso, frecuencia, responsable, estado, ultima_falla, observaciones',traps:'un id duplicado (INT-006), un estándar escrito en minúscula (INT-012), observaciones con etiquetas HTML (INT-004) y con comillas (INT-014), y una con código que prueba XSS (INT-009)'}};
+CASES.forEach(c=>{const d=DATA[c.id];if(d&&d.cols)c.E+=` Usa exactamente estas columnas, para poder importar el archivo de práctica ${d.csv}: ${d.cols}.`});
+const TOOLINFO={copilot:'Se usa con la cuenta de trabajo, que tiene protección de datos empresarial. Si el administrador activó la vista previa de código, la app aparece en una página al lado del chat; si no, se copia el código y se abre el archivo. Es la opción recomendada para hoy.',
+ claude:'La app aparece funcionando en un artefacto, en el panel lateral, y se puede descargar. Úsala con la licencia institucional y solo con datos sintéticos.',
+ chatgpt:'La app se ve en el canvas, con vista previa, y el código se copia o descarga desde ahí. En cuentas gratuitas, solo datos sintéticos.',
+ gemini:'La app se ve en el canvas, con vista previa, y el código se copia desde ahí. En cuentas gratuitas, solo datos sintéticos.'};
+const curData=()=>DATA[state.caseId]||DATA.mesa;
+function toolInfoHTML(){const t=TOOLS.find(x=>x.id===state.tool)||TOOLS[0];return`<b>${esc(t.n)}</b>${esc(TOOLINFO[t.id])} El prompt y los pasos son los mismos en todas; lo que cambia es dónde ves la app y cómo la guardas. Las instrucciones del paso 2 se ajustan a esta elección.`}
+function caseDataHTML(){const d=curData(),c=curCase();return`<span class="chip g">Datos de práctica · ${esc(c.n)}</span><h3>CSV de ${esc(d.n)}</h3><p class="subtle">Para la mejora 1 y las pruebas. Incluye casos de prueba a propósito: ${esc(d.traps)}.</p><a class="button primary" href="materiales/${esc(d.csv)}" download>Descargar ${esc(d.csv)}</a>`}
 const IMPROVE=[
  {id:'i1',a:'var(--cyan)',t:'Mejora 1 · Importar el archivo CSV',w:'Carga las 61 solicitudes de ejemplo. Descarga el CSV en el paso 0.',p:`Agrega un botón "Importar CSV" que lea un archivo con estas columnas: id, fecha_radicacion, solicitante, area, tipo, descripcion, prioridad, estado, responsable, fecha_limite, fecha_cierre, canal.
 Respeta los campos entre comillas que tienen comas. Valida antes de importar: ids duplicados, prioridades mal escritas y estados desconocidos. Al terminar, muestra un informe con filas leídas, importadas, omitidas y por qué.
@@ -269,7 +289,7 @@ Agrega un botón "Exportar CSV" que descargue lo que se ve en la lista. Si una c
  {id:'i3',a:'#e0a400',t:'Mejora 3 · Detalle con bitácora',w:'Trazabilidad: quién cambió qué y cuándo.',p:`Al hacer clic en una solicitud, abre un panel lateral con todos sus datos y permite cambiar estado, responsable y prioridad, y agregar notas.
 Cada cambio queda en una bitácora con fecha y hora ("Estado: En revisión → En gestión"). Regla: no se puede pasar a "En gestión" ni a "Esperando información" sin responsable asignado; avisa con un mensaje claro. Mantén todo lo que ya funciona. Entrega el archivo completo.`,alt:`Al hacer clic en un registro, abre un panel de detalle que permita editarlo y que guarde una bitácora con fecha y hora de cada cambio. Agrega una regla de negocio que impida un cambio de estado inválido y muestre un mensaje claro. Entrega el archivo completo.`}];
 
-const TESTS=[
+const TESTS_MAIN=[
  ['Criterio','Radicar una solicitud completa','Aparece en "Radicada" con id SOL-AAAA-#### y una fecha límite correcta.'],
  ['Criterio','Mover una tarjeta a otro estado','Cambia de columna y los indicadores se actualizan.'],
  ['Criterio','Recargar la página (F5)','Los datos siguen ahí.'],
@@ -319,13 +339,13 @@ const navBtns=n=>`<div class="navbtns">${n>0?`<button class="button" type="butto
 
 /* ================= Páginas ================= */
 function p0(){return head(0,'Preparación','Elige herramienta y caso, y descarga los materiales','Todo el grupo trabaja la <b>mesa de solicitudes</b>. Si ya la conoces o quieres un reto distinto, elige uno de los casos alternativos: los pasos son los mismos.',['herramientas','Herramientas en la teoría'])+`
- <div class="panel"><h3>¿Con qué herramienta vas a trabajar?</h3><p class="subtle">El prompt sirve igual en todas. Hoy recomendamos Copilot con la cuenta de trabajo.</p><div class="pick" style="margin-top:12px">${TOOLS.map(t=>`<button type="button" data-tool="${t.id}" aria-pressed="${state.tool===t.id}"><b>${esc(t.n)}</b><small>${esc(t.s)}</small></button>`).join('')}</div></div>
- <div class="panel"><h3>¿Qué caso vas a construir?</h3><p class="subtle">El caso define el texto inicial de tu especificación en el paso 1. Puedes cambiarlo cuando quieras.</p><div class="cases" style="margin-top:12px">${CASES.map(c=>`<button type="button" class="case" data-case="${c.id}" aria-pressed="${state.caseId===c.id}">${c.main?'<span class="chip y">Caso principal</span>':'<span class="chip">Alternativo</span>'}<b>${esc(c.n)}</b><small>${esc(c.s)}</small></button>`).join('')}</div></div>
+ <div class="panel"><h3>¿Con qué herramienta vas a trabajar?</h3><p class="subtle">El prompt sirve igual en todas. Hoy recomendamos Copilot con la cuenta de trabajo.</p><div class="pick" style="margin-top:12px">${TOOLS.map(t=>`<button type="button" data-pick-tool="${t.id}" aria-pressed="${state.tool===t.id}"><b>${esc(t.n)}</b><small>${esc(t.s)}</small></button>`).join('')}</div><div class="toolinfo" id="toolInfo" aria-live="polite">${toolInfoHTML()}</div></div>
+ <div class="panel"><h3>¿Qué caso vas a construir?</h3><p class="subtle">El caso define el texto inicial de tu especificación en el paso 1. Puedes cambiarlo cuando quieras.</p><div class="cases" style="margin-top:12px">${CASES.map(c=>`<button type="button" class="case" data-pick-case="${c.id}" aria-pressed="${state.caseId===c.id}">${c.main?'<span class="chip y">Caso principal</span>':'<span class="chip">Alternativo</span>'}<b>${esc(c.n)}</b><small>${esc(c.s)}</small></button>`).join('')}</div></div>
  <div class="grid two">
-  <div class="card"><span class="chip g">Datos sintéticos</span><h3>CSV de 61 solicitudes</h3><p class="subtle">Para la mejora 1 y las pruebas. Incluye <b>cinco casos de prueba</b>: un id duplicado, una prioridad mal escrita, una solicitud en gestión sin responsable, una descripción con etiquetas HTML y una con código que prueba si la app es vulnerable a XSS.</p><a class="button primary" href="materiales/solicitudes-administrativas.csv" download>Descargar CSV</a></div>
-  <div class="card"><span class="chip m">Referencia</span><h3>App de referencia</h3><p class="subtle">Hecha con IA a partir de una especificación TAREA, con importación, bitácora, indicadores, festivos y pruebas integradas. Mírala <b>después</b> de generar la tuya.</p><a class="button" href="materiales/mesa-de-solicitudes.html" target="_blank" rel="noopener">Abrir la app de referencia ↗</a></div>
+  <div class="card casedata" id="caseData" aria-live="polite">${caseDataHTML()}</div>
+  <div class="card"><span class="chip m">Referencia</span><h3>App de referencia</h3><p class="subtle">Hecha con IA a partir de una especificación TAREA, con importación, bitácora, indicadores, festivos y pruebas integradas. Corresponde al caso principal. Mírala <b>después</b> de generar la tuya.</p><a class="button" href="materiales/mesa-de-solicitudes.html" target="_blank" rel="noopener">Abrir la app de referencia ↗</a></div>
  </div>
- <div class="panel"><h3>Antes de empezar</h3><div class="checklist">${[['c1','Abrí la herramienta con mi <b>cuenta de trabajo</b> (o la que elegí).'],['c2','Creé una carpeta <code>vibe-coding</code> en el escritorio para guardar las versiones.'],['c3','Tengo a mano el Bloc de notas (o VS Code) y Edge o Chrome.'],['c4','Descargué el CSV de ejemplo.'],['c5','Hoy <b>no uso ningún dato real</b>: ni de pacientes, ni de colaboradores, ni credenciales.']].map(([id,t])=>checkItem('checks',id,t)).join('')}</div></div>
+ <div class="panel"><h3>Antes de empezar</h3><div class="checklist">${[['c1','Abrí la herramienta con mi <b>cuenta de trabajo</b> (o la que elegí).'],['c2','Creé una carpeta <code>vibe-coding</code> en el escritorio para guardar las versiones.'],['c3','Tengo a mano el Bloc de notas (o VS Code) y Edge o Chrome.'],['c4','Descargué el CSV de práctica de mi caso.'],['c5','Hoy <b>no uso ningún dato real</b>: ni de pacientes, ni de colaboradores, ni credenciales.']].map(([id,t])=>checkItem('checks',id,t)).join('')}</div></div>
  <div class="note">La Organización Altamira, su mesa de solicitudes y todas las personas del caso son inventadas.</div>`+navBtns(0)}
 
 function p1(){const c=curCase();const L=[['T','Tarea principal','¿Qué app, para quién y qué problema resuelve?','var(--cyan)','var(--cyan-soft)'],['A','Acción esperada','Funciones numeradas y verificables','var(--magenta)','var(--magenta-soft)'],['R','Rol del modelo','Qué tipo de desarrollador','#e0a400','var(--yellow-soft)'],['E','Ejemplo de salida','Formato del entregable y modelo de datos','var(--cyan)','var(--cyan-soft)'],['X','Aclaraciones adicionales','Restricciones técnicas, de seguridad y de datos','var(--magenta)','var(--magenta-soft)']];
@@ -341,10 +361,11 @@ const OPEN={
  claude:{t:'Claude',s:['Abre un chat nuevo y pega tu prompt.','Claude crea un artefacto: la app aparece funcionando en el panel lateral.','Pruébala ahí. Para guardarla, usa la opción de descargar o copiar del artefacto.','Guárdala como <code>mesa-v1.html</code> en tu carpeta y ábrela con doble clic.']},
  chatgpt:{t:'ChatGPT',s:['Abre un chat nuevo y pega tu prompt. Si no abre el canvas, agrega "usa canvas".','En el canvas, usa la opción de vista previa para ver la app funcionando.','Copia o descarga el código y guárdalo como <code>mesa-v1.html</code>.','Recuerda: en cuentas gratuitas, solo datos sintéticos.']},
  gemini:{t:'Gemini',s:['Abre un chat nuevo, activa Canvas y pega tu prompt.','Usa la vista previa del canvas para probar la app.','Copia el código, guárdalo como <code>mesa-v1.html</code> y ábrelo con doble clic.','Recuerda: en cuentas gratuitas, solo datos sintéticos.']}};
-function p2(){const o=OPEN[state.tool]||OPEN.copilot;
+function openHTML(){const o=OPEN[state.tool]||OPEN.copilot;return`<h3>${esc(o.t)}</h3><ol class="steps">${o.s.map(s=>`<li>${s}</li>`).join('')}</ol>`}
+function p2(){
  return head(2,'Generar y abrir','Que la IA construya la app y ábrela en el navegador','Las instrucciones cambian según la herramienta que elegiste en el paso 0. Si la vista previa no aparece, no pasa nada: <mark>guardar y abrir el archivo siempre funciona</mark>.',['anatomia','Cómo se abre una app de un solo archivo'])+`
- <div class="panel"><div class="tabs" role="tablist">${TOOLS.map(t=>`<button class="tab" role="tab" type="button" data-tool="${t.id}" aria-selected="${state.tool===t.id}">${esc(t.n)}</button>`).join('')}</div>
- <h3>${esc(o.t)}</h3><ol class="steps">${o.s.map(s=>`<li>${s}</li>`).join('')}</ol>
+ <div class="panel"><div class="tabs" role="tablist">${TOOLS.map(t=>`<button class="tab" role="tab" type="button" data-tab-tool="${t.id}" aria-selected="${state.tool===t.id}">${esc(t.n)}</button>`).join('')}</div>
+ <div id="openBox">${openHTML()}</div>
  <div class="note">Abre la <b>consola del navegador con F12</b> y deja visible la pestaña "Console". Si algo falla, los errores en rojo son lo que le vas a pegar a la IA.</div></div>
  <div class="panel"><h3>Si algo sale mal</h3><div class="trouble">
   <details><summary>La página sale en blanco</summary><p>Casi siempre el código quedó incompleto. Busca al final <code>&lt;/html&gt;</code>. Si no está, pide: "Tu respuesta se cortó. Entrega de nuevo el archivo completo." Si es muy largo: "Entrégalo en dos partes y dime exactamente dónde termina la primera".</p></details>
@@ -365,11 +386,22 @@ function p3(){const c=curCase();
  <div class="note"><b>Si la IA rompe algo que ya funcionaba:</b> "La versión anterior hacía [X] y ahora no. Restaura ese comportamiento sin perder [lo nuevo]. Entrega el archivo completo." Y si la conversación se enreda, abre un chat nuevo con tu especificación más el código de la última versión buena.</div>
  <div class="early"><b>¿Terminaste las tres?</b> Continúa con el paso 6: desafíos adicionales.</div>`+navBtns(3)}
 
-function p4(){const t=TESTS.map((x,i)=>`<tr><td><span class="chip ${x[0]==='Seguridad'?'r':x[0]==='Borde'?'y':x[0]==='Datos'?'g':''}">${esc(x[0])}</span></td><td><code>${esc(x[1])}</code></td><td>${esc(x[2])}</td><td><select data-test="${i}" class="${(state.tests[i]||'').toLowerCase()}" aria-label="Resultado de la prueba ${i+1}"><option value="">—</option>${['Pasa','Falla','No aplica'].map(o=>`<option ${state.tests[i]===o?'selected':''}>${o}</option>`).join('')}</select></td></tr>`).join('');
+function testsFor(){if(curCase().main)return TESTS_MAIN;const d=curData();return[
+ ['Criterio','Crear un registro completo','Aparece en la vista principal con sus datos correctos.'],
+ ['Criterio','Cambiar el estado de un registro','El cambio se ve y queda guardado.'],
+ ['Criterio','Recargar la página (F5)','Los datos siguen ahí.'],
+ ['Borde','Guardar el formulario vacío','Mensajes junto a cada campo obligatorio; no se guarda.'],
+ ['Borde','Texto de 2.000 caracteres en un campo de texto','No rompe el diseño.'],
+ ['Borde','Fecha imposible (31 de febrero) o fin antes del inicio','La app la rechaza con un mensaje claro.'],
+ ['Datos','Importar '+d.csv,'Detecta el registro duplicado y los valores mal escritos.'],
+ ['Seguridad','Texto: <b>URGENTE</b> revisar','Se ve el texto con las etiquetas, no en negrita.'],
+ ['Seguridad','Importar el CSV con el registro '+d.xss,'No aparece ninguna ventana emergente (alert). Si aparece: XSS.'],
+ ['Seguridad','Exportar y abrir en Excel un texto que empiece con =1+1','Excel muestra el texto, no el resultado 2.']]}
+function p4(){const t=testsFor().map((x,i)=>`<tr><td><span class="chip ${x[0]==='Seguridad'?'r':x[0]==='Borde'?'y':x[0]==='Datos'?'g':''}">${esc(x[0])}</span></td><td><code>${esc(x[1])}</code></td><td>${esc(x[2])}</td><td><select data-test="${i}" class="${(state.tests[i]||'').toLowerCase()}" aria-label="Resultado de la prueba ${i+1}"><option value="">—</option>${['Pasa','Falla','No aplica'].map(o=>`<option ${state.tests[i]===o?'selected':''}>${o}</option>`).join('')}</select></td></tr>`).join('');
  return head(4,'Pruebas','Pruebas de la app','Las tres primeras pruebas son criterios de aceptación. Las demás son casos de borde, de calidad de datos y de seguridad.',['seguridad','Seguridad del código generado'])+`
  <div class="panel"><div class="tbl"><table><thead><tr><th>Tipo</th><th>Prueba</th><th>Resultado esperado</th><th>Resultado</th></tr></thead><tbody>${t}</tbody></table></div><div class="tally" id="tally"></div></div>
  <div class="panel"><h3>Si una prueba falla, repórtala como un ticket</h3><div class="promptbox" style="margin-top:8px"><div class="row"><b>Prompt para corregir</b><button class="button small" type="button" data-copytxt="bug">Copiar</button></div><pre>${esc(BUG)}</pre></div>${field('bugs','¿Qué pruebas fallaron y cómo las corregiste?','La prueba 9 mostró un alert: usaba innerHTML en la tarjeta...')}</div>
- <div class="note red"><b>Prueba 9 (XSS):</b> la descripción de SOL-2026-0042 contiene <code>&lt;img src=x onerror="alert(…)"&gt;</code>. Si la app inserta el texto con <code>innerHTML</code>, el navegador intenta cargar una imagen llamada "x", falla y ejecuta el código de <code>onerror</code>: aparece una ventana emergente. Eso indica que la app es vulnerable. Corrección: pedirle a la IA que muestre todo texto con <code>textContent</code> o que lo escape. La alerta es inofensiva; un ataque real usaría otro código.</div>`+navBtns(4)}
+ <div class="note red"><b>Prueba 9 (XSS):</b> el registro ${esc(curData().xss)} del CSV contiene <code>&lt;img src=x onerror="alert(…)"&gt;</code>. Si la app inserta el texto con <code>innerHTML</code>, el navegador intenta cargar una imagen llamada "x", falla y ejecuta el código de <code>onerror</code>: aparece una ventana emergente. Eso indica que la app es vulnerable. Corrección: pedirle a la IA que muestre todo texto con <code>textContent</code> o que lo escape. La alerta es inofensiva; un ataque real usaría otro código.</div>`+navBtns(4)}
 const BUG=`Hay un error.
 Pasos: [qué hiciste, en orden]
 Esperado: [qué debía pasar]
@@ -409,7 +441,7 @@ const PAGES=[p0,p1,p2,p3,p4,p5,p6,p7,p8];
 /* ================= Render ================= */
 function stepDone(n){const c=state.checks;return[
  ['c1','c2','c3','c4','c5'].every(k=>c[k]),['s1','s2','s3','s4','s5'].every(k=>c[k]),!!state.f.genFirst,IMPROVE.every(m=>state.imp[m.id]),
- TESTS.every((_,i)=>state.tests[i]),Object.keys(state.matrix).length===MATRIX.length,score()>0,!!(state.f.gBugs||'').trim(),!!(state.f.learn||'').trim()][n]}
+ testsFor().every((_,i)=>state.tests[i]),Object.keys(state.matrix).length===MATRIX.length,score()>0,!!(state.f.gBugs||'').trim(),!!(state.f.learn||'').trim()][n]}
 function renderNav(){
  $('#sideNav').innerHTML=STEPS.map((s,i)=>`<button type="button" data-go="${i}" class="${i===step?'active':''} ${stepDone(i)?'done':''}"><span class="num">${i}</span>${esc(s.t)}</button>`).join('');
  $('#mobileNav').innerHTML=STEPS.map((s,i)=>`<button type="button" data-go="${i}" class="${i===step?'active':''}">${i} · ${esc(s.t)}</button>`).join('');
@@ -417,13 +449,14 @@ function renderNav(){
 }
 function render(){$('#pages').innerHTML=`<section class="page active">${PAGES[step]()}</section>`;renderNav();if(step===4)tally()}
 function go(n,scroll=true){step=Math.max(0,Math.min(8,n));save();render();try{history.replaceState(null,'','#paso-'+step)}catch(e){}if(scroll)window.scrollTo({top:document.querySelector('.hero').offsetTop+document.querySelector('.hero').offsetHeight-10,behavior:'smooth'})}
-function tally(){const r=Object.values(state.tests);const n=v=>r.filter(x=>x===v).length;const el=$('#tally');if(el)el.innerHTML=`<span class="chip g">Pasan: ${n('Pasa')}</span><span class="chip r">Fallan: ${n('Falla')}</span><span class="chip">Sin probar: ${TESTS.length-r.filter(Boolean).length}</span>`}
+function tally(){const r=Object.values(state.tests);const n=v=>r.filter(x=>x===v).length;const el=$('#tally');if(el)el.innerHTML=`<span class="chip g">Pasan: ${n('Pasa')}</span><span class="chip r">Fallan: ${n('Falla')}</span><span class="chip">Sin probar: ${testsFor().length-r.filter(Boolean).length}</span>`}
 
 /* ================= Eventos ================= */
 document.addEventListener('click',e=>{
  const g=e.target.closest('[data-go]');if(g){go(+g.dataset.go);return}
- const t=e.target.closest('[data-tool]');if(t){state.tool=t.dataset.tool;save();render();return}
- const c=e.target.closest('[data-case]');if(c){state.caseId=c.dataset.case;save();render();toast('Caso: '+curCase().n);return}
+ const pt=e.target.closest('[data-pick-tool]');if(pt){state.tool=pt.dataset.pickTool;save();$$('[data-pick-tool]').forEach(b=>b.setAttribute('aria-pressed',String(b===pt)));$('#toolInfo').innerHTML=toolInfoHTML();return}
+ const tt=e.target.closest('[data-tab-tool]');if(tt){state.tool=tt.dataset.tabTool;save();$$('[data-tab-tool]').forEach(b=>b.setAttribute('aria-selected',String(b===tt)));$('#openBox').innerHTML=openHTML();return}
+ const pc=e.target.closest('[data-pick-case]');if(pc){state.caseId=pc.dataset.pickCase;save();$$('[data-pick-case]').forEach(b=>b.setAttribute('aria-pressed',String(b===pc)));$('#caseData').innerHTML=caseDataHTML();toast('Caso: '+curCase().n);return}
  const ci=e.target.closest('[data-copyimp]');if(ci){const m=IMPROVE.find(x=>x.id===ci.dataset.copyimp);copy(curCase().main?m.p:m.alt);return}
  const cr=e.target.closest('[data-copyreto]');if(cr){copy(RETOS.find(x=>x.id===cr.dataset.copyreto).p);return}
  const ct=e.target.closest('[data-copytxt]');if(ct){copy(ct.dataset.copytxt==='audit'?AUDIT:BUG);return}
@@ -453,13 +486,13 @@ document.addEventListener('focusout',e=>{if(e.target.matches('textarea[data-fiel
 /* ================= Resumen e informe ================= */
 const L=(k,v)=>v&&String(v).trim()?`${k}: ${v}`:'';
 function summary(){const toolN=(TOOLS.find(t=>t.id===state.tool)||{}).n;const f=state.f;
- return[`LABORATORIO · VIBE CODING CON TAREA`,`Caso: ${curCase().n} · Herramienta: ${toolN}`,``,`ESPECIFICACIÓN`,fullPrompt(),``,`GENERACIÓN`,L('¿Funcionó a la primera?',f.genFirst),L('Qué falló',f.genFix),``,`MEJORAS`,...IMPROVE.map(m=>`${state.imp[m.id]?'✓':'·'} ${m.t}`),...['v1','v2','v3','v4','v5'].map(v=>L(v,f['ver_'+v])).filter(Boolean),``,`PRUEBAS`,...TESTS.map((t,i)=>`${state.tests[i]||'—'} · ${t[1]}`),L('Fallas y correcciones',f.bugs),``,`SEGURIDAD`,L('Hallazgos de la IA',f.audit),`Revisión humana: ${CHECKS.filter((_,i)=>state.sec['k'+i]).length} de ${CHECKS.length} puntos verificados`,...MATRIX.map(([k])=>`${k}: ${state.matrix[k]||'—'}${state.matrixEv[k]?' · '+state.matrixEv[k]:''}`),L('Decisión',f.decision),L('Por qué',f.decisionWhy),``,`DESAFÍOS (${score()} puntos)`,...RETOS.filter(r=>state.retos[r.id]).map(r=>`✓ ${r.t} (+${r.pts})`),L('Notas',f.retoNotes),``,`GALERÍA`,L('Revisé la app de',f.gWho),L('Fallas encontradas',f.gBugs),L('Mejor idea vista',f.gBest),L('Lo que encontraron en mi app',f.gMine),``,`CIERRE`,L('Lo que aplicaría en mi trabajo',f.learn),L('Lo que mejoraría',f.nextApp)].filter((x,i,a)=>x!==''||a[i-1]!=='').join('\n')}
+ return[`LABORATORIO · VIBE CODING CON TAREA`,`Caso: ${curCase().n} · Herramienta: ${toolN}`,``,`ESPECIFICACIÓN`,fullPrompt(),``,`GENERACIÓN`,L('¿Funcionó a la primera?',f.genFirst),L('Qué falló',f.genFix),``,`MEJORAS`,...IMPROVE.map(m=>`${state.imp[m.id]?'✓':'·'} ${m.t}`),...['v1','v2','v3','v4','v5'].map(v=>L(v,f['ver_'+v])).filter(Boolean),``,`PRUEBAS`,...testsFor().map((t,i)=>`${state.tests[i]||'—'} · ${t[1]}`),L('Fallas y correcciones',f.bugs),``,`SEGURIDAD`,L('Hallazgos de la IA',f.audit),`Revisión humana: ${CHECKS.filter((_,i)=>state.sec['k'+i]).length} de ${CHECKS.length} puntos verificados`,...MATRIX.map(([k])=>`${k}: ${state.matrix[k]||'—'}${state.matrixEv[k]?' · '+state.matrixEv[k]:''}`),L('Decisión',f.decision),L('Por qué',f.decisionWhy),``,`DESAFÍOS (${score()} puntos)`,...RETOS.filter(r=>state.retos[r.id]).map(r=>`✓ ${r.t} (+${r.pts})`),L('Notas',f.retoNotes),``,`GALERÍA`,L('Revisé la app de',f.gWho),L('Fallas encontradas',f.gBugs),L('Mejor idea vista',f.gBest),L('Lo que encontraron en mi app',f.gMine),``,`CIERRE`,L('Lo que aplicaría en mi trabajo',f.learn),L('Lo que mejoraría',f.nextApp)].filter((x,i,a)=>x!==''||a[i-1]!=='').join('\n')}
 function buildPrint(){const f=state.f;const dl=(rows,quiet)=>{const h=rows.filter(r=>r[1]&&String(r[1]).trim()).map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('');return h?`<dl>${h}</dl>`:(quiet?'':'<dl><dd>Sin registrar</dd></dl>')};
  const sec=(a,t,body)=>`<section class="rp-sec" style="--a:${a}"><h2>${esc(t)}</h2>${body}</section>`;
  $('#print').innerHTML=`<header class="rp-head"><div><small>Laboratorio · Vibe coding con TAREA</small><h1>${esc(curCase().n)}</h1><small>Caso: ${esc(curCase().n)} · Herramienta: ${esc((TOOLS.find(t=>t.id===state.tool)||{}).n)} · ${esc(new Date().toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'}))}</small></div><div class="rp-dots"><i style="background:var(--cyan)"></i><i style="background:var(--magenta)"></i><i style="background:var(--yellow)"></i></div></header>
  ${sec('var(--cyan)','1 · Especificación TAREA',`<dl>${[['Tarea','T'],['Acción','A'],['Rol','R'],['Ejemplo de salida','E'],['Aclaraciones','X']].map(([n,k])=>`<dt>${n}</dt><dd>${esc(specVal(k))}</dd>`).join('')}</dl>`)}
  ${sec('var(--magenta)','2 · Generación e iteración',dl([['¿Funcionó a la primera?',f.genFirst],['Qué falló',f.genFix],...IMPROVE.map(m=>[m.t,state.imp[m.id]?'Funciona':'Pendiente']),...['v1','v2','v3','v4','v5'].map(v=>['Versión '+v,f['ver_'+v]])]))}
- ${sec('#e0a400','3 · Pruebas',`<table><thead><tr><th>Tipo</th><th>Prueba</th><th>Resultado</th></tr></thead><tbody>${TESTS.map((t,i)=>`<tr><td>${esc(t[0])}</td><td>${esc(t[1])}</td><td><b>${esc(state.tests[i]||'—')}</b></td></tr>`).join('')}</tbody></table>${dl([['Fallas y correcciones',f.bugs]],1)}`)}
+ ${sec('#e0a400','3 · Pruebas',`<table><thead><tr><th>Tipo</th><th>Prueba</th><th>Resultado</th></tr></thead><tbody>${testsFor().map((t,i)=>`<tr><td>${esc(t[0])}</td><td>${esc(t[1])}</td><td><b>${esc(state.tests[i]||'—')}</b></td></tr>`).join('')}</tbody></table>${dl([['Fallas y correcciones',f.bugs]],1)}`)}
  ${sec('var(--red)','4 · Seguridad y validación',`${dl([['Hallazgos de la IA',f.audit],['Revisión humana',`${CHECKS.filter((_,i)=>state.sec['k'+i]).length} de ${CHECKS.length} puntos verificados`]])}<table><thead><tr><th>Criterio</th><th>Resultado</th><th>Evidencia</th></tr></thead><tbody>${MATRIX.map(([k])=>`<tr><td>${esc(k)}</td><td><b>${esc(state.matrix[k]||'—')}</b></td><td>${esc(state.matrixEv[k]||'')}</td></tr>`).join('')}</tbody></table>${dl([['Decisión',f.decision],['Por qué',f.decisionWhy]],1)}`)}
  ${sec('var(--green)',`5 · Desafíos (${score()} puntos) y galería`,dl([['Desafíos completados',RETOS.filter(r=>state.retos[r.id]).map(r=>`${r.t} (+${r.pts})`).join('\n')],['Notas',f.retoNotes],['Revisé la app de',f.gWho],['Fallas encontradas',f.gBugs],['Mejor idea vista',f.gBest],['Lo que encontraron en mi app',f.gMine]]))}
  ${sec('var(--ink)','6 · Cierre',dl([['Lo que aplicaría en mi trabajo',f.learn],['Lo que mejoraría',f.nextApp]]))}

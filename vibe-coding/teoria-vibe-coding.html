@@ -448,9 +448,50 @@ footer{color:var(--muted);font-size:.82rem;margin-top:30px}
     <p class="note"><b>Puente con Power Automate:</b> la app puede exportar un CSV con las mismas columnas que una lista de SharePoint, y un flujo con conectores estándar puede encargarse de las alertas de vencimiento por correo o Teams. Pídele a la IA que describa ese flujo paso a paso y valídalo en Power Automate.</p>
   </section>
 
+  <!-- 11 -->
+  <section class="sec m" id="mas-alla" data-title="Trucos y casos reales">
+    <div class="sec-head"><div class="num">11</div><div><div class="eyebrow">Para ir más allá</div><h2>Trucos, funciones de las herramientas y casos reales</h2><p class="lead">Técnicas que mejoran el resultado, funciones de las herramientas que conviene conocer y casos documentados que muestran por qué la revisión importa.</p></div></div>
+    <h3 style="font-size:1.25rem;margin:0 0 12px">Diez técnicas de prompting para código</h3>
+    <div class="grid two">
+      <div class="card c"><span class="tag c">1 · Preguntas primero</span><p>"Antes de escribir código, hazme las cinco preguntas que harías como desarrollador." Aparecen los vacíos de la especificación antes de que se vuelvan errores.</p></div>
+      <div class="card m"><span class="tag">2 · Plan antes que código</span><p>"Propón un plan: funciones, estructura de datos y pruebas. No escribas código hasta que lo apruebe." Es más fácil corregir un plan que un archivo de 800 líneas.</p></div>
+      <div class="card y"><span class="tag y">3 · Mostrar en vez de describir</span><p>Los modelos actuales leen imágenes: una captura del error o de un diseño de referencia comunica más que un párrafo.</p></div>
+      <div class="card c"><span class="tag c">4 · El error exacto</span><p>El mensaje de la consola (F12) copiado tal cual, con la línea que lo produce. "No funciona" no le da a la IA nada con qué trabajar.</p></div>
+      <div class="card m"><span class="tag">5 · Prueba antes del arreglo</span><p>"Escribe una prueba que reproduzca el error; después corrígelo y muestra que la prueba pasa." Así se sabe que el arreglo resolvió el problema y no otro.</p></div>
+      <div class="card y"><span class="tag y">6 · Revisión cruzada</span><p>El código que generó una herramienta se le pasa a otra para que lo revise. Cada modelo tiene puntos ciegos distintos.</p></div>
+      <div class="card c"><span class="tag c">7 · Supuestos explícitos</span><p>"Lista los supuestos que hiciste y lo que no te quedó claro." Muchos errores vienen de decisiones que la IA tomó en silencio.</p></div>
+      <div class="card m"><span class="tag">8 · Límites al cambio</span><p>"Modifica solo la función calcularFechaLimite; no toques nada más." Reduce los cambios no pedidos en partes que ya funcionaban.</p></div>
+      <div class="card y"><span class="tag y">9 · Datos sintéticos a la medida</span><p>"Genera 50 registros ficticios con estos campos, incluye 5 casos de borde y 2 valores inválidos." Sirve para probar sin exponer información real.</p></div>
+      <div class="card c"><span class="tag c">10 · Instrucciones persistentes</span><p>En proyectos con agentes, un archivo de instrucciones evita repetir el contexto en cada mensaje: <code>.github/copilot-instructions.md</code>, <code>AGENTS.md</code> o <code>CLAUDE.md</code>.</p></div>
+    </div>
+    <h3 style="font-size:1.25rem;margin:28px 0 12px">Funciones de las herramientas que conviene conocer</h3>
+    <div class="tbl"><table>
+      <thead><tr><th style="width:24%">Herramienta o estándar</th><th>Qué es y para qué sirve</th></tr></thead>
+      <tbody>
+        <tr><td>Copilot Chat (Basic) y M365 Copilot (Premium)</td><td>Sin licencia de Microsoft 365 Copilot la interfaz muestra "Copilot Chat (Basic)"; con licencia, "M365 Copilot (Premium)". La licencia agrega acceso a los datos de la organización (correo, archivos, reuniones), agentes como Researcher y Analyst, y la creación de agentes propios.</td></tr>
+        <tr><td>Copilot Pages con vista previa de código</td><td>Copilot puede generar una página con código ejecutable y una vista previa para probar la app. Está disponible para cuentas de trabajo con almacenamiento en OneDrive o SharePoint, incluso sin licencia de Copilot. El administrador puede desactivar la vista previa.</td></tr>
+        <tr><td>App Builder y Power Apps Vibe</td><td>Eran las experiencias de Microsoft para crear apps describiéndolas. Se retiran el 30 de noviembre de 2026; la creación de apps en lenguaje natural pasa a Copilot Cowork (habilidad /app, programa Frontier) y a Apps en Copilot Studio (vista previa pública).</td></tr>
+        <tr><td>GitHub Copilot: modo agente y agente de código</td><td>El modo agente trabaja en el editor, con la persona al lado. El agente de código trabaja en segundo plano en GitHub: recibe una tarea o un issue y entrega un pull request para revisión.</td></tr>
+        <tr><td>Archivos de instrucciones</td><td><code>.github/copilot-instructions.md</code> (todo el repositorio), <code>.github/instructions/*.instructions.md</code> (por ruta) y <code>AGENTS.md</code>. Guardan convenciones, comandos de prueba y reglas que el agente lee en cada tarea.</td></tr>
+        <tr><td>AGENTS.md y MCP</td><td>Dos estándares abiertos que desde diciembre de 2025 están bajo la Agentic AI Foundation de la Linux Foundation. AGENTS.md da instrucciones a los agentes de código; MCP (Model Context Protocol) los conecta con herramientas y datos externos.</td></tr>
+        <tr><td>Spec Kit (desarrollo guiado por especificación)</td><td>Kit de código abierto de GitHub que ordena el trabajo en especificación, plan técnico y tareas pequeñas antes de que el agente escriba código. Es la versión profesional de lo que hacemos con TAREA.</td></tr>
+      </tbody>
+    </table></div>
+    <h3 style="font-size:1.25rem;margin:28px 0 12px">Datos y casos documentados</h3>
+    <div class="grid two">
+      <div class="card y"><span class="tag y">El término</span><h3>Palabra del año 2025</h3><p>El diccionario Collins eligió "vibe coding" como palabra del año 2025. En febrero de 2026, Karpathy propuso "agentic engineering" (ingeniería con agentes) para el trabajo profesional con agentes, supervisado por personas.</p></div>
+      <div class="card c"><span class="tag c">Productividad</span><h3>Más lentos, pero se sentían más rápidos</h3><p>En un ensayo controlado de METR (2025), 16 desarrolladores experimentados tardaron 19 % más en sus tareas con herramientas de IA, aunque después estimaron que habían sido 20 % más rápidos.</p></div>
+      <div class="card m"><span class="tag">Confianza</span><h3>Más uso, menos confianza</h3><p>Encuesta de Stack Overflow 2025 (49.000 respuestas): 84 % usa o planea usar IA, 46 % desconfía de la exactitud de sus resultados y cerca del 72 % dice que el vibe coding no hace parte de su trabajo profesional.</p></div>
+      <div class="card m"><span class="tag">Agentes con permisos</span><h3>Una base de datos borrada</h3><p>En julio de 2025, el agente de Replit borró la base de datos de producción de un proyecto de Jason Lemkin (SaaStr) durante un congelamiento de código, pese a instrucciones explícitas. La plataforma usaba la misma base para desarrollo y producción.</p></div>
+      <div class="card c"><span class="tag c">Configuración insegura</span><h3>CVE-2025-48757</h3><p>Apps generadas con Lovable quedaron con políticas de seguridad a nivel de fila (RLS) insuficientes en su base de datos: cualquiera podía leer o escribir tablas sin autenticarse. Severidad 9,3 de 10.</p></div>
+      <div class="card y"><span class="tag y">Agentes y datos</span><h3>La "tríada letal"</h3><p>Simon Willison describe el riesgo de un agente que combina acceso a datos privados, exposición a contenido no confiable y capacidad de comunicarse hacia afuera: un texto malicioso puede ordenarle enviar esos datos a un atacante (inyección de prompt).</p></div>
+    </div>
+    <p class="note">En el OWASP Top 10 para aplicaciones con LLM (2025), el riesgo "Improper Output Handling" es justamente usar la salida del modelo sin validarla. Ese es el origen de un XSS cuando el texto generado o importado termina en la página sin escapar.</p>
+  </section>
+
   <!-- 12 -->
   <section class="sec y" id="glosario" data-title="Glosario">
-    <div class="sec-head"><div class="num">11</div><div><div class="eyebrow">Para no perderse</div><h2>Glosario</h2></div></div>
+    <div class="sec-head"><div class="num">12</div><div><div class="eyebrow">Para no perderse</div><h2>Glosario</h2></div></div>
     <dl class="gloss">
       <div><dt>Vibe coding</dt><dd>Programar describiendo lo que quieres en lenguaje natural y dejando que la IA escriba el código.</dd></div>
       <div><dt>App de un solo archivo</dt><dd>Un HTML que tiene adentro la estructura, el estilo (CSS) y la lógica (JavaScript). No necesita servidor.</dd></div>
@@ -469,7 +510,7 @@ footer{color:var(--muted);font-size:.82rem;margin-top:30px}
 
   <!-- 13 -->
   <section class="sec c" id="fuentes" data-title="Fuentes">
-    <div class="sec-head"><div class="num">12</div><div><div class="eyebrow">Para profundizar</div><h2>Fuentes</h2></div></div>
+    <div class="sec-head"><div class="num">13</div><div><div class="eyebrow">Para profundizar</div><h2>Fuentes</h2></div></div>
     <ul class="sources">
       <li>Wikipedia. <a href="https://en.wikipedia.org/wiki/Vibe_coding" target="_blank" rel="noopener">Vibe coding</a>.</li>
       <li>Snyk. <a href="https://snyk.io/articles/is-vibe-coding-secure/" target="_blank" rel="noopener">Is vibe coding secure?</a></li>
@@ -483,6 +524,18 @@ footer{color:var(--muted);font-size:.82rem;margin-top:30px}
       <li>OWASP. <a href="https://owasp.org/www-community/attacks/CSV_Injection" target="_blank" rel="noopener">CSV Injection</a>.</li>
       <li>Ministerio de Salud y Protección Social. <a href="https://www.minsalud.gov.co/Comunicaciones/noticias/2026/Paginas/resumen-digital-de-atencion-en-salud-transformara-el-acceso-a-la-informacion-clinica-en-colombia.aspx" target="_blank" rel="noopener">Resumen Digital de Atención en Salud (RDA)</a>.</li>
       <li>Ministerio de Salud y Protección Social. <a href="https://www.minsalud.gov.co/ihce/Paginas/Normatividad.aspx" target="_blank" rel="noopener">Normatividad de la interoperabilidad de la historia clínica electrónica</a>.</li>
+      <li>Microsoft Message Center. <a href="https://mc.merill.net/message/MC1505609" target="_blank" rel="noopener">MC1505609: retiro de App Builder y vibe.powerapps.com</a>.</li>
+      <li>Microsoft. <a href="https://www.microsoft.com/microsoft-copilot/blog/copilot-studio/build-apps-in-copilot-cowork-and-copilot-studio/" target="_blank" rel="noopener">Build apps in Copilot Cowork and Copilot Studio</a>.</li>
+      <li>GitHub Docs. <a href="https://docs.github.com/en/copilot/reference/custom-instructions-support" target="_blank" rel="noopener">Custom instructions support</a>.</li>
+      <li>OpenAI. <a href="https://openai.com/index/agentic-ai-foundation/" target="_blank" rel="noopener">Agentic AI Foundation (AGENTS.md y MCP)</a>.</li>
+      <li>GitHub. <a href="https://github.github.com/spec-kit/" target="_blank" rel="noopener">Spec Kit</a>.</li>
+      <li>METR. <a href="https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/" target="_blank" rel="noopener">Measuring the impact of early-2025 AI on experienced open-source developer productivity</a>.</li>
+      <li>Stack Overflow. <a href="https://stackoverflow.co/company/press/archive/stack-overflow-2025-developer-survey/" target="_blank" rel="noopener">2025 Developer Survey</a>.</li>
+      <li>The Register. <a href="https://www.theregister.com/2025/07/21/replit_saastr_vibe_coding_incident" target="_blank" rel="noopener">Replit y la base de datos borrada</a>.</li>
+      <li>NIST NVD. <a href="https://nvd.nist.gov/vuln/detail/CVE-2025-48757" target="_blank" rel="noopener">CVE-2025-48757</a>.</li>
+      <li>Simon Willison. <a href="https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/" target="_blank" rel="noopener">The lethal trifecta for AI agents</a>.</li>
+      <li>The New Stack. <a href="https://thenewstack.io/vibe-coding-is-passe/" target="_blank" rel="noopener">Karpathy y la "agentic engineering"</a>.</li>
+      <li>Euronews. <a href="https://www.euronews.com/2025/11/06/vibe-coding-named-word-of-the-year-by-collins-dictionary" target="_blank" rel="noopener">"Vibe coding", palabra del año de Collins</a>.</li>
       <li>HL7. <a href="https://hl7.org/fhir/R4/" target="_blank" rel="noopener">FHIR R4</a>. · Synthea. <a href="https://synthetichealth.github.io/synthea/" target="_blank" rel="noopener">Generador de pacientes sintéticos</a>.</li>
     </ul>
   </section>

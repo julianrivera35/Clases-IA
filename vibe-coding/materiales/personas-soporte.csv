@@ -1,0 +1,10 @@
+﻿id,nombre,habilidades,dias_no_disponibles,observaciones
+PER-01,Ana Lucía Prieto,Redes;Aplicaciones,2026-12-05;2026-12-11,
+PER-02,Mauricio Fajardo,Servidores,2026-12-05;2026-12-15;2026-12-19;2026-12-26,
+PER-03,Yolanda Ospina,Aplicaciones;Mesa de ayuda,,Prefiere turnos de día <b>(salud)</b>
+PER-04,Esteban Gil,Redes,2026-12-06;2026-12-20;2026-12-21;2026-12-24,
+PER-04,Esteban Gil,Redes,2026-12-06;2026-12-20;2026-12-21;2026-12-24,
+PER-05,Jorge Medina,Mesa de ayuda;Aplicaciones,,
+PER-06,Mónica Quintero,Servidores;Aplicaciones;Mesa de ayuda,2026-12-10;2026-12-13,"Vacaciones parciales <img src=x onerror=""alert('Esta app es vulnerable a XSS')"">"
+PER-07,Iván Cárdenas,redes;Aplicaciones,2026-12-01;2026-12-25,
+PER-08,Sebastián Ariza,Servidores;Aplicaciones,,

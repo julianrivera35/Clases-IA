@@ -1,0 +1,32 @@
+﻿id,comite,fecha_reunion,compromiso,responsable,fecha_entrega,estado
+CMP-0001,Comité de Calidad,2026-10-17,Cotizar renovación de licencias,Lucía Bermúdez,2026-10-24,Pendiente
+CMP-0002,Comité de Compras,2026-10-17,Revisar contratos que vencen en diciembre,Felipe Navarro,2026-10-31,Cumplido
+CMP-0003,Comité de Calidad,2026-10-24,Definir responsables del plan de continuidad,Felipe Navarro,2026-11-07,Pendiente
+CMP-0004,Comité de Compras,2026-10-24,Enviar informe de indicadores del trimestre,Laura Gómez,2026-11-07,Pendiente
+CMP-0005,Comité de Calidad,2026-10-24,Cotizar renovación de licencias,Marcela Rincón,2026-11-07,En curso
+CMP-0006,Comité de Calidad,2026-10-24,Cotizar renovación de licencias,Valentina Rueda,2026-10-31,Pendiente
+CMP-0007,Comité de Seguridad de la Información,2026-10-24,Revisar <b>todos</b> los contratos,Ricardo Vargas,2026-11-07,Pendiente
+CMP-0008,Comité de Calidad,2026-10-31,Revisar contratos que vencen en diciembre,Natalia Cifuentes,2026-11-30,Cumplido
+CMP-0009,Comité de Compras,2026-10-31,Publicar la política de contraseñas actualizada,Hernán Tovar,2026-11-21,En curso
+CMP-0010,Comité de Seguridad de la Información,2026-10-31,Revisar contratos que vencen en diciembre,Laura Gómez,2026-11-21,Cumplido
+CMP-0011,Comité de Calidad,2026-11-07,Revisar contratos que vencen en diciembre,Laura Gómez,2026-12-07,En curso
+CMP-0012,Comité de Calidad,2026-11-07,Presentar propuesta de capacitación,Óscar Ramírez,2026-11-28,Pendiente
+CMP-0013,Comité de Compras,2026-11-07,Revisar contratos que vencen en diciembre,Camilo Ortiz,2026-11-28,En curso
+CMP-0014,Comité de Seguridad de la Información,2026-11-07,"Enviar acta <img src=x onerror=""alert('Esta app es vulnerable a XSS')"">",Óscar Ramírez,2026-11-21,Pendiente
+CMP-0015,Comité de Seguridad de la Información,2026-11-07,Cotizar renovación de licencias,Paola Méndez,2026-11-14,Cumplido
+CMP-0016,Comité de Calidad,2026-11-07,Definir responsables del plan de continuidad,Paola Méndez,2026-11-28,Pendiente
+CMP-0017,Comité de Compras,2026-11-07,Cotizar renovación de licencias,Ricardo Vargas,2026-11-28,Pendiente
+CMP-0017,Comité de Compras,2026-11-07,Cotizar renovación de licencias,Ricardo Vargas,2026-11-28,Pendiente
+CMP-0018,Comité de Compras,2026-11-07,Enviar informe de indicadores del trimestre,Marcela Rincón,2026-12-07,Cumplido
+CMP-0019,Comité de Compras,2026-11-07,Enviar informe de indicadores del trimestre,Sandra Pineda,2026-11-14,Pendiente
+CMP-0020,Comité de Seguridad de la Información,2026-11-14,Definir responsables del plan de continuidad,Felipe Navarro,2026-12-05,En curso
+CMP-0021,Comité de Compras,2026-11-14,"Cotizar licencias, equipos y ""soporte extendido""",Laura Gómez,2026-12-14,Cumplido
+CMP-0022,Comité de Compras,2026-11-14,Enviar informe de indicadores del trimestre,Julio Herrera,2026-11-28,Pendiente
+CMP-0023,Comité de Calidad,2026-11-14,Publicar la política de contraseñas actualizada,Camilo Ortiz,2026-11-28,En curso
+CMP-0024,Comité de Calidad,2026-11-21,Publicar la política de contraseñas actualizada,Diana Salazar,2026-12-12,Pendiente
+CMP-0025,Comité de Compras,2026-11-21,Presentar propuesta de capacitación,Andrés Castillo,2026-12-05,cumplido
+CMP-0026,Comité de Seguridad de la Información,2026-11-21,Definir responsables del plan de continuidad,Andrés Castillo,2026-12-05,En curso
+CMP-0027,Comité de Calidad,2026-11-21,Actualizar el procedimiento de compras menores,Julio Herrera,2026-11-28,En curso
+CMP-0028,Comité de Compras,2026-11-21,Revisar contratos que vencen en diciembre,,2026-12-05,Cumplido
+CMP-0029,Comité de Compras,2026-11-21,Cotizar renovación de licencias,Hernán Tovar,2026-11-28,Cumplido
+CMP-0030,Comité de Compras,2026-11-21,Presentar propuesta de capacitación,Lucía Bermúdez,2026-12-21,Cumplido

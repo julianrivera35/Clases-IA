@@ -1,0 +1,32 @@
+﻿placa,tipo,marca,modelo,estado,ubicacion,responsable,area,fecha_prestamo,fecha_devolucion,observaciones
+TI-0001,Portátil,Dell,Latitude 5440,En reparación,Bodega TI piso 4,,,,,No carga la batería
+TI-0002,Diadema,Jabra,Evolve2 40,Disponible,Bodega TI piso 2,,,,,
+TI-0003,Portátil,Dell,Latitude 5440,Disponible,Bodega TI piso 2,,,,,
+TI-0004,Videobeam,Epson,PowerLite X49,Disponible,Mesa de ayuda,,,,,
+TI-0005,Portátil,Lenovo,ThinkPad E14,Prestado,Bodega TI piso 4,Óscar Ramírez,Comunicaciones,2026-11-08,2026-11-13,<b>Revisar</b> cargador antes de prestar
+TI-0006,Cámara web,Logitech,C920,Disponible,Bodega TI piso 2,,,,,
+TI-0007,Diadema,Jabra,Evolve2 40,Prestado,Bodega TI piso 4,Sandra Pineda,Admisiones,2026-11-21,2026-12-06,
+TI-0008,Cámara web,Logitech,C920,Disponible,Bodega TI piso 2,,,,,
+TI-0009,Tableta,Samsung,Galaxy Tab A9,Prestado,Mesa de ayuda,Ricardo Vargas,Calidad,2026-11-17,2026-11-20,
+TI-0009,Tableta,Samsung,Galaxy Tab A9,Prestado,Mesa de ayuda,Ricardo Vargas,Calidad,2026-11-17,2026-11-20,
+TI-0010,Videobeam,Epson,PowerLite X49,Disponible,Bodega TI piso 2,,,,,
+TI-0011,Tableta,Samsung,Galaxy Tab A9,Disponible,Bodega TI piso 4,,,,,
+TI-0012,Portátil,Lenovo,ThinkPad E14,Disponible,Bodega TI piso 2,,,,,"Equipo con stickers <img src=x onerror=""alert('Esta app es vulnerable a XSS')"">"
+TI-0013,Tableta,Samsung,Galaxy Tab A9,Prestado,Mesa de ayuda,Andrés Castillo,Compras,2026-11-14,2026-11-19,
+TI-0014,Videobeam,Epson,PowerLite X49,Disponible,Bodega TI piso 2,,,,,
+TI-0015,Cámara web,Logitech,C920,Disponible,Bodega TI piso 4,,,,,
+TI-0016,Tableta,Samsung,Galaxy Tab A9,Disponible,Mesa de ayuda,,,,,
+TI-0017,Cámara web,Logitech,C920,Disponible,Mesa de ayuda,,,,,
+TI-0018,Videobeam,Epson,PowerLite X49,Disponible,Bodega TI piso 4,,,,,"Incluye maletín, cargador ""original"" y mouse, sin adaptador HDMI"
+TI-0019,Cámara web,Logitech,C920,De baja,Mesa de ayuda,,,,,
+TI-0020,Videobeam,Epson,PowerLite X49,Prestado,Bodega TI piso 2,Óscar Ramírez,Admisiones,2026-11-07,2026-11-12,
+TI-0021,Diadema,Jabra,Evolve2 40,Prestado,Bodega TI piso 4,Sandra Pineda,Calidad,2026-11-04,2026-11-09,
+TI-0022,Diadema,Jabra,Evolve2 40,Prestado,Bodega TI piso 4,Felipe Navarro,Facturación,2026-11-05,2026-11-15,
+TI-0023,Cámara web,Logitech,C920,prestado,Bodega TI piso 4,Felipe Navarro,Talento Humano,2026-11-08,2026-11-18,
+TI-0024,Diadema,Jabra,Evolve2 40,Prestado,Bodega TI piso 2,Sandra Pineda,Jurídica,2026-11-11,2026-11-16,
+TI-0025,Diadema,Jabra,Evolve2 40,Disponible,Bodega TI piso 2,,,,,
+TI-0026,Videobeam,Epson,PowerLite X49,Prestado,Mesa de ayuda,Diana Salazar,Comunicaciones,2026-11-07,2026-11-14,
+TI-0027,Cámara web,Logitech,C920,En reparación,Bodega TI piso 2,,,,,Teclado con teclas sueltas
+TI-0028,Videobeam,Epson,PowerLite X49,Disponible,Bodega TI piso 4,,,,,
+TI-0029,Tableta,Samsung,Galaxy Tab A9,Prestado,Bodega TI piso 4,Ricardo Vargas,Comunicaciones,2026-11-05,2026-11-20,
+TI-0030,Tableta,Samsung,Galaxy Tab A9,Disponible,Mesa de ayuda,,,,,

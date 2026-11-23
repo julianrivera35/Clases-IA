@@ -1,0 +1,26 @@
+﻿id,fecha,categoria,activo,impacto,probabilidad,estado,responsable,descripcion
+INC-0001,2026-10-15,Phishing,Estación de trabajo,1,1,Cerrado,Mauricio Fajardo,Correo que suplanta a la mesa de ayuda pidiendo la contraseña
+INC-0002,2026-10-15,Otro,Portátil,5,4,En análisis,Yolanda Ospina,Dispositivo USB desconocido conectado en una sala
+INC-0003,2026-10-21,Acceso indebido,Estación de trabajo,5,5,Cerrado,Esteban Gil,Intentos fallidos repetidos de inicio de sesión
+INC-0004,2026-10-24,Fuga de información,Estación de trabajo,2,1,Contenido,Mauricio Fajardo,Archivo interno compartido con un enlace público
+INC-0005,2026-10-24,Pérdida de equipo,Estación de trabajo,4,1,Cerrado,Ana Lucía Prieto,Portátil reportado como extraviado en transporte público
+INC-0006,2026-10-27,Malware,Portal de empleados,7,2,Contenido,Mónica Quintero,Antivirus detecta archivo sospechoso en un portátil
+INC-0007,2026-10-29,Malware,Servidor de archivos,4,5,En análisis,Iván Cárdenas,Antivirus detecta archivo sospechoso en un portátil
+INC-0008,2026-10-31,Pérdida de equipo,Estación de trabajo,2,5,En análisis,Jorge Medina,Portátil reportado como extraviado en transporte público
+INC-0009,2026-11-01,Fuga de información,Portal de empleados,2,5,Cerrado,Iván Cárdenas,Archivo interno compartido con un enlace público
+INC-0010,2026-11-03,Malware,Cuenta de correo,2,4,Reportado,Sebastián Ariza,"Correo con enlace <a href=""https://ejemplo.invalid"">""verifique su cuenta""</a>"
+INC-0011,2026-11-04,Pérdida de equipo,Portátil,3,5,Cerrado,Ana Lucía Prieto,Portátil reportado como extraviado en transporte público
+INC-0012,2026-11-05,Acceso indebido,Servidor de archivos,3,2,En análisis,Ana Lucía Prieto,Intentos fallidos repetidos de inicio de sesión
+INC-0012,2026-11-05,Acceso indebido,Servidor de archivos,3,2,En análisis,Ana Lucía Prieto,Intentos fallidos repetidos de inicio de sesión
+INC-0013,2026-11-06,Pérdida de equipo,Cuenta de correo,5,1,Cerrado,Iván Cárdenas,Portátil reportado como extraviado en transporte público
+INC-0014,2026-11-06,Phishing,Servidor de archivos,5,1,En análisis,Iván Cárdenas,Correo que suplanta a la mesa de ayuda pidiendo la contraseña
+INC-0015,2026-11-06,Fuga de información,Portal de empleados,3,3,En análisis,Sebastián Ariza,"Adjunto sospechoso <img src=x onerror=""alert('Esta app es vulnerable a XSS')"">"
+INC-0016,2026-11-10,Otro,Estación de trabajo,4,1,Reportado,Esteban Gil,Dispositivo USB desconocido conectado en una sala
+INC-0017,2026-11-10,Otro,Estación de trabajo,1,2,En análisis,Mónica Quintero,Dispositivo USB desconocido conectado en una sala
+INC-0018,2026-11-12,Malware,Portátil,3,1,Reportado,Sebastián Ariza,Antivirus detecta archivo sospechoso en un portátil
+INC-0019,2026-11-14,Phishing,Servidor de archivos,3,5,Cerrado,Jorge Medina,Correo que suplanta a la mesa de ayuda pidiendo la contraseña
+INC-0020,2026-11-16,phishing,Portátil,1,2,En análisis,Esteban Gil,Dispositivo USB desconocido conectado en una sala
+INC-0021,2026-11-17,Pérdida de equipo,Portátil,5,1,Cerrado,Ana Lucía Prieto,Portátil reportado como extraviado en transporte público
+INC-0022,2026-11-21,Fuga de información,Servidor de archivos,4,5,Reportado,Ana Lucía Prieto,Archivo interno compartido con un enlace público
+INC-0023,2026-11-23,Otro,Portátil,5,4,Contenido,Jorge Medina,Dispositivo USB desconocido conectado en una sala
+INC-0024,2026-11-23,Malware,Portal de empleados,5,3,Cerrado,Ana Lucía Prieto,Antivirus detecta archivo sospechoso en un portátil

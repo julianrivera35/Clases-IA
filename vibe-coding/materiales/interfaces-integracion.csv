@@ -1,0 +1,18 @@
+﻿id,sistema_origen,sistema_destino,estandar,mensaje_recurso,frecuencia,responsable,estado,ultima_falla,observaciones
+INT-001,Sistema de Admisiones,Historia Clínica Electrónica,HL7 v2,ADT^A01,Cada hora,Sebastián Ariza,Con fallas,2026-11-10,
+INT-002,Sistema de Admisiones,Laboratorio Clínico (LIS),HL7 v2,ADT^A08,Diaria,Jorge Medina,Activa,,
+INT-003,Historia Clínica Electrónica,Laboratorio Clínico (LIS),HL7 v2,ORM^O01,Tiempo real,Jorge Medina,Activa,,
+INT-004,Laboratorio Clínico (LIS),Historia Clínica Electrónica,HL7 v2,ORU^R01,Diaria,Iván Cárdenas,Activa,,Reintentos <b>manuales</b> los lunes
+INT-005,Historia Clínica Electrónica,Imágenes Diagnósticas (RIS),HL7 v2,ORM^O01,Cada hora,Mónica Quintero,Activa,,
+INT-006,Imágenes Diagnósticas (RIS),Historia Clínica Electrónica,HL7 v2,ORU^R01,Cada hora,Mónica Quintero,Con fallas,2026-11-22,
+INT-006,Imágenes Diagnósticas (RIS),Historia Clínica Electrónica,HL7 v2,ORU^R01,Cada hora,Mónica Quintero,Con fallas,2026-11-22,
+INT-007,Historia Clínica Electrónica,Farmacia,HL7 FHIR,MedicationRequest,Diaria,Ana Lucía Prieto,Activa,,
+INT-008,Farmacia,Facturación,Servicio web propio,Dispensación,Diaria,Mónica Quintero,Activa,,
+INT-009,Historia Clínica Electrónica,Facturación,Archivo plano,RIPS,Tiempo real,Iván Cárdenas,Con fallas,2026-11-18,"Validar estructura <img src=x onerror=""alert('Esta app es vulnerable a XSS')"">"
+INT-010,Facturación,ERP Financiero,Servicio web propio,Factura,Tiempo real,Jorge Medina,Con fallas,2026-11-10,
+INT-011,Historia Clínica Electrónica,Portal de Pacientes,HL7 FHIR,Appointment,Cada hora,Jorge Medina,En pruebas,,
+INT-012,Laboratorio Clínico (LIS),Portal de Pacientes,fhir,DiagnosticReport,Diaria,Ana Lucía Prieto,Activa,,
+INT-013,Sistema de Admisiones,Portal de Pacientes,HL7 FHIR,Patient,Diaria,Iván Cárdenas,Con fallas,2026-11-21,
+INT-014,Historia Clínica Electrónica,Sistema externo (RDA),HL7 FHIR,Bundle (RDA),Tiempo real,Jorge Medina,Activa,,"En pruebas con el ambiente de ""pruebas"", sin datos reales"
+INT-015,Imágenes Diagnósticas (RIS),Portal de Pacientes,HL7 FHIR,ImagingStudy,Diaria,Mónica Quintero,Activa,,
+INT-016,ERP Financiero,Facturación,Archivo plano,Centros de costo,Diaria,Jorge Medina,Activa,,

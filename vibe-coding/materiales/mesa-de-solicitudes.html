@@ -43,12 +43,26 @@ button{cursor:pointer}
 /* Tablero */
 .board{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(235px,1fr);gap:12px;overflow-x:auto;padding-bottom:8px}
 .col{background:#e9edf6;border-radius:var(--r);padding:10px;min-height:300px;display:flex;flex-direction:column;gap:8px}
-.col.over{background:var(--cyan-s);outline:2px dashed var(--cyan)}
+.col h3{position:relative}
+.drop-hint{display:none;border:2px dashed var(--cyan);border-radius:12px;padding:12px;text-align:center;font-weight:700;color:var(--cyan-d);font-size:.85rem;background:#ffffffc0}
+body.drag-on{cursor:grabbing;user-select:none}
+body.drag-on .card:hover{border-color:var(--line)}
+body.drag-on .col{transition:background .15s}
+.col.target{background:var(--cyan-s);box-shadow:inset 0 0 0 3px var(--cyan)}
+.col.target .drop-hint{display:block}
+.col.blocked{background:var(--red-s);box-shadow:inset 0 0 0 3px var(--red)}
+.col.blocked .drop-hint{display:block;border-color:var(--red);color:var(--red)}
+.col.origin{box-shadow:inset 0 0 0 2px #c5cbe0}
+.board-tip{color:var(--muted);font-size:.85rem;margin:0 0 8px}
 .col h3{margin:2px 4px 4px;font-size:.9rem;display:flex;justify-content:space-between;align-items:center}
 .col h3 span{background:var(--paper);border-radius:20px;padding:1px 9px;font-size:.8rem}
 .card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 12px;box-shadow:0 2px 6px #1b1e3c0d;cursor:grab;border-left:5px solid var(--sla,var(--line));text-align:left;width:100%}
+.card{user-select:none}
 .card:hover{border-color:var(--cyan)}
-.card.dragging{opacity:.4}
+.card.placeholder{opacity:.35;border-style:dashed;box-shadow:none}
+.ghost{position:fixed;z-index:80;pointer-events:none;margin:0;transform:rotate(2deg) scale(1.03);box-shadow:0 18px 40px #1b1e3c45;opacity:.97;cursor:grabbing}
+.card.landed{animation:land 1.2s ease}
+@keyframes land{0%{box-shadow:0 0 0 4px var(--yel)}100%{box-shadow:0 2px 6px #1b1e3c0d}}
 .card .id{font-size:.75rem;color:var(--muted);font-weight:700;display:flex;justify-content:space-between;gap:6px}
 .card .t{font-weight:700;font-size:.9rem;margin:2px 0}
 .card .d{font-size:.84rem;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -148,7 +162,7 @@ footer button{border:0;background:none;color:var(--cyan-d);font-weight:600;paddi
     </div>
   </div>
 
-  <section id="vBoard"><div class="board" id="board"></div></section>
+  <section id="vBoard"><p class="board-tip">Arrastra una tarjeta a otra columna para cambiar su estado, o haz clic para ver el detalle y la bitácora.</p><div class="board" id="board"></div></section>
   <section id="vList" class="hide"><div class="tbl"><table><thead><tr id="thead"></tr></thead><tbody id="tbody"></tbody></table></div></section>
   <section id="vStats" class="hide"><div class="charts" id="charts"></div></section>
   <div class="empty hide" id="empty">No hay solicitudes. <button class="btn sm" id="bSample2" type="button">Cargar datos de ejemplo</button> o importa un CSV.</div>
@@ -379,14 +393,14 @@ function kpis(){
   $('#kSla').textContent=ce.length?Math.round(100*ce.filter(s=>sla(s).k==='cumplida').length/ce.length)+' %':'–';
   $('#kTime').textContent=ce.length?(ce.reduce((t,s)=>t+habilesEntre(parseD(s.fecha_radicacion),parseD(s.fecha_cierre)),0)/ce.length).toFixed(1):'–';
 }
-function cardHTML(s){const st=sla(s);return`<button type="button" class="card" draggable="true" data-id="${esc(s.id)}" style="--sla:${SLA_COLOR[st.k]}">
+function cardHTML(s){const st=sla(s);return`<div role="button" tabindex="0" class="card" data-id="${esc(s.id)}" aria-label="${esc(s.id+', '+s.tipo+', '+st.t)}" style="--sla:${SLA_COLOR[st.k]}">
   <div class="id"><span>${esc(s.id)}</span><span class="pill p-${esc(s.prioridad)}">${esc(s.prioridad)}</span></div>
   <div class="t">${esc(s.tipo)}</div><div class="d">${esc(s.descripcion)}</div>
-  <div class="meta"><span class="pill s-${st.k}">${esc(st.t)}</span><span class="av ${s.responsable?'':'none'}" title="${esc(s.responsable||'Sin asignar')}">${esc(initials(s.responsable))}</span></div></button>`}
+  <div class="meta"><span class="pill s-${st.k}">${esc(st.t)}</span><span class="av ${s.responsable?'':'none'}" title="${esc(s.responsable||'Sin asignar')}">${esc(initials(s.responsable))}</span></div></div>`}
 function board(list){
   const ord=(a,b)=>{const r={vencida:0,porvencer:1,atiempo:2,tarde:3,cumplida:4};return r[sla(a).k]-r[sla(b).k]||PRIORIDADES.indexOf(a.prioridad)-PRIORIDADES.indexOf(b.prioridad)};
   $('#board').innerHTML=ESTADOS.map(e=>{const l=list.filter(s=>s.estado===e).sort(ord);const cerr=CERRADOS.includes(e);const show=cerr?l.slice(0,8):l;
-    return`<div class="col" data-estado="${esc(e)}"><h3>${esc(e)} <span>${l.length}</span></h3>${show.map(cardHTML).join('')}${l.length>show.length?`<div class="more">+${l.length-show.length} más en la vista Lista</div>`:''}</div>`}).join('');
+    return`<div class="col" data-estado="${esc(e)}"><h3>${esc(e)} <span>${l.length}</span></h3><div class="drop-hint"></div>${show.map(cardHTML).join('')}${l.length>show.length?`<div class="more">+${l.length-show.length} más en la vista Lista</div>`:''}</div>`}).join('');
 }
 const COLS=[['id','ID'],['fecha_radicacion','Radicada'],['tipo','Tipo'],['solicitante','Solicitante'],['area','Área'],['prioridad','Prioridad'],['estado','Estado'],['responsable','Responsable'],['fecha_limite','Límite'],['_sla','ANS']];
 function table(list){
@@ -472,17 +486,44 @@ function pruebas(){
 /* ============ Eventos ============ */
 $$('.tabs button').forEach(b=>b.addEventListener('click',()=>{view=b.dataset.view;$$('.tabs button').forEach(x=>x.setAttribute('aria-selected',String(x===b)));render()}));
 ['#fq','#fTipo','#fArea','#fPri','#fResp','#fLate'].forEach(s=>$(s).addEventListener('input',render));
-$('#board').addEventListener('click',e=>{const c=e.target.closest('.card');if(c)openDrawer(c.dataset.id)});
+$('#board').addEventListener('click',e=>{if(suppressClick)return;const c=e.target.closest('.card');if(c)openDrawer(c.dataset.id)});
+$('#board').addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const c=e.target.closest('.card');if(!c)return;e.preventDefault();openDrawer(c.dataset.id)});
 $('#tbody').addEventListener('click',e=>{const t=e.target.closest('tr');if(t)openDrawer(t.dataset.id)});
 $('#tbody').addEventListener('keydown',e=>{if(e.key==='Enter'){const t=e.target.closest('tr');if(t)openDrawer(t.dataset.id)}});
 $('#thead').addEventListener('click',e=>{const b=e.target.closest('[data-sort]');if(!b)return;const k=b.dataset.sort;sortDir=sortK===k?-sortDir:1;sortK=k;render()});
-/* Arrastrar y soltar entre columnas */
-let dragId=null;
-$('#board').addEventListener('dragstart',e=>{const c=e.target.closest('.card');if(!c)return;dragId=c.dataset.id;c.classList.add('dragging');e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',dragId)});
-$('#board').addEventListener('dragend',e=>{const c=e.target.closest('.card');if(c)c.classList.remove('dragging');$$('.col.over').forEach(x=>x.classList.remove('over'))});
-$('#board').addEventListener('dragover',e=>{const col=e.target.closest('.col');if(!col)return;e.preventDefault();$$('.col.over').forEach(x=>x!==col&&x.classList.remove('over'));col.classList.add('over')});
-$('#board').addEventListener('drop',e=>{const col=e.target.closest('.col');if(!col||!dragId)return;e.preventDefault();const s=data.find(x=>x.id===dragId);const est=col.dataset.estado;
-  if(s&&s.estado!==est){if(!s.responsable&&!['Radicada',...CERRADOS].includes(est)){toast('Asigna un responsable antes de moverla a "'+est+'"');openDrawer(s.id);}else{cambiar(s,{estado:est});toast(`${s.id} → ${est}`)}}dragId=null});
+/* Arrastrar y soltar entre columnas (con puntero: funciona igual con mouse y lápiz; en pantallas táctiles se usa el detalle) */
+let drag=null,suppressClick=false;
+const needsResp=est=>!['Radicada',...CERRADOS].includes(est);
+function colAt(x,y){const el=document.elementFromPoint(x,y);return el?el.closest('#board .col'):null}
+function startDrag(e){
+  const c=drag.el,r=c.getBoundingClientRect();
+  drag.s=data.find(x=>x.id===drag.id);drag.dx=drag.x0-r.left;drag.dy=drag.y0-r.top;
+  const g=c.cloneNode(true);g.classList.add('ghost');g.removeAttribute('tabindex');g.style.width=r.width+'px';document.body.appendChild(g);drag.ghost=g;
+  c.classList.add('placeholder');document.body.classList.add('drag-on');
+  const o=c.closest('.col');if(o)o.classList.add('origin');drag.started=true;
+}
+function moveDrag(e){
+  drag.ghost.style.left=(e.clientX-drag.dx)+'px';drag.ghost.style.top=(e.clientY-drag.dy)+'px';
+  const col=colAt(e.clientX,e.clientY);
+  if(col!==drag.col){$$('.col.target,.col.blocked').forEach(x=>x.classList.remove('target','blocked'));drag.col=col;
+    if(col&&col.dataset.estado!==drag.s.estado){const est=col.dataset.estado,bl=!drag.s.responsable&&needsResp(est);
+      col.classList.add(bl?'blocked':'target');col.querySelector('.drop-hint').textContent=bl?`Requiere responsable para pasar a "${est}"`:`Soltar para mover a "${est}"`}}
+  const b=$('#board').getBoundingClientRect();if(e.clientX>b.right-70)$('#board').scrollLeft+=14;else if(e.clientX<b.left+70)$('#board').scrollLeft-=14;
+}
+function endDrag(drop){
+  const {s,col}=drag;drag.ghost.remove();drag.el.classList.remove('placeholder');document.body.classList.remove('drag-on');
+  $$('.col.target,.col.blocked,.col.origin').forEach(x=>x.classList.remove('target','blocked','origin'));
+  drag=null;suppressClick=true;setTimeout(()=>suppressClick=false,0);
+  if(!drop||!col||!s)return;const est=col.dataset.estado;if(est===s.estado)return;
+  if(!s.responsable&&needsResp(est)){toast(`Asigna un responsable antes de moverla a "${est}"`);openDrawer(s.id);return}
+  cambiar(s,{estado:est});toast(`${s.id} → ${est}`);
+  const n=$(`#board .card[data-id="${CSS.escape(s.id)}"]`);if(n){n.classList.add('landed');n.scrollIntoView({block:'nearest',inline:'nearest'})}
+}
+$('#board').addEventListener('pointerdown',e=>{if(e.button!==0||e.pointerType==='touch')return;const c=e.target.closest('.card');if(!c)return;drag={id:c.dataset.id,el:c,x0:e.clientX,y0:e.clientY,started:false};e.preventDefault()});
+document.addEventListener('pointermove',e=>{if(!drag)return;if(!drag.started){if(Math.hypot(e.clientX-drag.x0,e.clientY-drag.y0)<6)return;startDrag(e)}moveDrag(e)});
+document.addEventListener('pointerup',e=>{if(!drag)return;if(drag.started)endDrag(true);else drag=null});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&drag&&drag.started)endDrag(false)});
+window.addEventListener('blur',()=>{if(drag&&drag.started)endDrag(false)});
 $('#scrim').addEventListener('click',closeDrawer);$('#dClose').addEventListener('click',closeDrawer);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&cur)closeDrawer()});
 $('#dBody').addEventListener('click',e=>{
